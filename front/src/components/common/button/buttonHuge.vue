@@ -1,15 +1,12 @@
 <template>
   <div>
-    <h1>UserIndex</h1>
   </div>
 </template>
 
 <script>
 export default {
-  name:'userIndex'
-}
+  name: "bottonHuge",
+};
 </script>
 
-<style>
-
-</style>
+<style scoped></style>
