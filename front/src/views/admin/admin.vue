@@ -1,5 +1,7 @@
 <template>
-  <div></div>
+  <div>
+    <h1>Admin Index</h1>
+  </div>
 </template>
 
 <script>
