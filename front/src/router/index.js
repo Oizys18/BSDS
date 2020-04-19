@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import userIndex from '@/views/user/user.vue'
 import adminIndex from '@/views/admin/admin.vue'
+import componentTest from '@/views/componentTest.vue'
 
 Vue.use(VueRouter)
 
@@ -15,6 +16,11 @@ const routes = [
     path: "/admin",
     name: "adminIndex",
     component: adminIndex
+  },
+  {
+    path: "/test",
+    name: "componentTest",
+    component: componentTest
   },
 ]
 
