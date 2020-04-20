@@ -73,9 +73,9 @@ def make_center_and_address():
                 y = data['y']
                 zone_no = data['zone_no']
 
-                w.writerow([ad_id, center_id, address_name,
+                w.writerow([ad_id, address_name,
                             region_1depth_name, region_2depth_name, region_3depth_name,
-                            road_name, zone_no, x, y])
+                            road_name, zone_no, x, y, center_id])
 
             else:
                 print(idx)
@@ -137,7 +137,6 @@ def add_center_and_address():
 
                         address.append([
                             ad_id,
-                            center_id,
                             address_name,
                             region_1depth_name,
                             region_2depth_name,
@@ -145,7 +144,8 @@ def add_center_and_address():
                             road_name,
                             zone_no,
                             x,
-                            y
+                            y,
+                            center_id,
                         ])
                     else:
                         print(idx, item[2])
@@ -169,5 +169,5 @@ def add_center_and_address():
             w.writerow(add)
 
 
-# make_center_and_address()
-# add_center_and_address()
+make_center_and_address()
+add_center_and_address()

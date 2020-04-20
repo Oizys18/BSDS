@@ -15,9 +15,9 @@ class Address(models.Model):
     center = models.ForeignKey(Center, on_delete=models.CASCADE)
 
     address_name = models.CharField(max_length=200)
-    region_1depth_name = models.CharField(max_length=20)
-    region_2depth_name = models.CharField(max_length=20)
-    region_3depth_name = models.CharField(max_length=20)
+    region_1depth_name = models.CharField(max_length=50)
+    region_2depth_name = models.CharField(max_length=50)
+    region_3depth_name = models.CharField(max_length=50)
     road_name = models.CharField(max_length=50)
     zone_no = models.CharField(max_length=20)
 
