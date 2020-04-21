@@ -4,12 +4,6 @@ from bs4 import BeautifulSoup
 import time
 import csv
 
-color_map = {}
-with open('color_info.csv', 'r', encoding='utf-8') as f:
-    items = csv.reader(f)
-    for item in items:
-        color_map[item[0]] = item[1]
-
 
 path = 'chromedriver.exe'
 driver = webdriver.Chrome(path)
@@ -17,7 +11,7 @@ driver = webdriver.Chrome(path)
 driver.get('https://www.lost112.go.kr/find/findList.do')
 time.sleep(2)
 
-# V0000286F04210002
+
 start_m = driver.find_element_by_xpath('/html/body/div[1]/div[2]/div[2]/div[2]/div/form/div[1]/fieldset[2]/button[1]')
 start_m.click()
 prev_b = driver.find_element_by_xpath('/html/body/div[1]/div[2]/div[2]/div[2]/div/form/div[1]/fieldset[2]/div/div/div[1]/div[1]/button[2]')
@@ -35,18 +29,18 @@ serch_btn.send_keys(Keys.ENTER)
 page_cnt = 0
 get_data = []
 get_img = []
-while page_cnt < 121:
+while page_cnt < 3:
     page_cnt += 1
 
     if not page_cnt % 5:
         print(page_cnt)
-        with open('lost_article.csv', 'a', newline='', encoding="utf-8") as f:
+        with open('lost_article.csv2', 'a', newline='', encoding="utf-8") as f:
             w = csv.writer(f, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
             for dt in get_data:
                 w.writerow(dt)
 
-        with open('image_color_path.csv', 'a', newline='', encoding="utf-8") as f:
+        with open('image_color_path2.csv', 'a', newline='', encoding="utf-8") as f:
             w = csv.writer(f, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
             for dt in get_img:
@@ -72,37 +66,28 @@ while page_cnt < 121:
                     wrap = detail_soup.select_one('#contents > div.findDetail > div.findDetail_wrap')
 
                     image_path = wrap.select_one('div.img_area > p.lost_img > img')['src']
+                    image_path = f'https://www.lost112.go.kr{image_path}'
 
-                    if 'no_img' not in image_path:
-                        image_path = f'https://www.lost112.go.kr{image_path}'
+                    color_text = color_text.split(')색)]을')[0].split('(')
+                    color_eng, color_kor = color_text[-2], color_text[-1]
 
-                        color_text = color_text.split(')색)]을')[0].split('(')
-                        color_eng, color_kor = color_text[-2], color_text[-1]
+                    wrap = detail_soup.select_one('#contents > div.findDetail > div.findDetail_wrap')
 
-                        if color_map.get(color_eng):
-                            if not color_map[color_eng] == color_kor:
-                                print(color_eng, color_kor)
-                                color_kor = color_map[color_eng]
-                        else:
-                            color_map[color_eng] = color_kor
+                    ul = wrap.select_one('div.find_info > ul')
 
-                        wrap = detail_soup.select_one('#contents > div.findDetail > div.findDetail_wrap')
+                    lost_id = ul.select_one('li:nth-of-type(1) > p.find02').text
+                    lost_date = ul.select_one('li:nth-of-type(2) > p.find02').text.split(' ')[0]
+                    category = ul.select_one('li:nth-of-type(4) > p.find02').text.split(' > ')
+                    high, low = category[0], category[1]
+                    where = ul.select_one('li:nth-of-type(5) > p.find02').text
 
-                        ul = wrap.select_one('div.find_info > ul')
+                    get_data.append([
+                        lost_id, lost_date, where
+                    ])
 
-                        lost_id = ul.select_one('li:nth-of-type(1) > p.find02').text
-                        lost_date = ul.select_one('li:nth-of-type(2) > p.find02').text.split(' ')[0]
-                        category = ul.select_one('li:nth-of-type(4) > p.find02').text.split(' > ')
-                        high, low = category[0], category[1]
-                        where = ul.select_one('li:nth-of-type(5) > p.find02').text
-
-                        get_data.append([
-                            lost_id, lost_date, where
-                        ])
-
-                        get_img.append([
-                            lost_id, image_path, high, low, color_eng, color_kor
-                        ])
+                    get_img.append([
+                        lost_id, image_path, high, low, color_eng, color_kor
+                    ])
 
                 button = driver.find_element_by_xpath('/html/body/div[1]/div[2]/div[2]/div[2]/div[3]/button')
                 button.send_keys(Keys.ENTER)
@@ -115,27 +100,15 @@ while page_cnt < 121:
         nth.send_keys(Keys.ENTER)
 
 
-with open('lost_article.csv', 'a', newline='', encoding="utf-8") as f:
+with open('lost_article2.csv', 'a', newline='', encoding="utf-8") as f:
     w = csv.writer(f, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
     for dt in get_data:
         w.writerow(dt)
 
-with open('image_color_path.csv', 'a', newline='', encoding="utf-8") as f:
+with open('image_color_path2.csv', 'a', newline='', encoding="utf-8") as f:
     w = csv.writer(f, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
     for dt in get_img:
         w.writerow(dt)
-
-
-colors = []
-for key, value in color_map.items():
-    colors.append((key, value))
-
-
-with open('color_info.csv', 'w', newline='', encoding='utf-8') as f:
-    w = csv.writer(f, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-
-    for eng, kor in colors:
-        w.writerow([eng, kor])
 
