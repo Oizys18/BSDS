@@ -1,5 +1,5 @@
 <template>
-  <div id="button-micro">Micro</div>
+  <div class="button-micro">Micro</div>
 </template>
 
 <script>
@@ -9,8 +9,9 @@ export default {
 </script>
 
 <style scoped>
-#button-micro{
+.button-micro{
   border:1px solid black;
+  width:2rem;
   border-radius: 5px;
   margin:3px;
   padding:3px 6px 3px 6px;
@@ -18,7 +19,7 @@ export default {
   display: inline-block;
   font-size:10px;
 }
-#button-micro:hover{
+.button-micro:hover{
   background-color:grey;
 }
 </style>
