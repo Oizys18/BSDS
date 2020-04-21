@@ -1,5 +1,5 @@
 <template>
-    <div id="button-default">Default</div>
+    <div class="button-default">Default</div>
 </template>
 
 <script>
@@ -9,16 +9,17 @@ export default {
 </script>
 
 <style scoped>
-#button-default {
+.button-default {
   border: 1px solid black;
   border-radius: 6px;
+  width:3rem;
   margin: 3px;
   padding: 4px 8px 4px 8px;
   justify-content: center;
   display: inline-block;
   font-size: 15px;
 }
-#button-default:hover{
+.button-default:hover{
   background-color:grey;
 }
 </style>
