@@ -1,6 +1,6 @@
 <template>
   <div class="search-container">
-    <input class="search-input" placeholder="검색어 즈려주세요 ex)솔지하투" />
+    <input class="search-input" placeholder="검색어 즈려주세요 ex)가방,모자" />
     <button class="search-button">
       <span class="material-icons"> search </span>검색
     </button>
@@ -15,7 +15,7 @@ export default {
 
 <style scoped>
 .search-container {
-  width: 80%;
+  width: 500px;
   border: 1px solid black;
   padding: 0px 0px 0px 15px;
   border-radius: 17px;
@@ -26,10 +26,11 @@ export default {
 }
 .search-input {
   border: none;
-  width: 65%;
+  width: 80%;
   height: 1.5rem;
 }
 .search-button {
+  width:15%;
   border: none;
   position: relative;
   height: 2rem;
@@ -37,7 +38,6 @@ export default {
   background: none;
   display:flex;
   font-size: 1rem;
-  width:15%;
 }
 .material-icons {
   font-size: 1.1rem;
