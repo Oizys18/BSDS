@@ -1,107 +1,14 @@
 <template>
-  <!-- <div> -->
-    <select
-      class="custom-select"
-      v-model="this.value"
-      v-on:input="updateValue($event.target.value)"
-    >
-      <option v-for="(item, index) in items" :key="item.id" :value="index">{{
-        item
-      }}</option>
-    </select>
-    <!-- <div class="select-box">
-      <div class="select-box__current" tabindex="1">
-        <div class="select-box__value">
-          <input
-            class="select-box__input"
-            type="radio"
-            id="0"
-            value="1"
-            name="Ben"
-            checked="checked"
-          />
-          <p class="select-box__input-text">Cream</p>
-        </div>
-        <div class="select-box__value">
-          <input
-            class="select-box__input"
-            type="radio"
-            id="1"
-            value="2"
-            name="Ben"
-            checked="checked"
-          />
-          <p class="select-box__input-text">Cheese</p>
-        </div>
-        <div class="select-box__value">
-          <input
-            class="select-box__input"
-            type="radio"
-            id="2"
-            value="3"
-            name="Ben"
-            checked="checked"
-          />
-          <p class="select-box__input-text">Milk</p>
-        </div>
-        <div class="select-box__value">
-          <input
-            class="select-box__input"
-            type="radio"
-            id="3"
-            value="4"
-            name="Ben"
-            checked="checked"
-          />
-          <p class="select-box__input-text">Honey</p>
-        </div>
-        <div class="select-box__value">
-          <input
-            class="select-box__input"
-            type="radio"
-            id="4"
-            value="5"
-            name="Ben"
-            checked="checked"
-          />
-          <p class="select-box__input-text">Toast</p>
-        </div>
-        <img
-          class="select-box__icon"
-          src="http://cdn.onlinewebfonts.com/svg/img_295694.svg"
-          alt="Arrow Icon"
-          aria-hidden="true"
-        />
-      </div>
-      <ul class="select-box__list">
-        <li>
-          <label class="select-box__option" for="0" aria-hidden="aria-hidden"
-            >Cream</label
-          >
-        </li>
-        <li>
-          <label class="select-box__option" for="1" aria-hidden="aria-hidden"
-            >Cheese</label
-          >
-        </li>
-        <li>
-          <label class="select-box__option" for="2" aria-hidden="aria-hidden"
-            >Milk</label
-          >
-        </li>
-        <li>
-          <label class="select-box__option" for="3" aria-hidden="aria-hidden"
-            >Honey</label
-          >
-        </li>
-        <li>
-          <label class="select-box__option" for="4" aria-hidden="aria-hidden"
-            >Toast</label
-          >
-        </li>
-      </ul>
-    </div> -->
-  <!-- </div> -->
+  <select
+    class="custom-select"
+    v-model="selectOne"
+    v-on:input="updateValue($event.target.value)"
+  >
+    <option value="">{{ this.default }}</option>
+    <option v-for="(item, index) in items" :key="item.id" :value="index">{{
+      item
+    }}</option>
+  </select>
 </template>
 
 <script>
@@ -109,15 +16,26 @@ export default {
   name: "selectOne",
   data() {
     return {
-      selected: "",
-      value: "선택!",
-      items: ["옷", "가방", "신발"],
+      selectOne: "",
     };
   },
-  // props: ["value", "items"],
+  props: {
+    default: {
+      type: String,
+      default: "선택해주세요",
+    },
+    items: {
+      type: Object,
+      default: function() {
+        return { 1: "선택1", 2: "선택2", 3: "선택3" };
+      },
+    },
+  },
   methods: {
     updateValue: function(value) {
       this.$emit("input", value);
+      // 선택된 아이템 index
+      console.log(value)
     },
   },
 };
@@ -128,14 +46,15 @@ export default {
   width: 200px;
   border: 1px solid black;
   border-radius: 15px;
-  padding:0px 10px 0px 10px;
+  padding: 0px 10px 0px 10px;
 }
 .custom-select:focus {
   outline-style: inherit;
 }
 </style>
 
-// <style lang="scss" scoped>
+//
+<style lang="scss" scoped>
 // .select-box {
 //   // position: relative;
 //   // display: block;
@@ -254,4 +173,5 @@ export default {
 //     transform: scaleY(0);
 //   }
 // }
-// </style>
+//
+</style>
