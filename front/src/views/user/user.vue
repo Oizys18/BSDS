@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import navbar from "./components/navbar";
+import navbar from "@/views/user/components/navbar";
 import buttonDefault from "@/components/common/button/buttonDefault.vue";
 import selectOne from "@/components/common/dropdown/selectOne.vue";
 import searchBar from "@/components/common/search/searchBar.vue";

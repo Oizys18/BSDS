@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import userIndex from '@/views/user/user.vue'
 import adminIndex from '@/views/admin/admin.vue'
 import componentTest from '@/views/componentTest.vue'
+import foundList from '@/views/user/components/foundList.vue'
 
 Vue.use(VueRouter)
 
@@ -24,8 +25,8 @@ const routes = [
   },
   {
     path: "/found",
-    name: "componentTest",
-    component: componentTest
+    name: "foundList",
+    component: foundList
   },
 ]
 
