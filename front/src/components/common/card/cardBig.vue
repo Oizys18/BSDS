@@ -18,11 +18,24 @@
 export default {
   name: "cardBig",
   data() {
-    return {
-      image: "image",
-      title: "title",
-      content: "content",
-    };
+    return {};
+  },
+  props: {
+    image: {
+      type: String,
+      required: true,
+      defalut: "이미지없음!",
+    },
+    title: {
+      type: String,
+      required: true,
+      defalut: "타이틀없음!",
+    },
+    content: {
+      type: String,
+      required: true,
+      defalut: "내용없음!",
+    },
   },
 };
 </script>
@@ -62,8 +75,8 @@ export default {
   width: 150px;
   border-radius: 15px;
   justify-content: center;
-  align-content:center;
-  display:flex;
+  align-content: center;
+  display: flex;
   flex-direction: column;
 }
 </style>
