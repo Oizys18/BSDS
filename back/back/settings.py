@@ -108,3 +108,6 @@ REST_FRAMEWORK = {
         'burst': '10/min'
     }
 }
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
