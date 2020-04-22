@@ -1,5 +1,10 @@
 <template>
-  <div class="button-micro">{{ this.text }}</div>
+  <div
+    class="button-micro"
+    :style="{ backgroundColor: bgColor, color: txtColor }"
+  >
+    {{ this.text }}
+  </div>
 </template>
 
 <script>
@@ -10,6 +15,12 @@ export default {
       type: String,
       required: true,
       default: "micro",
+    },
+    bgColor: {
+      type: String,
+    },
+    txtColor: {
+      type: String,
     },
   },
 };
@@ -25,6 +36,7 @@ export default {
   justify-content: center;
   display: inline-block;
   font-size: 10px;
+  background-color: white;
 }
 .button-micro:hover {
   background-color: grey;

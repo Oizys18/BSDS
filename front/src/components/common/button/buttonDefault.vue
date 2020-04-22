@@ -1,5 +1,10 @@
 <template>
-  <div class="button-default">{{ this.text }}</div>
+  <div
+    class="button-default"
+    :style="{ backgroundColor: bgColor, color: txtColor }"
+  >
+    {{ this.text }}
+  </div>
 </template>
 
 <script>
@@ -10,6 +15,12 @@ export default {
       type: String,
       required: true,
       default: "default",
+    },
+    bgColor: {
+      type: String,
+    },
+    txtColor: {
+      type: String,
     },
   },
 };
@@ -25,6 +36,7 @@ export default {
   justify-content: center;
   display: inline-block;
   font-size: 15px;
+  background-color: white;
 }
 .button-default:hover {
   background-color: grey;
