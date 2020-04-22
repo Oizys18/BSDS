@@ -22,6 +22,11 @@ const routes = [
     name: "componentTest",
     component: componentTest
   },
+  {
+    path: "/found",
+    name: "componentTest",
+    component: componentTest
+  },
 ]
 
 const router = new VueRouter({

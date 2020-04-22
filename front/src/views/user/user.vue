@@ -9,11 +9,15 @@
         <selectOne :items="colors" :default="colorDefault" />
       </div>
       <div id="user-index-button">
-        사진이 없다면<buttonDefault
-          :text="btnText"
-          :bgColor="bgColor"
-          :txtColor="txtColor"
-        />
+        사진이 없다면
+        <span @click="go('test')">
+          <buttonDefault
+            :text="btnText"
+            :bgColor="bgColor"
+            :txtColor="txtColor"
+            
+          />
+        </span>
       </div>
     </div>
   </div>
@@ -42,6 +46,12 @@ export default {
       bgColor: "#0A95FF",
       txtColor: "black",
     };
+  },
+  methods: {
+    go(path) {
+      this.$router.push(path);
+      console.log(path);
+    },
   },
   mounted: {},
 };
