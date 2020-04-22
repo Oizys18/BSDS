@@ -1,5 +1,10 @@
 <template>
-  <div class="button-huge">{{ this.text }}</div>
+  <div
+    class="button-huge"
+    :style="{ backgroundColor: bgColor, color: txtColor }"
+  >
+    {{ this.text }}
+  </div>
 </template>
 
 <script>
@@ -10,6 +15,12 @@ export default {
       type: String,
       required: true,
       default: "huge",
+    },
+    bgColor: {
+      type: String,
+    },
+    txtColor: {
+      type: String,
     },
   },
 };
@@ -25,6 +36,7 @@ export default {
   justify-content: center;
   display: inline-block;
   font-size: 25px;
+  background-color: white;
 }
 .button-huge:hover {
   background-color: grey;
