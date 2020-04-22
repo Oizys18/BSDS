@@ -25,7 +25,8 @@ INSTALLED_APPS = [
     'found',
     'images',
     'lost',
-    'user',
+    'accounts',
+    'ai',
 ]
 
 MIDDLEWARE = [
@@ -90,6 +91,8 @@ USE_L10N = True
 
 USE_TZ = True
 
+
+AUTH_USER_MODEL = 'accounts.User'
 
 STATIC_URL = '/static/'
 
