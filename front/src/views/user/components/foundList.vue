@@ -26,6 +26,7 @@ export default {
         1: ["image1", "title1", "content1"],
         2: ["image2", "title2", "content2"],
         3: ["image3", "title3", "content3"],
+        4: ["image4", "title4", "content4"],
       },
     };
   },
@@ -39,14 +40,14 @@ export default {
   width: 100%;
   height: 100%;
   margin-top: 150px;
-  justify-content:space-around;
+  justify-content: space-around;
   align-items: center;
   display: flex;
-  flex-wrap:wrap;
+  flex-wrap: wrap;
 }
-#found-card-container{
-  margin-left:100px;
-  margin-right:100px;
+#found-card-container {
+  margin-left: 100px;
+  margin-right: 100px;
   /* flex-basis: 30%; */
 }
 </style>
