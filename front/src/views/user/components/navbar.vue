@@ -2,7 +2,9 @@
   <div class="navbar-container">
     <h1>분실둥실</h1>
     <div id="navbtn-wrapper">
-      <buttonDefault :text="btnText" />
+      <span @click="goCreate('create')">
+        <buttonDefault :text="btnText" />
+      </span>
       <buttonDefault :text="btnText2" />
       <buttonDefault :text="btnText3" />
     </div>
@@ -23,6 +25,12 @@ export default {
   components: {
     buttonDefault,
   },
+  methods: {
+    goCreate(path) {
+      this.$router.push(path);
+      console.log(path);
+    },
+  }
 };
 </script>
 
