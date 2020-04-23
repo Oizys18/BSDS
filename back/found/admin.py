@@ -5,6 +5,7 @@ from .models import FoundPosting, FoundImage
 class FoundPostingModelAdmin(admin.ModelAdmin):
     list_display = 'id', 'category'
 
+
 class FoundImageModelAdmin(admin.ModelAdmin):
     list_display = 'id', 'image'
 

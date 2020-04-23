@@ -18,7 +18,7 @@ def thumbnail_path(instance, filename):
 def image_path(instance, filename):
     filename = datetime.today().strftime('%Y%m%d%H%M%f')
     day = datetime.today().strftime('%Y%m%d')
-    return f'found/{day}/{filename}.jpeg'
+    return f'found/origin/{day}/{filename}.jpeg'
 
 
 class FoundPosting(TimeStampedModel):
