@@ -1,12 +1,13 @@
-from django.shortcuts import get_object_or_404, HttpResponse
+from django.shortcuts import get_object_or_404
 from .models import User, Address
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-
 import json
 
 
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def user_detail(request, user_id):
     user = get_object_or_404(User, id=user_id)
     address = get_object_or_404(Address, id=user_id)
@@ -21,5 +22,3 @@ def user_detail(request, user_id):
 
     res_data = json.dumps(dataset, ensure_ascii=False)
     return Response(status=200, data=res_data, content_type='application/json')
-
-
