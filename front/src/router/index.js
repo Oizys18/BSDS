@@ -4,6 +4,7 @@ import userIndex from '@/views/user/user.vue'
 import adminIndex from '@/views/admin/admin.vue'
 import componentTest from '@/views/componentTest.vue'
 import foundList from '@/views/user/components/foundList.vue'
+import createLost from '@/views/user/components/createLost.vue'
 
 Vue.use(VueRouter)
 
@@ -28,6 +29,11 @@ const routes = [
     name: "foundList",
     component: foundList
   },
+  {
+    path: "/create",
+    name: "createLost",
+    component: createLost
+  }
 ]
 
 const router = new VueRouter({
