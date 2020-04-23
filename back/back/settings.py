@@ -25,14 +25,14 @@ CORS_ORIGIN_WHITELIST = [
 MODELS = os.path.join(BASE_DIR, 'images/models')
 
 REST_FRAMEWORK = {
-    # 'DEFAULT_THROTTLE_CLASSES': [
-    #     'images.throttles.LimitedRateThrottle',
-    #     'images.throttles.BurstRateThrottle'
-    # ],
-    # 'DEFAULT_THROTTLE_RATES': {
-    #     'limited': '2/min',
-    #     'burst': '10/min'
-    # },
+    'DEFAULT_THROTTLE_CLASSES': [
+        'images.throttles.LimitedRateThrottle',
+        'images.throttles.BurstRateThrottle'
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'limited': '2/min',
+        'burst': '10/min'
+    },
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
