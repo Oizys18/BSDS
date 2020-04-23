@@ -1,56 +1,71 @@
 <template>
-<div id="wrapper">
-  <div class="create-form">
+<div id="container">
+  <navbar/>
+  <div id="create-form">
     <form @submit.prevent="createContent">
-      <div>
-      <select-one
-        id="select-year"
-        :items="yItems"
-        @select="onTimeSelectStart"
-      />
-      <select-one
-        id="select-month"
-        :items="mItems"
-        @select="onTimeSelectStart"
-      />
-      <select-one
-        id="select-day"
-        :items="dItems"
-        @select="onTimeSelectStart"
-      />
+      <div id=left-wrapper>
+        <div id="img-wrapper">
+          <label for="file-input" id="image-label">
+            <img id="image-upload" src="@/assets/images/camera.png">
+          </label>
+          <input
+            id="file-input"
+            ref="imageInput"
+            type="file"
+            accept="image/*"
+            @change="onChangeImages"
+          >
+          <img v-if="imageUrl" :src="imageUrl"/>
+        </div>
+
+        <div id="date-wrapper">
+          <select-one
+            id="select-year"
+            :items="yItems"
+            @input="onTimeSelectStart"
+          />
+          <select-one
+            id="select-month"
+            :items="mItems"
+            @input="onTimeSelectStart"
+          />
+          <select-one
+            id="select-day"
+            :items="dItems"
+            @input="onTimeSelectStart"
+          />
+        </div>
+        <div id="time-wrapper">
+          <select-one
+            id="select-time"
+            :items="timeList"
+            @input="onTimeSelectStart"
+          /> ~
+          <select-one
+            id="select-time"
+            :items="timeList"
+            @input="onTimeSelectEnd"
+          />
+        </div>
+        <div id="input-wrapper">
+            <textarea
+              id="content-area"
+              v-model="contents"
+              type="textarea"
+              placeholder="필요한 내용이 있다면 입력해주세요."
+              @input="onChangeInput"
+            />
+        </div>
       </div>
-      <select-one
-        id="select-time"
-        :items="startTimeList"
-        @select="onTimeSelectStart"
-      /> ~
-      <select-one
-        id="select-time"
-        :items="endTimeList"
-        @select="onTimeSelectEnd"
-      />
-      <div>
-      <label for="file-input">
-        <img id="image-upload" src="@/assets/images/camera.png">
-      </label>
-      <input
-        id="file-input"
-        ref="imageInput"
-        type="file"
-        accept="image/*"
-        @change="onChangeImages"
-      >
-      <img v-if="imageUrl" :src="imageUrl"/>
-      </div>
-      <textarea
-        class="content-area"
-        v-model="contents"
-        type="textarea"
-        placeholder="필요한 내용이 있다면 입력해주세요."
-        @input="onChangeInput"
-      />
-      <br>
+      <div id="right-wrapper">
+        <!-- 비밀번호 자리 -->
+        <div>
+          <form>
+            <input type="password">
+          </form>
+        </div>
       <button type="submit">등록하기</button>
+      </div>
     </form>
   </div>
 </div>
@@ -59,12 +74,14 @@
 <script>
 // import router from '../router'
 import selectOne from '@/components/common/dropdown/selectOne'
+import navbar from '@/views/user/components/navbar'
 const axios = require('axios')
 
 export default {
   name: 'create-form',
   components: {
     selectOne,
+    navbar
   },
   data () {
     return {
@@ -99,9 +116,10 @@ export default {
       const formdata = {
         "contents": this.contents,
         "imageFile": this.image,
-        "date": this.picker.replace(/-/g, ""),
+        // "date": this.picker.replace(/-/g, ""),
         "time": this.startTime.replace(":", "") + this.endTime.replace(":", "")
       }
+      console.log(this.startTime)
       axios.post('http://localhost:3001/board', this.formdata, {
         headers: {
             "Content-Type": "multipart/form-data",
@@ -134,25 +152,24 @@ export default {
     },
     onTimeSelectStart(value) {
       this.startTime = this.timeList[value]
+      console.log(this.startTime)
     },
     onTimeSelectEnd(value) {
       this.endTime = this.timeList[value]
-      console.log(this.endTime)
     }
   }
 }
 </script>
 
 <style scoped>
-  .content-area {
+  #content-area {
     width: 80%;
     height: 100px;
+    margin: 5px;
+    padding: 10px;
   }
   #file-input {
     display: none;
-  }
-  #image-upload {
-    width: 10%
   }
   #select-year {
     width: 100px;
@@ -165,26 +182,44 @@ export default {
   #select-day {
     width: 80px;
     margin: 3px 5px 5px;
+    padding: 2px;
   }
   #select-time {
     width: 80px;
-    margin-left: 3px;
+    margin-left: 5px;
+    padding: 2px;
   }
   #container {
+    margin-top: 150px;
+    /* display: table; */
     display: flex;
     align-items: center;
-    flex-direction: column;
-  }
-  #wrapper {
-    padding: 10px;
-    width: 50%;
-    border: 1px solid black;
-    border-style: dotted;
-    display: flex;
-    flex-direction: column;
-    /* align-items: center; */
     justify-content: center;
-    padding: 5px 30px 30px 30px;
-    margin: 10px;
+  }
+  #create-form {
+    overflow: hidden;
+  }
+  #left-wrapper {
+    float: left;
+    width: 900px;
+    border: 1px solid black;
+    margin-right: 50px;
+    display: table-cell;
+
+  }
+  #right-wrapper {
+    border: 1px solid black;
+    float: left;
+    width: 250px;
+    display: table-cell;
+  }
+  #img-wrapper {
+    margin: 5px; 
+  }
+  #date-wrapper, #img-wrapper, #time-wrapper, #input-wrapper {
+    display: flex;
+  }
+  #image-label {
+    display: inline;
   }
 </style>
