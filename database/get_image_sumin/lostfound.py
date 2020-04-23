@@ -12,23 +12,30 @@ driver.get('https://www.lost112.go.kr/find/findList.do')
 time.sleep(2)
 
 
-start_m = driver.find_element_by_xpath('/html/body/div[1]/div[2]/div[2]/div[2]/div/form/div[1]/fieldset[2]/button[1]')
+start_m = driver.find_element_by_xpath(
+    '/html/body/div[1]/div[2]/div[2]/div[2]/div/form/div[1]/fieldset[2]/button[1]')
 start_m.click()
-for _ in range(2):
-    prev_b = driver.find_element_by_xpath('/html/body/div[1]/div[2]/div[2]/div[2]/div/form/div[1]/fieldset[2]/div/div/div[1]/div[1]/button[2]')
+for _ in range(0):
+    prev_b = driver.find_element_by_xpath(
+        '/html/body/div[1]/div[2]/div[2]/div[2]/div/form/div[1]/fieldset[2]/div/div/div[1]/div[1]/button[2]')
     prev_b.click()
-select_s = driver.find_element_by_xpath('/html/body/div[1]/div[2]/div[2]/div[2]/div/form/div[1]/fieldset[2]/div/div/table/tbody/tr[2]/td[1]/a')
+select_s = driver.find_element_by_xpath(
+    '/html/body/div[1]/div[2]/div[2]/div[2]/div/form/div[1]/fieldset[2]/div/div/table/tbody/tr[2]/td[1]/a')
 select_s.click()
 
-end_m = driver.find_element_by_xpath('/html/body/div[1]/div[2]/div[2]/div[2]/div/form/div[1]/fieldset[2]/button[2]')
+end_m = driver.find_element_by_xpath(
+    '/html/body/div[1]/div[2]/div[2]/div[2]/div/form/div[1]/fieldset[2]/button[2]')
 end_m.click()
-for _ in range(4):
-    prev_b = driver.find_element_by_xpath('/html/body/div[1]/div[2]/div[2]/div[2]/div/form/div[1]/fieldset[2]/div/div/div[1]/div[1]/button[2]')
+for _ in range(2):
+    prev_b = driver.find_element_by_xpath(
+        '/html/body/div[1]/div[2]/div[2]/div[2]/div/form/div[1]/fieldset[2]/div/div/div[1]/div[1]/button[2]')
     prev_b.click()
-select_e = driver.find_element_by_xpath('/html/body/div[1]/div[2]/div[2]/div[2]/div/form/div[1]/fieldset[2]/div/div/table/tbody/tr[4]/td[7]/a')
+select_e = driver.find_element_by_xpath(
+    '/html/body/div[1]/div[2]/div[2]/div[2]/div/form/div[1]/fieldset[2]/div/div/table/tbody/tr[4]/td[7]/a')
 select_e.click()
 
-serch_btn = driver.find_element_by_xpath('/html/body/div[1]/div[2]/div[2]/div[2]/div/form/p/button')
+serch_btn = driver.find_element_by_xpath(
+    '/html/body/div[1]/div[2]/div[2]/div[2]/div/form/p/button')
 serch_btn.send_keys(Keys.ENTER)
 
 page_cnt = 0
@@ -39,14 +46,16 @@ while page_cnt < 270:
 
     if not page_cnt % 5:
         print(page_cnt)
-        with open('lost_article_2019_12.csv', 'a', newline='', encoding="utf-8") as f:
-            w = csv.writer(f, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        with open('lost_article_2020_02.csv', 'a', newline='', encoding="utf-8") as f:
+            w = csv.writer(f, delimiter=',', quotechar='"',
+                           quoting=csv.QUOTE_MINIMAL)
 
             for dt in get_data:
                 w.writerow(dt)
 
-        with open('image_color_path_2019_12.csv', 'a', newline='', encoding="utf-8") as f:
-            w = csv.writer(f, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        with open('image_color_path_2020_02.csv', 'a', newline='', encoding="utf-8") as f:
+            w = csv.writer(f, delimiter=',', quotechar='"',
+                           quoting=csv.QUOTE_MINIMAL)
 
             for dt in get_img:
                 w.writerow(dt)
@@ -58,34 +67,45 @@ while page_cnt < 270:
         try:
             html = driver.page_source
             soup = BeautifulSoup(html, 'html.parser')
-            tbody = soup.select_one('#contents > div.find_listBox > table > tbody')
+            tbody = soup.select_one(
+                '#contents > div.find_listBox > table > tbody')
 
             for idx, tr in enumerate(tbody.select('tr')):
                 if tr.select_one('td > div > a > img'):
-                    name = driver.find_element_by_xpath(f'/html/body/div[1]/div[2]/div[2]/div[3]/table/tbody/tr[{idx+1}]/td[2]/div/a')
+                    name = driver.find_element_by_xpath(
+                        f'/html/body/div[1]/div[2]/div[2]/div[3]/table/tbody/tr[{idx+1}]/td[2]/div/a')
                     name.send_keys(Keys.CONTROL + '\n')
 
-                    detail_soup = BeautifulSoup(driver.page_source, 'html.parser')
-                    color_text = detail_soup.select_one('#contents > div.findDetail > div.find_info_txt').text
+                    detail_soup = BeautifulSoup(
+                        driver.page_source, 'html.parser')
+                    color_text = detail_soup.select_one(
+                        '#contents > div.findDetail > div.find_info_txt').text
 
                     if ')색)]을' in color_text:
-                        wrap = detail_soup.select_one('#contents > div.findDetail > div.findDetail_wrap')
+                        wrap = detail_soup.select_one(
+                            '#contents > div.findDetail > div.findDetail_wrap')
 
-                        image_path = wrap.select_one('div.img_area > p.lost_img > img')['src']
+                        image_path = wrap.select_one(
+                            'div.img_area > p.lost_img > img')['src']
                         image_path = f'https://www.lost112.go.kr{image_path}'
 
                         color_text = color_text.split(')색)]을')[0].split('(')
                         color_eng, color_kor = color_text[-2], color_text[-1]
 
-                        wrap = detail_soup.select_one('#contents > div.findDetail > div.findDetail_wrap')
+                        wrap = detail_soup.select_one(
+                            '#contents > div.findDetail > div.findDetail_wrap')
 
                         ul = wrap.select_one('div.find_info > ul')
 
-                        lost_id = ul.select_one('li:nth-of-type(1) > p.find02').text
-                        lost_date = ul.select_one('li:nth-of-type(2) > p.find02').text.split(' ')[0]
-                        category = ul.select_one('li:nth-of-type(4) > p.find02').text.split(' > ')
+                        lost_id = ul.select_one(
+                            'li:nth-of-type(1) > p.find02').text
+                        lost_date = ul.select_one(
+                            'li:nth-of-type(2) > p.find02').text.split(' ')[0]
+                        category = ul.select_one(
+                            'li:nth-of-type(4) > p.find02').text.split(' > ')
                         high, low = category[0], category[1]
-                        where = ul.select_one('li:nth-of-type(5) > p.find02').text
+                        where = ul.select_one(
+                            'li:nth-of-type(5) > p.find02').text
 
                         get_data.append([
                             lost_id, lost_date, where
@@ -95,28 +115,30 @@ while page_cnt < 270:
                             lost_id, image_path, high, low, color_eng, color_kor
                         ])
 
-                    button = driver.find_element_by_xpath('/html/body/div[1]/div[2]/div[2]/div[2]/div[3]/button')
+                    button = driver.find_element_by_xpath(
+                        '/html/body/div[1]/div[2]/div[2]/div[2]/div[3]/button')
                     button.send_keys(Keys.ENTER)
 
             if i == 10:
-                nth = driver.find_element_by_xpath('/html/body/div[1]/div[2]/div[2]/div[4]/span[2]/a[1]')
+                nth = driver.find_element_by_xpath(
+                    '/html/body/div[1]/div[2]/div[2]/div[4]/span[2]/a[1]')
             else:
-                nth = driver.find_element_by_xpath(f'/html/body/div[1]/div[2]/div[2]/div[4]/a[{i + 1}]')
+                nth = driver.find_element_by_xpath(
+                    f'/html/body/div[1]/div[2]/div[2]/div[4]/a[{i + 1}]')
 
             nth.send_keys(Keys.ENTER)
         except:
             continue
 
 
-with open('lost_article_2019_12.csv', 'a', newline='', encoding="utf-8") as f:
+with open('lost_article_2020_02.csv', 'a', newline='', encoding="utf-8") as f:
     w = csv.writer(f, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
     for dt in get_data:
         w.writerow(dt)
 
-with open('image_color_path_2019_12.csv', 'a', newline='', encoding="utf-8") as f:
+with open('image_color_path_2020_02.csv', 'a', newline='', encoding="utf-8") as f:
     w = csv.writer(f, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
     for dt in get_img:
         w.writerow(dt)
-
