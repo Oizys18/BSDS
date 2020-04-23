@@ -1,55 +1,69 @@
 <template>
-<div id="container">
+<div class="container">
   <navbar/>
-  <div id="create-form">
+  <div class="create-lost">
     <form @submit.prevent="createContent">
-      <div id=left-wrapper>
-        <div id="img-wrapper">
-          <label for="file-input" id="image-label">
-            <img id="image-upload" src="@/assets/images/camera.png">
+      <div class=left-wrapper>
+        <div class="img-wrapper">
+          <label for="file-input" class="image-label">
+            <img class="image-upload" src="@/assets/images/camera.png">
           </label>
           <input
+            class="file-input"
             id="file-input"
             ref="imageInput"
             type="file"
             accept="image/*"
             @change="onChangeImages"
           >
-          <img v-if="imageUrl" :src="imageUrl"/>
+          <img class="image-preview" v-if="imageUrl" :src="imageUrl"/>
         </div>
-
-        <div id="date-wrapper">
+        <div class="category-wrapper">
+          <span class="select">물품 분류</span>
           <select-one
-            id="select-year"
+            class="select-category"
+            :default="'분류'"
+          />
+        </div>
+        <div class="date-wrapper">
+          <span class="select">분실 추정 일자</span>
+          <select-one
+            class="select-year"
+            :default="'연'"
             :items="yItems"
-            @input="onTimeSelectStart"
+            @input="onDateSelectY"
           />
           <select-one
-            id="select-month"
+            class="select-month"
+            :default="'월'"
             :items="mItems"
-            @input="onTimeSelectStart"
+            @input="onDateSelectM"
           />
           <select-one
-            id="select-day"
+            class="select-day"
+            :default="'일'"
             :items="dItems"
-            @input="onTimeSelectStart"
+            @input="onDateSelectD"
           />
         </div>
-        <div id="time-wrapper">
+        <div class="time-wrapper">
+          <span class="select">분실 추정 시각</span>
           <select-one
-            id="select-time"
+            class="select-time"
+            :default="'선택'"
             :items="timeList"
             @input="onTimeSelectStart"
           /> ~
           <select-one
-            id="select-time"
+            class="select-time"
+            :default="'선택'"
             :items="timeList"
             @input="onTimeSelectEnd"
           />
         </div>
-        <div id="input-wrapper">
+        <div class="input-wrapper">
             <textarea
-              id="content-area"
+              class="content-area"
               v-model="contents"
               type="textarea"
               placeholder="필요한 내용이 있다면 입력해주세요."
@@ -57,14 +71,14 @@
             />
         </div>
       </div>
-      <div id="right-wrapper">
-        <!-- 비밀번호 자리 -->
-        <div>
+      <div class="right-wrapper">
+          <span class="select">비밀번호</span>
           <form>
             <input type="password">
           </form>
-        </div>
-      <button type="submit">등록하기</button>
+      <span @click="go('created')">
+      <button-default :text="'등록하기'"/>
+      </span>
       </div>
     </form>
   </div>
@@ -75,13 +89,15 @@
 // import router from '../router'
 import selectOne from '@/components/common/dropdown/selectOne'
 import navbar from '@/views/user/components/navbar'
+import buttonDefault from '@/components/common/button/buttonDefault'
 const axios = require('axios')
 
 export default {
-  name: 'create-form',
+  name: 'create-lost',
   components: {
     selectOne,
-    navbar
+    navbar,
+    buttonDefault
   },
   data () {
     return {
@@ -91,12 +107,13 @@ export default {
       yItems: [],
       mItems: ['1 월', '2 월', '3 월','4 월','5 월','6 월','7 월','8 월','9 월','10 월','11 월','12 월'],
       dItems: [],
+      date: ['2020', '-', '00', '-', '00'],
       timeList: [],
       startTime: '',
       endTime: '',
     }
   },
-  created () {
+  mounted () {
     for (let i=0; i<25; i++) {
       if (i<10) {
           this.timeList.push('0' + i.toString() + ':00') 
@@ -116,10 +133,11 @@ export default {
       const formdata = {
         "contents": this.contents,
         "imageFile": this.image,
-        // "date": this.picker.replace(/-/g, ""),
+        "date": this.date.reduce(function (accumulator, currentValue) {
+          return accumulator + currentValue;
+        }),
         "time": this.startTime.replace(":", "") + this.endTime.replace(":", "")
       }
-      console.log(this.startTime)
       axios.post('http://localhost:3001/board', this.formdata, {
         headers: {
             "Content-Type": "multipart/form-data",
@@ -145,10 +163,10 @@ export default {
       this.image = file
       this.imageUrl = URL.createObjectURL(file) 
       console.log(this.image)
+      // 이미지 post 한번 더 보내서 분류 추가할것
     },
     onChangeInput() {
       console.log(this.contents)
-      console.log(this.picker)
     },
     onTimeSelectStart(value) {
       this.startTime = this.timeList[value]
@@ -156,70 +174,107 @@ export default {
     },
     onTimeSelectEnd(value) {
       this.endTime = this.timeList[value]
+    },
+    onDateSelectY(value) {
+      this.date[0] = this.yItems[value].slice(0, -2)
+      console.log(this.date)
+    },
+    onDateSelectM(value) {
+      var temp = this.mItems[value].slice(0, -2)
+      if (temp < 10) {
+        this.date[2] = '0' + temp
+      } else {
+        this.date[2] = temp
+      }
+      console.log(this.date)
+    },
+    onDateSelectD(value) {
+      var temp = this.dItems[value].slice(0, -2)
+      if (temp < 10) {
+        this.date[4] = '0' + temp
+      } else {
+        this.date[4] = temp
+      }
+      console.log(this.date)
+    },
+    go(path) {
+      this.$router.push(path);
     }
   }
 }
 </script>
 
 <style scoped>
-  #content-area {
+  .content-area {
     width: 80%;
     height: 100px;
     margin: 5px;
     padding: 10px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
   }
-  #file-input {
+  .file-input {
     display: none;
   }
-  #select-year {
+  .select-year {
     width: 100px;
     margin: 3px 5px 5px;
   }
-  #select-month {
+  .select-month {
     width: 80px;
     margin: 3px 5px 5px;
   }
-  #select-day {
+  .select-day {
     width: 80px;
     margin: 3px 5px 5px;
     padding: 2px;
   }
-  #select-time {
+  .select-time {
     width: 80px;
     margin-left: 5px;
     padding: 2px;
   }
-  #container {
+  .container {
     margin-top: 150px;
-    /* display: table; */
     display: flex;
     align-items: center;
     justify-content: center;
   }
-  #create-form {
+  .create-form {
     overflow: hidden;
   }
-  #left-wrapper {
+  .left-wrapper {
     float: left;
-    width: 900px;
+    width: 50em;
     border: 1px solid black;
-    margin-right: 50px;
-    display: table-cell;
-
+    margin-right: 3em;
+    margin-bottom: 2em;
+    padding: 1rem;
   }
-  #right-wrapper {
+  .right-wrapper {
     border: 1px solid black;
     float: left;
-    width: 250px;
-    display: table-cell;
+    width: 20em;
+    padding: 10px;
   }
-  #img-wrapper {
+  .img-wrapper {
     margin: 5px; 
   }
-  #date-wrapper, #img-wrapper, #time-wrapper, #input-wrapper {
+  .category-wrapper, .date-wrapper, .img-wrapper, .time-wrapper, .input-wrapper {
     display: flex;
+    margin-bottom: 15px;
   }
-  #image-label {
-    display: inline;
+  .image-preview {
+    width: 200px;
+    height: 150px;
+  }
+  .image-upload {
+    margin-right: 20px;
+  }
+  .select {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin: 0 15px 0 10px;
   }
 </style>

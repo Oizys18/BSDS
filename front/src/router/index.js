@@ -5,6 +5,7 @@ import adminIndex from '@/views/admin/admin.vue'
 import componentTest from '@/views/componentTest.vue'
 import foundList from '@/views/user/components/foundList.vue'
 import createLost from '@/views/user/components/createLost.vue'
+import createdPage from '@/views/user/components/createdPage.vue'
 
 Vue.use(VueRouter)
 
@@ -33,6 +34,11 @@ const routes = [
     path: "/create",
     name: "createLost",
     component: createLost
+  },
+  {
+    path: "/created",
+    name: "createdpage",
+    component: createdPage
   }
 ]
 
