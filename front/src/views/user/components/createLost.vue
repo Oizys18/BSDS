@@ -19,6 +19,7 @@
         </div>
 
         <div id="date-wrapper">
+          분실 추정 일자
           <select-one
             id="select-year"
             :items="yItems"
@@ -36,6 +37,7 @@
           />
         </div>
         <div id="time-wrapper">
+          분실 추정 시각
           <select-one
             id="select-time"
             :items="timeList"
@@ -145,6 +147,7 @@ export default {
       this.image = file
       this.imageUrl = URL.createObjectURL(file) 
       console.log(this.image)
+      // 이미지 post 한번 더 보내서 분류 추가할것
     },
     onChangeInput() {
       console.log(this.contents)
@@ -167,6 +170,9 @@ export default {
     height: 100px;
     margin: 5px;
     padding: 10px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
   }
   #file-input {
     display: none;
