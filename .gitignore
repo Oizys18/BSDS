@@ -1,5 +1,5 @@
 database/get_image/chromedriver.exe
-
+.ipynb_checkpoints
 ### SSL ###
 .pem
 *.pem
