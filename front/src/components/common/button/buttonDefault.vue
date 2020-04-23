@@ -1,10 +1,10 @@
 <template>
-    <div
-      class="button-default"
-      :style="{ backgroundColor: bgColor, color: txtColor }"
-    >
-      {{ this.text }}
-    </div>
+  <div
+    class="button-default"
+    :style="{ backgroundColor: bgColor, color: txtColor }"
+  >
+    {{ this.text }}
+  </div>
 </template>
 
 <script>
@@ -36,6 +36,7 @@ export default {
   display: inline-block;
   font-size: 15px;
   background-color: white;
+  padding: 3px 6px 3px 6px;
   box-shadow: 2px 2px 5px 0 grey;
 }
 </style>

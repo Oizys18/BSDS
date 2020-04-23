@@ -1,12 +1,16 @@
 <template>
   <div class="navbar-container">
-    <h1>분실둥실</h1>
-    <div id="navbtn-wrapper">
-      <span @click="goCreate('create')">
+    <h1 @click="go('/')">분실둥실</h1>
+    <div class="navbtn-wrapper">
+      <span @click="go('create')">
         <buttonDefault :text="btnText" />
       </span>
-      <buttonDefault :text="btnText2" />
-      <buttonDefault :text="btnText3" />
+      <span @click="go('/found')">
+        <buttonDefault :text="btnText2" />
+      </span>
+      <span @click="go('')">
+        <buttonDefault  :text="btnText3" />
+      </span>
     </div>
   </div>
 </template>
@@ -26,11 +30,10 @@ export default {
     buttonDefault,
   },
   methods: {
-    goCreate(path) {
+    go(path) {
       this.$router.push(path);
-      console.log(path);
     },
-  }
+  },
 };
 </script>
 
@@ -53,8 +56,8 @@ export default {
   align-items: center;
 }
 
-#navbtn-wrapper{
-    position: absolute;
-    right:0;
+.navbtn-wrapper {
+  position: absolute;
+  right: 0;
 }
 </style>

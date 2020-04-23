@@ -50,6 +50,10 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  box-shadow: 2px 2px 4px 0 grey;
+}
+.card-big-container:active {
+  box-shadow: 3px 3px 8px 0 grey;
 }
 .card-big-image {
   width: 200px;
