@@ -13,6 +13,7 @@ TEMPLATE_DEBUG = DEBUG
 ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
+    'drf_yasg',
     'django_extensions',
     'rest_framework',
     'corsheaders',
@@ -44,7 +45,6 @@ ROOT_URLCONF = 'back.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
