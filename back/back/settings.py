@@ -1,4 +1,5 @@
 import os
+import datetime
 from decouple import config
 import dj_database_url
 
@@ -10,9 +11,50 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
 TEMPLATE_DEBUG = DEBUG
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '57b1f80a.ngrok.io', '[::1]']
+
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ORIGIN_ALLOW_ALL = False
+
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:8080',
+]
+
+
+MODELS = os.path.join(BASE_DIR, 'images/models')
+
+REST_FRAMEWORK = {
+    'DEFAULT_THROTTLE_CLASSES': [
+        'images.throttles.LimitedRateThrottle',
+        'images.throttles.BurstRateThrottle'
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'limited': '2/min',
+        'burst': '10/min'
+    },
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ),
+}
+
+
+JWT_AUTH = {
+    'JWT_SECRET_KEY': SECRET_KEY,
+    'JWT_ALGORITHM': 'HS256',
+    'JWT_ALLOW_REFRESH': True,
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=7),
+    'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=28),
+}
+
 
 INSTALLED_APPS = [
+    'drf_yasg',
     'django_extensions',
     'rest_framework',
     'corsheaders',
@@ -25,10 +67,12 @@ INSTALLED_APPS = [
     'found',
     'images',
     'lost',
-    'user',
+    'accounts',
+    'ai',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -43,7 +87,6 @@ ROOT_URLCONF = 'back.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -91,17 +134,9 @@ USE_L10N = True
 USE_TZ = True
 
 
+AUTH_USER_MODEL = 'accounts.User'
+
 STATIC_URL = '/static/'
 
-MODELS = os.path.join(BASE_DIR, 'images/models')
-
-REST_FRAMEWORK = {
-    'DEFAULT_THROTTLE_CLASSES': [
-        'images.throttles.LimitedRateThrottle',
-        'images.throttles.BurstRateThrottle'
-    ],
-    'DEFAULT_THROTTLE_RATES': {
-        'limited': '2/min',
-        'burst': '10/min'
-    }
-}
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
