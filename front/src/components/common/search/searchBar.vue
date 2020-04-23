@@ -15,31 +15,32 @@ export default {
 
 <style scoped>
 .search-container {
-  width: 500px;
+  height: 2rem;
   border: 1px solid black;
   padding: 0px 0px 0px 15px;
   border-radius: 17px;
-  height: 2rem;
   justify-content: space-between;
   align-items: center;
   display: flex;
+  font-size: 1.5rem;
 }
 .search-input {
   border: none;
   width: 80%;
-  height: 1.5rem;
+  height: 70%;
 }
 .search-button {
-  width:15%;
+  width: 15%;
+  height: 100%;
   border: none;
   position: relative;
-  height: 2rem;
   border-left: 1px solid black;
   background: none;
-  display:flex;
-  font-size: 1rem;
+  justify-content: space-evenly;
+  display: flex;
 }
 .material-icons {
-  font-size: 1.1rem;
+  font-size: 1rem;
 }
+
 </style>
