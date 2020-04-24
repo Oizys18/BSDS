@@ -7,7 +7,7 @@ with open('real_img2.csv', newline='', encoding='UTF8') as csvfile:
   spamreader = csv.reader(csvfile, delimiter=' ', quotechar='|')
   spamreader = list(spamreader)
   # len(spamreader)
-  for i in range(5):
+  for i in range(len(spamreader)):
     time.sleep(0.5)
     row = spamreader[i]
     print(i)
