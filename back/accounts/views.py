@@ -9,6 +9,11 @@ import json
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def user_detail(request, user_id):
+    """
+    User Detail
+
+    return : id, center_name, parent_department(소속된 경찰서), phone_number, address (주소 형식 바꾸는거 가능)
+    """
     user = get_object_or_404(User, id=user_id)
     address = get_object_or_404(Address, id=user_id)
 
