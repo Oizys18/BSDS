@@ -24,6 +24,7 @@
             class="user-index-card"
             v-for="(item, index) in items"
             :key="index.id"
+            @click="showModal(index)"
           >
             <cardBig :image="item[0]" :title="item[1]" :content="item[2]" />
           </div>
@@ -38,6 +39,9 @@
             :txtColor="txtColor"
           />
         </span>
+        <modal v-if="isClicked" class="user-index-modal">
+          <modalHuge @exit_Clicked="exit_Modal" />
+        </modal>
       </div>
     </div>
   </div>
@@ -49,6 +53,7 @@ import buttonDefault from "@/components/common/button/buttonDefault.vue";
 import selectOne from "@/components/common/dropdown/selectOne.vue";
 import searchBar from "@/components/common/search/searchBar.vue";
 import cardBig from "@/components/common/card/cardBig.vue";
+import modalHuge from "@/components/common/modal/modalHuge.vue";
 export default {
   name: "userIndex",
   components: {
@@ -56,6 +61,7 @@ export default {
     cardBig,
     searchBar,
     selectOne,
+    modalHuge,
     buttonDefault,
   },
   data() {
@@ -67,16 +73,24 @@ export default {
       btnText: "다음",
       bgColor: "#0A95FF",
       txtColor: "black",
+      isClicked: false,
       items: {
-        // 1: ["image1", "title1", "content1"],
-        // 2: ["image2", "title2", "content2"],
-        // 3: ["image3", "title3", "content3"],
+        1: ["image1", "title1", "content1"],
+        2: ["image2", "title2", "content2"],
+        3: ["image3", "title3", "content3"],
       },
     };
   },
   methods: {
     go(path) {
       this.$router.push(path);
+    },
+    showModal(index) {
+      this.isClicked = true;
+      console.log(index + "번 게시글 모달 생성");
+    },
+    exit_Modal(flag) {
+      this.isClicked = !flag;
     },
   },
 };
