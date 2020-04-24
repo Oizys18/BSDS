@@ -68,9 +68,9 @@ export default {
       bgColor: "#0A95FF",
       txtColor: "black",
       items: {
-        // 1: ["image1", "title1", "content1"],
-        // 2: ["image2", "title2", "content2"],
-        // 3: ["image3", "title3", "content3"],
+        1: ["image1", "title1", "content1"],
+        2: ["image2", "title2", "content2"],
+        3: ["image3", "title3", "content3"],
       },
     };
   },
@@ -117,7 +117,11 @@ export default {
   bottom: 5%;
   right: 20%;
 }
-
+.user-index-card-container{
+  margin-top:100px;
+  justify-content: space-between;
+  display: flex;
+}
 /* searchbar */
 .search-container {
   height: 70px;
