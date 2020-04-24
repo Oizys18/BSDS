@@ -2,7 +2,7 @@
 <div class="container">
   <navbar/>
   <div class="create-lost">
-    <form @submit.prevent="createContent">
+    <form>
       <div class=left-wrapper>
         <div class="img-wrapper">
           <label for="file-input" class="image-label">
@@ -72,13 +72,19 @@
         </div>
       </div>
       <div class="right-wrapper">
-          <span class="select">비밀번호</span>
-          <form>
-            <input type="password">
-          </form>
-      <span @click="go('created')">
-      <button-default :text="'등록하기'"/>
-      </span>
+        <div class="password">
+        <span class="select">비밀번호</span>
+        <p class="description">등록한 비밀번호는 내용 수정 및 분실상태 변경 시 사용됩니다.</p>
+        <input class="input-password-email" type="password" v-model="password">
+        </div>
+        <div class="email">
+        <span class="select">이메일</span>
+        <p class="description">유사한 습득물 등록 시 이메일로 알림을 보내드립니다.</p>
+        <input class="input-password-email" type="text" v-model="email">
+        </div>
+        <div class="submit-btn" @click="createContent">
+          <button-default :text="'등록하기'"/>
+        </div>
       </div>
     </form>
   </div>
@@ -111,6 +117,8 @@ export default {
       timeList: [],
       startTime: '',
       endTime: '',
+      password: '',
+      email: ''
     }
   },
   mounted () {
@@ -136,7 +144,9 @@ export default {
         "date": this.date.reduce(function (accumulator, currentValue) {
           return accumulator + currentValue;
         }),
-        "time": this.startTime.replace(":", "") + this.endTime.replace(":", "")
+        "time": this.startTime.replace(":", "") + this.endTime.replace(":", ""),
+        "email": this.email,
+        "password": this.password
       }
       axios.post('http://localhost:3001/board', this.formdata, {
         headers: {
@@ -146,9 +156,7 @@ export default {
       .then(res => {
         console.log(res)
         console.log(formdata)
-        // router.push({
-        //     path:'/'
-        // })
+        this.$router.push('/created')
       })
       .catch(err => {
         console.log(err)
@@ -197,22 +205,21 @@ export default {
       }
       console.log(this.date)
     },
-    go(path) {
-      this.$router.push(path);
-    }
   }
 }
 </script>
 
 <style scoped>
   .content-area {
-    width: 80%;
+    width: 100%;
     height: 100px;
     margin: 5px;
     padding: 10px;
+    border: none;
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
+    resize: none;
   }
   .file-input {
     display: none;
@@ -257,6 +264,7 @@ export default {
     float: left;
     width: 20em;
     padding: 10px;
+    text-align: initial;
   }
   .img-wrapper {
     margin: 5px; 
@@ -275,6 +283,23 @@ export default {
   .select {
     font-size: 1.1rem;
     font-weight: bold;
-    margin: 0 15px 0 10px;
+    margin: 0 15px 0px 10px;
+  }
+  .password, .email{
+    margin: 15px;
+  }
+  .input-password-email {
+    border: none;
+    width: 90%;
+    border-bottom: black 1px solid;
+    margin: 10px;
+  }
+  .description {
+    font-size: 1rem;
+    margin: 0 15px 0px 10px;
+    word-break: keep-all;
+  }
+  .submit-btn {
+    text-align: center;
   }
 </style>
