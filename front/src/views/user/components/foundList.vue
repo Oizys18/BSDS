@@ -1,6 +1,8 @@
 <template>
   <div id="found-wrapper">
     <navbar />
+    <!-- <breadcrumb/> -->
+    <!-- <selecter/> -->
     <div id="found-card-container">
       <div
         @click="go(index)"
@@ -48,7 +50,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 #found-wrapper {
   width: 100%;
   height: 100%;
@@ -72,10 +74,4 @@ export default {
   display: flex;
   box-sizing: border-box;
 }
-/* .found-card:nth-child(1) {
-  grid-column: 1 / 4;
-}
-.found-card:nth-child(3) {
-  grid-column: span 2;
-} */
 </style>
