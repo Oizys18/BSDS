@@ -1,6 +1,5 @@
 <template>
 <div>
-  <navbar />
   <div class="container">
     완료 웅앵
     <div class="go-index-button">
@@ -14,13 +13,10 @@
 
 <script>
 import buttonHuge from '@/components/common/button/buttonHuge'
-import navbar from '@/views/user/components/navbar'
-
 export default {
   name: 'created-page',
   components: {
     buttonHuge,
-    navbar
   },
   methods: {
     go(path) {

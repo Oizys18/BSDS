@@ -1,6 +1,5 @@
 <template>
 <div class="container">
-  <navbar/>
   <div class="create-lost">
     <form>
       <div class=left-wrapper>
@@ -37,10 +36,10 @@
       </div>
       <div class="right-wrapper">
         <div @click="createContent">
-          <button-default :text="'등록하기'"/>
+          <button-default class="admin-btn" :text="'등록하기'"/>
         </div>
         <div @click="go('/admin')">
-          <button-default :text="'취소'"/>
+          <button-default class="admin-btn" :text="'취소'"/>
         </div>
       </div>
     </form>
@@ -50,7 +49,6 @@
 
 <script>
 import selectOne from '@/components/common/dropdown/selectOne'
-import navbar from '@/views/user/components/navbar'
 import buttonDefault from '@/components/common/button/buttonDefault'
 const axios = require('axios')
 
@@ -58,7 +56,6 @@ export default {
   name: 'create-lost',
   components: {
     selectOne,
-    navbar,
     buttonDefault
   },
   data () {
@@ -139,12 +136,13 @@ export default {
     margin-right: 3em;
     margin-bottom: 2em;
     padding: 1rem;
+    border-radius: 10px;
   }
   .right-wrapper {
-    border: 1px solid black;
+    border: none;
     float: left;
     width: 20em;
-    padding: 10px;
+    padding: 0px 10px 10px 10px;
     text-align: center;
   }
   .img-wrapper {
@@ -166,7 +164,7 @@ export default {
     font-weight: bold;
     margin: 0 15px 0px 10px;
   }
-  .submit-btn {
-    text-align: center;
+  .admin-btn {
+    width: 20em;
   }
 </style>
