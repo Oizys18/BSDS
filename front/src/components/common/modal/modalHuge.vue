@@ -30,15 +30,16 @@ export default {
   position: fixed;
   border: 1px solid black;
   border-radius: 15px;
+  display: flex;
   top: 20%;
   left: 35%;
-  display: flex;
   justify-content: center;
   align-items: center;
-  width: 500px;
-  height: 500px;
+  /* width: 500px;
+  height: 500px; */
   background-color: white;
   color: black;
   font-size: 1rem;
+  width: 40%;
 }
 </style>
