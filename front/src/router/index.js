@@ -5,7 +5,9 @@ import adminIndex from '@/views/admin/admin.vue'
 import componentTest from '@/views/componentTest.vue'
 import foundList from '@/views/user/components/foundList.vue'
 import createLost from '@/views/user/components/createLost.vue'
-import createdPage from '@/views/user/components/createdPage.vue'
+import createdUser from '@/views/user/components/createdUser.vue'
+import createFound from '@/views/admin/components/createFound.vue'
+import createdAdmin from '@/views/admin/components/createdAdmin.vue'
 
 Vue.use(VueRouter)
 
@@ -37,8 +39,18 @@ const routes = [
   },
   {
     path: "/created",
-    name: "createdpage",
-    component: createdPage
+    name: "createdUser",
+    component: createdUser
+  },
+  {
+    path: "/admin/create",
+    name: "createFound",
+    component: createFound
+  },
+  {
+    path: "/admin/created",
+    name: "createdAdmin",
+    component: createdAdmin
   }
 ]
 
