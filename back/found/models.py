@@ -1,5 +1,4 @@
 from django.db import models
-from ai.models import Category, Color
 from imagekit.models import ProcessedImageField
 from imagekit.processors import ResizeToFill
 from datetime import datetime
@@ -19,6 +18,14 @@ def image_path(instance, filename):
     filename = datetime.today().strftime('%Y%m%d%H%M%f')
     day = datetime.today().strftime('%Y%m%d')
     return f'found/origin/{day}/{filename}.jpeg'
+
+
+class Color(models.Model):
+    color = models.CharField(max_length=20, unique=True)
+
+#TODO 여기부터 ~~~~~~~~~~~~~ 디비 문제 수정하기 부터~~~~~~~~~
+class Category(models.Model):
+    category = models.CharField(max_length=20, unique=True)
 
 
 class FoundPosting(TimeStampedModel):

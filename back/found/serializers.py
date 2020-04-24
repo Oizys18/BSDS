@@ -1,5 +1,8 @@
 from rest_framework import serializers
 from .models import FoundPosting, FoundImage
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 from django.core.serializers.json import DjangoJSONEncoder
 
@@ -14,10 +17,13 @@ class LazyEncoder(DjangoJSONEncoder):
 class FoundPostingSerializer(serializers.ModelSerializer):
     class Meta:
         model = FoundPosting
-        fields = ('id', 'content', 'status', 'has_img')
+        fields = ('id', 'color', 'category', 'content', 'status')
 
 
 class FoundImageSerializer(serializers.ModelSerializer):
+    posting = FoundPostingSerializer()
+
     class Meta:
         model = FoundImage
-        fields = ('image', 'thumbnail')
+        fields = ('thumbnail', 'posting')
+
