@@ -4,7 +4,7 @@
   <div class="container">
     완료 웅앵
     <div class="go-index-button">
-      <span @click="go('/')">
+      <span @click="go('/admin')">
         <button-huge :text="'첫 페이지로'" />
       </span>
     </div>

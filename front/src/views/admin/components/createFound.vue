@@ -2,7 +2,7 @@
 <div class="container">
   <navbar/>
   <div class="create-lost">
-    <form @submit.prevent="createContent">
+    <form>
       <div class=left-wrapper>
         <div class="img-wrapper">
           <label for="file-input" class="image-label">
@@ -36,9 +36,12 @@
         </div>
       </div>
       <div class="right-wrapper">
-      <span @click="go('created')">
-      <button-default :text="'등록하기'"/>
-      </span>
+        <div @click="createContent">
+          <button-default :text="'등록하기'"/>
+        </div>
+        <div @click="go('/admin')">
+          <button-default :text="'취소'"/>
+        </div>
       </div>
     </form>
   </div>
@@ -63,28 +66,7 @@ export default {
       image: '',
       contents: '',
       imageUrl: null,
-      yItems: [],
-      mItems: ['1 월', '2 월', '3 월','4 월','5 월','6 월','7 월','8 월','9 월','10 월','11 월','12 월'],
-      dItems: [],
-      date: ['2020', '-', '00', '-', '00'],
-      timeList: [],
-      startTime: '',
-      endTime: '',
-    }
-  },
-  mounted () {
-    for (let i=0; i<25; i++) {
-      if (i<10) {
-          this.timeList.push('0' + i.toString() + ':00') 
-      } else {
-          this.timeList.push(i.toString() + ':00') 
-      }
-    }
-    for (let y=2020; y>1920; y--) {
-      this.yItems.push(y.toString() + ' 년')
-    }
-    for (let d=1; d<32; d++) {
-      this.dItems.push(d.toString() + ' 일')
+      category: '',
     }
   },
   methods: {
@@ -92,10 +74,7 @@ export default {
       const formdata = {
         "contents": this.contents,
         "imageFile": this.image,
-        "date": this.date.reduce(function (accumulator, currentValue) {
-          return accumulator + currentValue;
-        }),
-        "time": this.startTime.replace(":", "") + this.endTime.replace(":", "")
+        "category": this.category
       }
       axios.post('http://localhost:3001/board', this.formdata, {
         headers: {
@@ -105,6 +84,7 @@ export default {
       .then(res => {
         console.log(res)
         console.log(formdata)
+        this.$router.push('created')
       })
       .catch(err => {
         console.log(err)
@@ -121,40 +101,8 @@ export default {
       console.log(this.image)
       // 이미지 post 한번 더 보내서 분류 추가할것
     },
-    onChangeInput() {
-      console.log(this.contents)
-    },
-    onTimeSelectStart(value) {
-      this.startTime = this.timeList[value]
-      console.log(this.startTime)
-    },
-    onTimeSelectEnd(value) {
-      this.endTime = this.timeList[value]
-    },
-    onDateSelectY(value) {
-      this.date[0] = this.yItems[value].slice(0, -2)
-      console.log(this.date)
-    },
-    onDateSelectM(value) {
-      var temp = this.mItems[value].slice(0, -2)
-      if (temp < 10) {
-        this.date[2] = '0' + temp
-      } else {
-        this.date[2] = temp
-      }
-      console.log(this.date)
-    },
-    onDateSelectD(value) {
-      var temp = this.dItems[value].slice(0, -2)
-      if (temp < 10) {
-        this.date[4] = '0' + temp
-      } else {
-        this.date[4] = temp
-      }
-      console.log(this.date)
-    },
     go(path) {
-      this.$router.push(path);
+      this.$router.push(path)
     }
   }
 }
@@ -162,13 +110,15 @@ export default {
 
 <style scoped>
   .content-area {
-    width: 80%;
+    width: 100%;
     height: 100px;
     margin: 5px;
     padding: 10px;
+    border: none;
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
+    resize: none;
   }
   .file-input {
     display: none;
@@ -195,11 +145,12 @@ export default {
     float: left;
     width: 20em;
     padding: 10px;
+    text-align: center;
   }
   .img-wrapper {
     margin: 5px; 
   }
-  .category-wrapper, .input-wrapper {
+  .category-wrapper, .img-wrapper, .input-wrapper {
     display: flex;
     margin-bottom: 15px;
   }
@@ -213,6 +164,9 @@ export default {
   .select {
     font-size: 1.1rem;
     font-weight: bold;
-    margin: 0 15px 0 10px;
+    margin: 0 15px 0px 10px;
+  }
+  .submit-btn {
+    text-align: center;
   }
 </style>
