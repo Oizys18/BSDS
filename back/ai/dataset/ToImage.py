@@ -7,7 +7,7 @@ with open('real_img2.csv', newline='', encoding='UTF8') as csvfile:
   spamreader = csv.reader(csvfile, delimiter=' ', quotechar='|')
   spamreader = list(spamreader)
   # len(spamreader)
-  for i in range(len(spamreader)):
+  for i in range(7620, len(spamreader)):
     time.sleep(0.5)
     row = spamreader[i]
     print(i)
@@ -20,5 +20,5 @@ with open('real_img2.csv', newline='', encoding='UTF8') as csvfile:
       os.makedirs(os.path.join(category))
     response = urllib.request.urlopen(url) 
     if response.headers['Content-Type'] == 'image/jpg':
-      urllib.request.urlretrieve(url, f'./train/{category}/{fileid}.jpg')
+      urllib.request.urlretrieve(url, f'./{category}/{fileid}.jpg')
 
