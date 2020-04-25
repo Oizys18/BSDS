@@ -68,19 +68,16 @@ export default {
   },
   methods: {
     createContent () {
-      const formdata = {
+      const data = {
         "contents": this.contents,
         "imageFile": this.image,
         "category": this.category
       }
-      axios.post('http://localhost:3001/board', this.formdata, {
-        headers: {
-            "Content-Type": "multipart/form-data",
-        }
+      axios.post('http://localhost:3001/board', this.data, {
       })
       .then(res => {
         console.log(res)
-        console.log(formdata)
+        console.log(data)
         this.$router.push('created')
       })
       .catch(err => {
@@ -92,11 +89,22 @@ export default {
     },
     onChangeImages(e) {
       console.log(e.target.files)
-      const file = e.target.files[0] 
-      this.image = file
-      this.imageUrl = URL.createObjectURL(file) 
-      console.log(this.image)
-      // 이미지 post 한번 더 보내서 분류 추가할것
+      const file = e.target.files[0]
+      const formdata = new FormData();
+      this.imageUrl = URL.createObjectURL(file)
+      formdata.append('file', file)
+      // 이미지 post 한번 더 보내서 분류 추가할 것
+      axios.post('http://6572e39f.ngrok.io/found/posting/image/', formdata, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        }
+      })
+      .then( res=> {
+        console.log(res)
+      })
+      .catch( err => {
+        console.log(err)
+      })
     },
     go(path) {
       this.$router.push(path)
