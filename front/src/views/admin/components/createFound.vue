@@ -92,17 +92,17 @@ export default {
       const file = e.target.files[0]
       const formdata = new FormData();
       this.imageUrl = URL.createObjectURL(file)
-      formdata.append('file', file)
+      formdata.append('image', file)
       // 이미지 post 한번 더 보내서 분류 추가할 것
       axios.post('http://6572e39f.ngrok.io/found/posting/image/', formdata, {
         headers: {
             "Content-Type": "multipart/form-data",
         }
       })
-      .then( res=> {
+      .then(res=> {
         console.log(res)
       })
-      .catch( err => {
+      .catch(err => {
         console.log(err)
       })
     },
