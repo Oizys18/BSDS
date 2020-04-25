@@ -2,16 +2,20 @@ from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from django.views.decorators.http import require_GET, require_http_methods, require_POST
 from django.contrib.auth.decorators import login_required
 from rest_framework import generics
-
-from .models import FoundPosting, FoundImage
-from .serializers import FoundPostingSerializer, FoundImageSerializer, LazyEncoder
+from django.core.paginator import Paginator
+from .forms import FoundImageForm
+from .models import FoundPosting, FoundImage, FoundThumbnail
+from .serializers import FoundPostingSerializer, FoundImageSerializer, FoundThumbnailSerializer,FoundPostingListSerializer
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 import json
 from django.core.cache import cache
 from decouple import config
 import requests
+from .sample import CachedPaginator
+from rest_framework import viewsets, permissions
+
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
@@ -33,8 +37,6 @@ def get_closer_user(x, y, radius):
             if User.objects.filter(center_name=item['place_name'][:-3]).exists():
                 users.append(User.objects.get(center_name=item['place_name'][:-3]).id)
 
-            # if len(users) > 4:  #TODO 아무리 반경을 크게 해도 max 있음
-            #     break
     else:
         flag = True
 
@@ -43,24 +45,23 @@ def get_closer_user(x, y, radius):
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
-def posting_list(request):
+def search_found(request, category_id):
     """
     습득물 조회 + 분류
 
-    query param 으로 color, category, created_at, x, y, radius 값
-    [{id, color, category, content, status, user, img_path}]
-    todo1. 데이터 양 많으면 잘라보내기
-    todo2. cache 적용하기
+    :param category_id:
+    :param request: color, category, created_at, x, y, radius
     """
+    # TODO 길이 조정하기, 잘라보내기
 
     color = request.query_params.get('color')
-    category = request.query_params.get('category')
+    # category = request.query_params.get('category')
     created_at = request.query_params.get('createdAt')
     x = request.query_params.get('x')
     y = request.query_params.get('y')
     radius = request.query_params.get('radius')
 
-    posting_set = FoundPosting.objects.all()  #TODO 맨 첨에 반드시 어떤 값과 함께 줄 건지 물어보기
+    posting_set = FoundPosting.objects.filter(category=category_id)
 
     if x:
         radius = radius if radius else 1000
@@ -70,32 +71,38 @@ def posting_list(request):
             data = json.dumps(datasets, ensure_ascii=False)
             return Response(status=400, data=data, content_type='application.json')
         if not user_list:
-            datasets = {'message': '설정한 거리 주변에 등록 된 분실물 관리 센터가 없습니다.'}
-            data = json.dumps(datasets, ensure_ascii=False)
-            return Response(status=204, data=data, content_type='application.json')
+            return Response(status=204, content_type='application.json')
         else:
             posting_set = posting_set.filter(user_id__in=user_list)
 
     if created_at:
         posting_set = posting_set.filter(created_at__gte=created_at)
 
-    if category:
-        posting_set = posting_set.filter(category=category)
-
     if color:
         posting_set = posting_set.filter(color=color)
 
+    paginator = Paginator(posting_set, 8)
+    page_number = request.query_params.get('page')
+    page_obj = paginator.get_page(page_number)
 
-    datasets = []
-    for posting in posting_set:
+    datasets = {
+        'meta': {
+            'total_cnt': paginator.count,
+            'last_page': paginator.num_pages,
+            'page': page_number if page_number else 1,
+        },
+        'documents': []
+    }
+
+    for posting in page_obj.object_list:
         user = posting.user.center_name + posting.user.role
 
-        if posting.has_img:
-            img_path = 'media/' + str(get_object_or_404(FoundImage, posting=posting.id).thumbnail)
+        if posting.image:
+            img_path = 'media/' + str(get_object_or_404(FoundThumbnail, posting=posting.id).thumbnail)
         else:
             img_path = 'media/no_img.png'
 
-        datasets.append({
+        datasets['documents'].append({
             'id': posting.id,
             'color': posting.color.color,
             'category': posting.category.category,
@@ -106,7 +113,121 @@ def posting_list(request):
         })
 
     data = json.dumps(datasets, ensure_ascii=False)
-
     return Response(status=200, data=data, content_type='application.json')
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def search_by_image(request):
+    """
+    습득물 이미지 검색
+    :param request: FILES 'image'
+    :return: 최근 3주 습득물 중 유사도가 높은 게시글 최대 3개
+    """
+    if request.FILES:
+        serializer = FoundImageSerializer(request.POST, request.FILES)
+        if serializer.is_valid():
+            image = serializer.save()
+
+            #TODO AI 웅앵
+
+            images_id_result = [1, 2, 3]
+            posting_set = FoundPosting.objects.filter(image_id__in=images_id_result)
+
+            datasets = {
+                'meta': {
+                    'image_id': image.id,
+                    'total': 0
+                },
+                'documents': []
+            }
+
+            for posting in posting_set:
+                user = posting.user.center_name + posting.user.role
+                img_path = 'media/' + str(get_object_or_404(FoundThumbnail, posting=posting.id).thumbnail)
+
+                datasets['meta']['total'] += 1
+                datasets['documents'].append({
+                    'id': posting.id,
+                    'color': posting.color.color,
+                    'category': posting.category.category,
+                    'content': posting.content,
+                    'status': posting.status,
+                    'user': user,
+                    'img_path': img_path
+                })
+
+            data = json.dumps(datasets, ensure_ascii=False)
+            return Response(status=200, data=data, content_type='application.json')
+        return Response(status=400, data={'Invalid images input'})
+    return Response(status=400, data={'이미지는 필수값입니다.'})
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def post_image(request):
+    """
+    습득물 게시글 작성을 위해 이미지 제출 (header jwt 필요)
+
+    :param request: FILES 'image'
+    :return: {image_id: int, category: int, color: int}
+    """
+    if request.FILES:
+        serializer = FoundImageSerializer(request.POST, request.FILES)
+        if serializer.is_valid():
+            image = serializer.save()
+            #TODO Category 분석기
+            category = 1
+            #TODO Color 분석기
+            color = 2
+            datasets = {
+                'image_id': image.id,
+                'category': category,
+                'color': color
+            }
+            return Response(status=200, data=datasets, content_type='application.json')
+        return Response(status=400, data={'Invalid images input'})
+    return Response(status=400, data={'이미지는 필수값입니다.'})
+
+
+@api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
+def get_post_found(request):
+    if request.method == 'GET':
+        postings = FoundPosting.objects.filter(user=request.user)
+
+        serializer = FoundPostingSerializer(postings, many=True)
+        datasets = {
+            'meta': {
+                'total': postings.count()
+            },
+            'documents': serializer.data
+        }
+
+        return Response(status=200, data=datasets)
+
+    else:
+        pass
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def found_detail(request, found_id):
+    pass
+
+
+@api_view(['PATCH', 'DELETE'])
+@permission_classes([IsAuthenticated])
+def update_delete_found(request, found_id):
+    if request.method == 'PATCH':
+        pass
+    else:
+        pass
+
+
+@api_view(['PATCH'])
+@permission_classes([IsAuthenticated])
+def update_found_status(request, found_id):
+    pass
 
 

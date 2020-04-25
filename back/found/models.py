@@ -23,31 +23,41 @@ def image_path(instance, filename):
 class Color(models.Model):
     color = models.CharField(max_length=20, unique=True)
 
-#TODO 여기부터 ~~~~~~~~~~~~~ 디비 문제 수정하기 부터~~~~~~~~~
+
 class Category(models.Model):
     category = models.CharField(max_length=20, unique=True)
 
 
+class FoundImage(models.Model):
+    image = models.ImageField(upload_to=image_path)
+    category_1 = models.CharField(max_length=20, blank=True)
+    category_2 = models.CharField(max_length=20, blank=True)
+    category_3 = models.CharField(max_length=20, blank=True)
+    numpy_path = models.CharField(max_length=200, blank=True)
+
+
 class FoundPosting(TimeStampedModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='found')
+    image = models.ForeignKey(FoundImage, null=True, on_delete=models.CASCADE)
 
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
+
     color = models.ForeignKey(Color, on_delete=models.CASCADE)
     status = models.BooleanField()
-
     content = models.TextField()
-    has_img = models.BooleanField()
 
     class Meta:
         ordering = ('-created',)
 
 
-class FoundImage(models.Model):
-    posting = models.ForeignKey(FoundPosting, on_delete=models.CASCADE, related_name='images')
-    image = models.ImageField(upload_to=image_path)
+class FoundThumbnail(models.Model):
+    posting = models.ForeignKey(FoundPosting, null=True, related_name='thumbnail', on_delete=models.CASCADE)
     thumbnail = ProcessedImageField(
         processors=[ResizeToFill(200, 200)],
         upload_to=thumbnail_path,
         format='JPEG',
         options={'quality': 90},
     )
+
+    def __str__(self):
+        return 'media/%s' % self.thumbnail

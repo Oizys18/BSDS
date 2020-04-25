@@ -11,7 +11,7 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
 TEMPLATE_DEBUG = DEBUG
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '5fa49ba6.ngrok.io', '[::1]']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '6572e39f.ngrok.io', '[::1]']
 
 CORS_ALLOW_CREDENTIALS = True
 
@@ -25,14 +25,6 @@ CORS_ORIGIN_WHITELIST = [
 MODELS = os.path.join(BASE_DIR, 'images/models')
 
 REST_FRAMEWORK = {
-    'DEFAULT_THROTTLE_CLASSES': [
-        'images.throttles.LimitedRateThrottle',
-        'images.throttles.BurstRateThrottle'
-    ],
-    'DEFAULT_THROTTLE_RATES': {
-        'limited': '2/min',
-        'burst': '10/min'
-    },
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.AllowAny',
     ),

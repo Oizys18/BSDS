@@ -6,15 +6,46 @@ from . import views
 
 
 urlpatterns = [
-    path('', views.posting_list, name='posting_list'),  # R - no img
-    # path('', views.posting_img_search, name='img_search'),  # 이미지 제출
+    # 이미지 없는 전체 목록 검색 및 페이지네이션
+    path('search/<int:category_id>/', views.search_found, name='search_found'),
+    # 이미지 제출하고 검색 및 페이지네이션
+    path('search/image/', views.search_by_image, name='search_by_image'),
 
-    # path('create/', views.create_posting, name='create_posting'),
+    # 글 작성을 위한 이미지 제출
+    path('posting/image/', views.post_image, name='post_image'),
+    # 글 작성 + 자기 게시글 목록 조회
+    path('posting/', views.get_post_found, name='get_post_found'),
+    # 게시글 디테일 조회
+    path('posting/<int:found_id>/', views.found_detail, name='found_detail'),
+    # 게시글 수정 및 삭제
+    path('posting/<int:found_id>/', views.update_delete_found, name='update_delete_found'),
+    # 상태 토글 수정
+    path('posting/<int:found_id>/status/', views.update_found_status, name='update_found_status'),
+
 ]
 
 """
 할 일
-1. migrate -> color, category 수정
+
 2. url 짜야 하는 것들 먼저 기획
+1. 습득물 검색 
+    - 이미지 받기
+    - 검색하기
+    - 결과 리턴하기 (페이지 넘버링)
+2. 습득물 검색 결과에 대해 
+    - 카테고리 설정
+    - 페이지 넘버링
+3. 습득물 신고하기
+    - 이미지 받기
+    - 저장하기
+4. 자신이 작성한 습득물 게시글 조회
+    - 목록 조회
+    - 상세 조회
+5. 자신이 작성한 습득물 게시글 수정
+    - 내용 수정
+    - 상태 수정
+6. 자신이 작성한 습득물 게시글 삭제 
+
+
 3. database 손보고 넣기
 """
