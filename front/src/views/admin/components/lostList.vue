@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div>분실신고 목록 즈림</div>
+    <div>분실신고 목록</div>
     <div id="lost-table-wrapper">
     <table class="lost-table">
       <thead>
@@ -26,13 +26,13 @@
     </table>
     </div>
     <div class="list-page-btn">
-      <span @click="prevPage">
+      <span @click="prevPage" :key="btnPrev">
         <button-default :text="'prev'" :bgColor="btnPrev" />
       </span>
       <span v-for="num in numOfPages" :key="num" @click="onClickPage(num)">
         <button-default :text="num" />
       </span>
-      <span @click="nextPage">
+      <span @click="nextPage" :key="btnNext">
         <button-default :text="'next'" :bgColor="btnNext" />
       </span>
     </div>
