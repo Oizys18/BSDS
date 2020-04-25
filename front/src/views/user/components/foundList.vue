@@ -5,12 +5,15 @@
     <!-- <selecter/> -->
     <div id="found-card-container">
       <div
-        @click="go(index)"
+        @click="showModal(index)"
         v-for="(item, index) in items"
         :key="index.id"
         class="found-card"
       >
         <cardBig :image="item[0]" :title="item[1]" :content="item[2]" />
+      </div>
+      <div v-if="isClicked" class="user-index-modal">
+        <modalHuge @exit_Clicked="exit_Modal" />
       </div>
     </div>
   </div>
@@ -19,11 +22,13 @@
 <script>
 import navbar from "@/views/user/components/navbar";
 import cardBig from "@/components/common/card/cardBig.vue";
+import modalHuge from "@/components/common/modal/modalHuge.vue";
 export default {
   name: "foundList",
   components: {
     cardBig,
     navbar,
+    modalHuge,
   },
   data() {
     return {
@@ -37,13 +42,16 @@ export default {
         7: ["image3", "title3", "content3"],
         8: ["image4", "title4", "content4"],
       },
+      isClicked: false,
     };
   },
   methods: {
-    go(index) {
-      // this.$router.push("/found/" + index + "/");
-      console.log(index + "로 갑니다!");
-      
+    showModal(index) {
+      this.isClicked = true;
+      console.log(index + "번 게시글 모달 생성");
+    },
+    exit_Modal(flag) {
+      this.isClicked = !flag;
     },
   },
   mounted: {},

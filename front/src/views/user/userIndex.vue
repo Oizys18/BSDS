@@ -41,6 +41,8 @@
         </span>
         <modal v-if="isClicked" class="user-index-modal">
           <modalHuge @exit_Clicked="exit_Modal" />
+          <!-- <modalMicro @exit_Clicked="exit_Modal" /> -->
+          <!-- <modalMap @exit_Clicked="exit_Modal" /> -->
         </modal>
       </div>
     </div>
@@ -48,12 +50,14 @@
 </template>
 
 <script>
-import navbar from "@/views/user/components/navbar";
-import buttonDefault from "@/components/common/button/buttonDefault.vue";
-import selectOne from "@/components/common/dropdown/selectOne.vue";
-import searchBar from "@/components/common/search/searchBar.vue";
+import navbar from "@/views/user/components/navbar.vue";
 import cardBig from "@/components/common/card/cardBig.vue";
 import modalHuge from "@/components/common/modal/modalHuge.vue";
+// import modalMap from "@/components/common/modal/modalMap.vue";
+// import modalMicro from "@/components/common/modal/modalMicro.vue";
+import searchBar from "@/components/common/search/searchBar.vue";
+import selectOne from "@/components/common/dropdown/selectOne.vue";
+import buttonDefault from "@/components/common/button/buttonDefault.vue";
 export default {
   name: "userIndex",
   components: {
@@ -62,6 +66,8 @@ export default {
     searchBar,
     selectOne,
     modalHuge,
+    // modalMicro,
+    // modalMap,
     buttonDefault,
   },
   data() {
@@ -131,8 +137,8 @@ export default {
   bottom: 5%;
   right: 20%;
 }
-.user-index-card-container{
-  margin-top:100px;
+.user-index-card-container {
+  margin-top: 100px;
   justify-content: space-between;
   display: flex;
 }

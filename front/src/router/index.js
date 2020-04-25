@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import userIndex from '@/views/user/user.vue'
+import userIndex from '@/views/user/userIndex.vue'
 import adminIndex from '@/views/admin/admin.vue'
 import componentTest from '@/views/componentTest.vue'
 import foundList from '@/views/user/components/foundList.vue'
