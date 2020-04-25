@@ -39,7 +39,7 @@ TRAIN_PATH = './dataset/train'
 # 샘플링 몇 개만 해보기 
 
 datagen = ImageDataGenerator(rescale=1./255,
-                             validation_split=0.5)
+                             validation_split=0.1)
 
 batch_size = 12
 input_shape = (224,224)
@@ -160,7 +160,7 @@ class Model():
         if not os.path.exists(params['model_path']):
             os.mkdir(params['model_path'])
             
-        model_save_path = os.path.join(params['model_path'], model.name + '_' + params['mode'] + '.h5')
+        model_save_path = os.path.join(params['model_path'], self.model.name + '_' + params['mode'] + '.h5')
         self.model.save(model_save_path)
         self.trained = True
 
@@ -174,7 +174,7 @@ params = {
     'cp_path': 'checkpoint/',
     'model_path': 'model/',
     'mode': 'fe',
-    'lr': 0.01,
+    'lr': 0.001,
     'epoch': 10,
     'network_params': {
     'include_top' : False,  
