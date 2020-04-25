@@ -8,6 +8,7 @@ import createLost from '@/views/user/components/createLost.vue'
 import createdUser from '@/views/user/components/createdUser.vue'
 import createFound from '@/views/admin/components/createFound.vue'
 import createdAdmin from '@/views/admin/components/createdAdmin.vue'
+import lostList from '@/views/admin/components/lostList.vue'
 
 Vue.use(VueRouter)
 
@@ -51,6 +52,11 @@ const routes = [
     path: "/admin/created",
     name: "createdAdmin",
     component: createdAdmin
+  },
+  {
+    path: "/admin/lost",
+    name: "lostList",
+    component: lostList
   }
 ]
 

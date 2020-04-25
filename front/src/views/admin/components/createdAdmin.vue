@@ -1,7 +1,9 @@
 <template>
 <div>
   <div class="container">
-    완료 웅앵
+    <p class="created-message">
+      {{ createdMessage }}
+    </p>
     <div class="go-index-button">
       <span @click="go('/admin')">
         <button-huge :text="'첫 페이지로'" />
@@ -18,6 +20,11 @@ export default {
   components: {
     buttonHuge,
   },
+  data() {
+    return {
+      createdMessage: '습득물 등록이 정상적으로 완료되었습니다.'
+    }
+  },
   methods: {
     go(path) {
       this.$router.push(path);
@@ -30,10 +37,15 @@ export default {
   .go-index-button {
     position: absolute;
     bottom: 5%;
-    right: 5%;
+    right: 20%;
   }
   .container {
     margin-top: 150px;
     display: flex;
+  }
+  .created-message {
+    position: absolute;
+    left: 20%;
+    font-size: 1em;
   }
 </style>
