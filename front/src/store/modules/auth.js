@@ -1,5 +1,5 @@
 // const HOST = process.env.VUE_APP_SERVER_HOST;
-const HOST = '현동 API...'
+// const HOST = 'http://651ddb3d.ngrok.io'
 
 const axios = require('axios');
 const decoded = require('jwt-decode');
@@ -88,11 +88,12 @@ const actions = {
       }
       // 요청 start
       else {
-        axios.post(HOST + '/api-token-auth/', credentials)
+        axios.post(HOST + '/api-token/', credentials)
           .then(token => {
             commit('setToken', token.data.token);
             commit('setLoading', false)
-            router.push('/');
+            console.log(token)
+            router.push({name: 'adminIndex'})
           })
           .catch(err => {
             if (!err.response) { // no reponse

@@ -4,7 +4,7 @@
       <span class="sr-only">Loading</span>
     </div>
 
-    <form v-else class="login-input" @submit.prevent="login(credentials)">
+    <form v-else class="login-input" >
       <div v-if="getErrors.length" class="error-list alert alert-danger">
         <p>아래의 오류를 해결해 주세요</p>
         <ul>
@@ -23,7 +23,9 @@
           <label for="password">비밀번호</label>
           <input v-model="credentials.password" type="password" class="form-control" id="password">
         </div>
-        <button-default :text="'로그인'" />
+        <div @click="login(credentials)" >
+          <button-default :text="'로그인'" />
+        </div>
       </div>
     </form>
   </div>
