@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator
 from .models import FoundPosting, FoundThumbnail
 from .serializers import FoundPostingSerializer, FoundImageSerializer, FoundPostingListSerializer, \
-    FoundPostingDetailSerializer, CreateFoundPostingSerializer, CreateFoundThumbnailSerializer
+    FoundPostingDetailSerializer, CreateFoundPostingSerializer, FoundThumbnailSerializer
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -109,10 +109,12 @@ def search_by_image(request):
     if request.FILES:
         serializer = FoundImageSerializer(request.POST, request.FILES)
         if serializer.is_valid():
-            th_serializer = CreateFoundThumbnailSerializer(request.POST, request.FILES)
+            th_serializer = FoundThumbnailSerializer(request.POST, request.FILES)
             if th_serializer.is_valid():
                 image = serializer.create(serializer.validated_data)
                 thumbnail_image = th_serializer.create(th_serializer.validated_data)
+                thumbnail_image.origin_id = image.id
+                thumbnail_image.save()
 
                 #TODO AI 웅앵
 
@@ -146,10 +148,12 @@ def create_found_image(request):
     if request.FILES:
         serializer = FoundImageSerializer(request.POST, request.FILES)
         if serializer.is_valid():
-            th_serializer = CreateFoundThumbnailSerializer(request.POST, request.FILES)
+            th_serializer = FoundThumbnailSerializer(request.POST, request.FILES)
             if th_serializer.is_valid():
-                serializer.create(serializer.validated_data)
+                image = serializer.create(serializer.validated_data)
                 thumbnail_image = th_serializer.create(th_serializer.validated_data)
+                thumbnail_image.origin_id = image.id
+                thumbnail_image.save()
 
                 #TODO Category 분석기
                 category = 1
@@ -181,8 +185,6 @@ def create_found(request):
         posting = serializer.save(user=request.user, status=False)
 
         if data["image_id"]:
-            posting.image_id = data["image_id"]
-            posting.save()
             thumbnail = get_object_or_404(FoundThumbnail, id=data["image_id"])
             thumbnail.posting_id = posting.id
             thumbnail.save()

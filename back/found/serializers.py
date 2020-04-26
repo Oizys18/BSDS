@@ -27,7 +27,7 @@ class CreateFoundPostingSerializer(serializers.ModelSerializer):
         fields = ('category', 'color', 'content')
 
 
-class CreateFoundThumbnailSerializer(serializers.ModelSerializer):
+class FoundThumbnailSerializer(serializers.ModelSerializer):
     class Meta:
         model = FoundThumbnail
         fields = ('image',)
