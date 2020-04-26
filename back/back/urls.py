@@ -5,6 +5,9 @@ from rest_framework_jwt.views import obtain_jwt_token
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 
+from django.conf import settings
+from django.conf.urls.static import static
+
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -22,7 +25,7 @@ schema_view = get_schema_view(
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    path('images/', include('images.urls')),
+    # path('images/', include('images.urls')),
 
     path('swagger/', schema_view.with_ui('swagger'), name='api_swagger'),
 
@@ -32,3 +35,6 @@ urlpatterns = [
     path('found/', include('found.urls')),
     path('lost/', include('lost.urls')),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

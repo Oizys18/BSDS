@@ -1,5 +1,4 @@
 from django.db import models
-from ai.models import Category, Color
 from imagekit.models import ProcessedImageField
 from imagekit.processors import ResizeToFill
 from datetime import datetime
@@ -21,26 +20,44 @@ def image_path(instance, filename):
     return f'found/origin/{day}/{filename}.jpeg'
 
 
+class Color(models.Model):
+    color = models.CharField(max_length=20, unique=True)
+
+
+class Category(models.Model):
+    category = models.CharField(max_length=20, unique=True)
+
+
+class FoundImage(models.Model):
+    image = models.ImageField(upload_to=image_path)
+    category_1 = models.CharField(max_length=20, blank=True)
+    category_2 = models.CharField(max_length=20, blank=True)
+    category_3 = models.CharField(max_length=20, blank=True)
+    numpy_path = models.CharField(max_length=200, blank=True)
+
+
 class FoundPosting(TimeStampedModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='found')
+    image = models.ForeignKey(FoundImage, blank=True, null=True, on_delete=models.CASCADE)
 
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
+
     color = models.ForeignKey(Color, on_delete=models.CASCADE)
     status = models.BooleanField()
-
     content = models.TextField()
-    has_img = models.BooleanField()
 
     class Meta:
         ordering = ('-created',)
 
 
-class FoundImage(models.Model):
-    posting = models.ForeignKey(FoundPosting, on_delete=models.CASCADE, related_name='images')
-    image = models.ImageField(upload_to=image_path)
-    thumbnail = ProcessedImageField(
+class FoundThumbnail(models.Model):
+    posting = models.ForeignKey(FoundPosting, blank=True, null=True, related_name='thumbnail', on_delete=models.CASCADE)
+    image = ProcessedImageField(
         processors=[ResizeToFill(200, 200)],
         upload_to=thumbnail_path,
         format='JPEG',
         options={'quality': 90},
     )
+
+    def __str__(self):
+        return 'media/%s' % self.image
