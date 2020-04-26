@@ -75,7 +75,6 @@ export default {
   grid-template-columns: repeat(2, 360px);
   justify-content: space-around;
   align-items: center;
-  /* align-content: center; */
 }
 .found-card {
   margin: auto;

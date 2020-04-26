@@ -6,7 +6,7 @@
 
 <script>
 export default {
-  name: "searchLost",
+  name: "lookUpLost",
 };
 </script>
 

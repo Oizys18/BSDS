@@ -4,6 +4,7 @@ import userIndex from '@/views/user/userIndex.vue'
 import adminIndex from '@/views/admin/admin.vue'
 import componentTest from '@/views/componentTest.vue'
 import foundList from '@/views/user/components/foundList.vue'
+import keywordSearch from '@/views/user/components/keywordSearch.vue'
 import createLost from '@/views/user/components/createLost.vue'
 import createdUser from '@/views/user/components/createdUser.vue'
 import createFound from '@/views/admin/components/createFound.vue'
@@ -17,6 +18,11 @@ const routes = [
     path: "/",
     name: "userIndex",
     component: userIndex
+  },
+  {
+    path: "/keywordsearch",
+    name: "keywordSearch",
+    component: keywordSearch
   },
   {
     path: "/admin",

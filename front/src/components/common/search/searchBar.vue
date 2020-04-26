@@ -1,46 +1,55 @@
 <template>
   <div class="search-container">
-    <input class="search-input" placeholder="검색어 즈려주세요 ex)가방,모자" />
     <button class="search-button">
-      <span class="material-icons"> search </span>검색
+      <span class="material-icons"> search </span>
     </button>
+    <input class="search-input" :placeholder="inputText" />
+    <span class="bumper"></span>
   </div>
 </template>
 
 <script>
 export default {
   name: "searchBar",
+  props: {
+    inputText: {
+      type: String,
+      required: true,
+      default: "No input",
+    },
+  },
 };
 </script>
 
 <style scoped>
 .search-container {
-  height: 2rem;
+  height: 100%;
   border: 1px solid black;
   padding: 0px 0px 0px 15px;
-  border-radius: 17px;
-  justify-content: space-between;
+  border-radius: 20px;
+  justify-content: space-around;
   align-items: center;
   display: flex;
-  font-size: 1.5rem;
 }
 .search-input {
   border: none;
-  width: 80%;
+  width: 70%;
   height: 70%;
+  font-size: 2rem;
 }
-.search-button {
-  width: 15%;
+.bumper {
+  width: 10%;
   height: 100%;
   border: none;
-  position: relative;
-  border-left: 1px solid black;
-  background: none;
-  justify-content: space-evenly;
+}
+.search-button {
+  border: none;
   display: flex;
+  justify-content: flex-start;
+  background: none;
+  position: relative;
 }
 .material-icons {
-  font-size: 1rem;
+  font-size: 50px;
 }
-
 </style>
