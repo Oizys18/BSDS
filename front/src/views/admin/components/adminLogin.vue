@@ -1,13 +1,15 @@
 <template>
-  <div></div>
+  <div>
+    <login-form />
+  </div>
 </template>
 
 <script>
-export default {
-
-}
+  import loginForm from "./loginForm";
+  export default {
+    name: 'adminLogin',
+    components: {
+      loginForm
+    }
+  }
 </script>
-
-<style>
-
-</style>
