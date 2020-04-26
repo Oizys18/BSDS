@@ -6,7 +6,6 @@ from django.contrib.auth.models import (
 
 class MyUserManager(BaseUserManager):
     def create_user(self, username, parent_department, role, center_name, phone_number, password=None):
-
         if not username:
             raise ValueError('Users must have an username')
 
@@ -38,7 +37,6 @@ class MyUserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
-
     username = models.CharField(max_length=20, unique=True)
 
     parent_department = models.CharField(max_length=30)
@@ -69,7 +67,7 @@ class User(AbstractBaseUser):
 
 
 class Address(models.Model):
-    center = models.ForeignKey(User, on_delete=models.CASCADE)
+    center = models.ForeignKey(User, on_delete=models.CASCADE, related_name='address')
 
     address_name = models.CharField(max_length=200)
     region_1depth_name = models.CharField(max_length=50)
@@ -80,3 +78,6 @@ class Address(models.Model):
 
     x = models.CharField(max_length=50)
     y = models.CharField(max_length=50)
+
+    def __str__(self):
+        return '%s' % self.address_name

@@ -19,7 +19,16 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UserDetailSerializer(serializers.ModelSerializer):
+    address = serializers.StringRelatedField(many=True)
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'parent_department', 'role', 'center_name', 'phone_number')
+        fields = ('id', 'username', 'role', 'center_name', 'phone_number', 'address')
+
+
+class UserInfoSerializer(serializers.ModelSerializer):
+    address = serializers.StringRelatedField(many=True)
+
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'parent_department', 'role', 'center_name', 'phone_number', 'address')
