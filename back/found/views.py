@@ -5,7 +5,8 @@ from rest_framework import generics
 from django.core.paginator import Paginator
 from .forms import FoundImageForm
 from .models import FoundPosting, FoundImage, FoundThumbnail
-from .serializers import FoundPostingSerializer, FoundImageSerializer, FoundThumbnailSerializer,FoundPostingListSerializer
+from .serializers import FoundPostingSerializer, FoundImageSerializer,\
+    FoundThumbnailSerializer, CreateFoundPostingSerializer, CreateFoundThumbnailSerializer
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -15,6 +16,7 @@ from decouple import config
 import requests
 from .sample import CachedPaginator
 from rest_framework import viewsets, permissions
+from django.views.decorators.cache import cache_page
 
 from django.contrib.auth import get_user_model
 User = get_user_model()
@@ -43,9 +45,10 @@ def get_closer_user(x, y, radius):
     return flag, users
 
 
+@cache_page(60 * 1)
 @api_view(['GET'])
 @permission_classes([AllowAny])
-def search_found(request, category_id):
+def search_found(request):
     """
     습득물 조회 + 분류
 
@@ -55,13 +58,13 @@ def search_found(request, category_id):
     # TODO 길이 조정하기, 잘라보내기
 
     color = request.query_params.get('color')
-    # category = request.query_params.get('category')
+    category = request.query_params.get('category')
     created_at = request.query_params.get('createdAt')
     x = request.query_params.get('x')
     y = request.query_params.get('y')
     radius = request.query_params.get('radius')
 
-    posting_set = FoundPosting.objects.filter(category=category_id)
+    posting_set = FoundPosting.objects.filter(category=category)
 
     if x:
         radius = radius if radius else 1000
@@ -98,7 +101,9 @@ def search_found(request, category_id):
         user = posting.user.center_name + posting.user.role
 
         if posting.image:
-            img_path = 'media/' + str(get_object_or_404(FoundThumbnail, posting=posting.id).thumbnail)
+            # img_path = 'media/' + str(get_object_or_404(FoundThumbnail, posting=posting.id).thumbnail)
+            img_path = 'media/' + str(posting.image.thumbnail)
+
         else:
             img_path = 'media/no_img.png'
 
@@ -116,7 +121,7 @@ def search_found(request, category_id):
     return Response(status=200, data=data, content_type='application.json')
 
 
-@api_view(['GET'])
+@api_view(['POST'])
 @permission_classes([AllowAny])
 def search_by_image(request):
     """
@@ -159,60 +164,89 @@ def search_by_image(request):
 
             data = json.dumps(datasets, ensure_ascii=False)
             return Response(status=200, data=data, content_type='application.json')
+        print(serializer.errors)
         return Response(status=400, data={'Invalid images input'})
     return Response(status=400, data={'이미지는 필수값입니다.'})
 
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def post_image(request):
+@permission_classes([AllowAny])
+def create_found_image(request):
     """
     습득물 게시글 작성을 위해 이미지 제출 (header jwt 필요)
 
     :param request: FILES 'image'
     :return: {image_id: int, category: int, color: int}
     """
-    if request.FILES:
-        serializer = FoundImageSerializer(request.POST, request.FILES)
-        if serializer.is_valid():
-            image = serializer.save()
-            #TODO Category 분석기
-            category = 1
-            #TODO Color 분석기
-            color = 2
-            datasets = {
-                'image_id': image.id,
-                'category': category,
-                'color': color
-            }
-            return Response(status=200, data=datasets, content_type='application.json')
-        return Response(status=400, data={'Invalid images input'})
-    return Response(status=400, data={'이미지는 필수값입니다.'})
 
-
-@api_view(['GET', 'POST'])
-@permission_classes([IsAuthenticated])
-def get_post_found(request):
-    if request.method == 'GET':
-        postings = FoundPosting.objects.filter(user=request.user)
-
-        serializer = FoundPostingSerializer(postings, many=True)
+    serializer = FoundImageSerializer(request.POST, request.FILES)
+    if serializer.is_valid():
+        print(serializer.validated_data)
+        image = serializer.create(serializer.validated_data)
+        cache.set('found_image', request.FILES, 60*10)
+        #TODO Category 분석기
+        category = 1
+        #TODO Color 분석기
+        color = 2
         datasets = {
-            'meta': {
-                'total': postings.count()
-            },
-            'documents': serializer.data
+            'image_id': image.id,
+            'category': category,
+            'color': color
         }
+        return Response(status=200, data=datasets, content_type='application.json')
+    return Response(status=400, data=serializer.errors)
 
-        return Response(status=200, data=datasets)
 
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def create_found(request):
+    data = request.data
+    if data.image_id:
+        serializer = CreateFoundPostingSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save(user=request.user)
+            file = cache.get('found_image')
+            if file:
+                thumbnail = CreateFoundThumbnailSerializer(data=file)
+            else:
+                print('img 불러오기')
+            if thumbnail.is_valid():
+                thumbnail.save(posting=serializer.id)
+                return Response(status=200, data=thumbnail.data)
+            else:
+                return Response(status=400, data=thumbnail.errors)
+        else:
+            return Response(status=400, data=serializer.errors)
     else:
-        pass
+        serializer = CreateFoundPostingSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save(user=request.user)
+            return Response(status=200, data=serializer.data)
+        else:
+            return Response(status=400, data=serializer.errors)
+
+
+@cache_page(60 * 2)
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_user_found_list(request):
+    postings = FoundPosting.objects.filter(user=request.user)
+
+    serializer = FoundPostingSerializer(postings, many=True)
+    datasets = {
+        'meta': {
+            'total': postings.count()
+        },
+        'documents': serializer.data
+    }
+
+    return Response(status=200, data=datasets)
 
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
-def found_detail(request, found_id):
+def get_found_detail(request, found_id):
     pass
 
 

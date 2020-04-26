@@ -34,11 +34,20 @@ class FoundImage(models.Model):
     category_2 = models.CharField(max_length=20, blank=True)
     category_3 = models.CharField(max_length=20, blank=True)
     numpy_path = models.CharField(max_length=200, blank=True)
+    thumbnail = ProcessedImageField(
+        processors=[ResizeToFill(200, 200)],
+        upload_to=thumbnail_path,
+        format='JPEG',
+        options={'quality': 90},
+    )
+
+    def __str__(self):
+        return 'media/%s' % self.thumbnail
 
 
 class FoundPosting(TimeStampedModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='found')
-    image = models.ForeignKey(FoundImage, null=True, on_delete=models.CASCADE)
+    image = models.ForeignKey(FoundImage, blank=True, null=True, on_delete=models.CASCADE)
 
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
