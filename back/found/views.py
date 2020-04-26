@@ -1,21 +1,15 @@
-from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
-from django.views.decorators.http import require_GET, require_http_methods, require_POST
-from django.contrib.auth.decorators import login_required
-from rest_framework import generics
+from django.shortcuts import get_object_or_404
+
 from django.core.paginator import Paginator
-from .forms import FoundImageForm
-from .models import FoundPosting, FoundImage, FoundThumbnail
+from .models import FoundPosting, FoundThumbnail
 from .serializers import FoundPostingSerializer, FoundImageSerializer,\
     FoundPostingDetailSerializer, CreateFoundPostingSerializer, CreateFoundThumbnailSerializer
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 import json
-from django.core.cache import cache
 from decouple import config
 import requests
-from .sample import CachedPaginator
-from rest_framework import viewsets, permissions
 from django.views.decorators.cache import cache_page
 
 from django.contrib.auth import get_user_model
@@ -255,15 +249,35 @@ def get_found_detail(request, found_id):
 @api_view(['PATCH', 'DELETE'])
 @permission_classes([IsAuthenticated])
 def update_delete_found(request, found_id):
-    if request.method == 'PATCH':
-        pass
+    posting = get_object_or_404(FoundPosting, id=found_id)
+    if posting.id == request.user:
+        data = {
+            'color': 6,
+            'category': 2,
+            'content': 'werewr'
+        }
+        if request.method == 'PATCH':
+            serializer = CreateFoundPostingSerializer(instance=posting, data=data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(status=200, data=serializer.data)
+            else:
+                return Response(status=400, data=serializer.errors)
+        elif request.method == 'DELETE':
+            posting.delete()
+            return Response(status=204)
     else:
-        pass
+        return Response(status=400, data={'message': '권한이 없습니다.'})
 
 
 @api_view(['PATCH'])
 @permission_classes([IsAuthenticated])
 def update_found_status(request, found_id):
-    pass
-
+    posting = get_object_or_404(FoundPosting, id=found_id)
+    if posting.id == request.user:
+        posting.status = False if posting.status else True
+        posting.save()
+        return Response(status=204)
+    else:
+        return Response(status=400, data={'message': '권한이 없습니다.'})
 

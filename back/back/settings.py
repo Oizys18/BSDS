@@ -11,7 +11,7 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
 TEMPLATE_DEBUG = DEBUG
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '6572e39f.ngrok.io', '[::1]']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '651ddb3d.ngrok.io', '[::1]']
 
 CORS_ALLOW_CREDENTIALS = True
 
@@ -134,9 +134,13 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
-# CACHES = {
-#     'default': {
-#         'BACKEND': 'django_redis.cache.RedisCache',
-#         'LOCATION': 'redis://127.0.0.1:6379',
-#     },
-# }
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'my_cache_table',
+        'TIMEOUT': 120,
+        'OPTIONS': {
+            'MAX_ENTRIES': 500
+        }
+    }
+}
