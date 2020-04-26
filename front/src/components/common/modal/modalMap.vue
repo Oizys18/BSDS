@@ -1,37 +1,33 @@
 <template>
-  <div class="modal-micro-wrapper">
-    <div class="modal-micro-container">
-      <button class="modal-micro-collide" v-on:click="exitModal">
+  <div class="modal-map-wrapper">
+    <div class="modal-map-container">
+      <button class="modal-map-collide" v-on:click="exitModal">
         <span>✖</span>
       </button>
       <div class="mapapp-container">
-        <label for="address-input" style="padding:3px; margin:10px;"
-          >주소입력</label
-        >
-        <input
-          type="text"
-          id="address-input"
-          v-model="address"
-          @keydown.enter="getXY"
-          style="border:1px solid; margin:10px; padding:10px;"
-        />
-        <div class="map-search-btn">검색</div>
-
         <div id="map" class="kakao-map search-map"></div>
-        <br />
+      </div>
+      <div class="modal-map-btn">
+        <buttonHuge :text="btnText" :bgColor="bgColor" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import buttonHuge from "@/components/common/button/buttonHuge.vue";
 export default {
   name: "modalMap",
+  components:{
+    buttonHuge
+  },
   data() {
     return {
       address: "",
       addressList: [],
       isClicked: false,
+      btnText:"여기에요!",
+      bgColor:"white",
     };
   },
   methods: {
@@ -65,15 +61,16 @@ export default {
 </script>
 <style scoped>
 .mapapp-container {
-  position: relative;
-  top: 50px;
+  top: 0;
   left: 0;
+  position: relative;
   text-align: center;
 }
 .search-map {
   position: relative;
-  width: 300px;
-  height: 300px;
+  width: 100%;
+  height: 40vh;
+  margin-bottom: 20px;
 }
 .map-search-btn {
   display: inline-block;
@@ -85,17 +82,17 @@ export default {
   font-weight: bold;
 }
 
-.modal-micro-wrapper {
+.modal-map-wrapper {
   /* position */
   position: fixed;
-  top: 30%;
+  top: 32%;
   left: 30%;
 
   /* modal shape */
-  height: 40%;
+  height: 50%;
   width: 40%;
   border: 1px solid black;
-  border-radius: 15px;
+  /* border-radius: 15px; */
 
   /* content */
   background-color: ghostwhite;
@@ -103,16 +100,17 @@ export default {
   font-size: 1rem;
 }
 
-.modal-micro-container {
+.modal-map-container {
   width: 100%;
   height: 100%;
 }
 
-.modal-micro-collide {
+.modal-map-collide {
   position: absolute;
   right: 0;
   border: none;
   background: transparent;
-  font-size: 25px;
+  font-size: 40px;
+  z-index: 10;
 }
 </style>

@@ -43,8 +43,7 @@ export default {
 <style scoped>
 .card-big-container {
   margin: 5px;
-  border: 1.5px solid black;
-  border-radius: 15px;
+  border: 1px solid black;
   width: 350px;
   height: 200px;
   display: flex;
@@ -58,11 +57,9 @@ export default {
 .card-big-image {
   width: 200px;
   height: 200px;
-
-  border-radius: 15px;
 }
 .card-big-text {
-  border-left: 1.5px solid black;
+  border-left: 1px solid black;
   width: 150px;
   height: 200px;
   display: flex;
@@ -72,7 +69,6 @@ export default {
 .card-big-title {
   width: 150px;
   height: 20px;
-  border-radius: 15px;
 }
 .card-big-content {
   height: 180px;
