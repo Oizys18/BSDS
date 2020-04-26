@@ -1,5 +1,5 @@
 // const HOST = process.env.VUE_APP_SERVER_HOST;
-// const HOST = 'http://651ddb3d.ngrok.io'
+const HOST = 'http://651ddb3d.ngrok.io'
 
 const axios = require('axios');
 const decoded = require('jwt-decode');
