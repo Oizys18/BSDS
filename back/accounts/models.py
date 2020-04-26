@@ -53,7 +53,7 @@ class User(AbstractBaseUser):
     REQUIRED_FIELDS = ['parent_department', 'role', 'center_name', 'phone_number']
 
     def __str__(self):
-        return self.username
+        return '%s%s' % (self.center_name, self.role)
 
     def has_perm(self, perm, obj=None):
         return True

@@ -11,13 +11,6 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('id', 'username')
 
 
-# class AddressSerializer(serializers.ModelSerializer):
-#
-#     class Meta:
-#         model = Address
-#         fields =
-
-
 class UserDetailSerializer(serializers.ModelSerializer):
     address = serializers.StringRelatedField(many=True)
 
