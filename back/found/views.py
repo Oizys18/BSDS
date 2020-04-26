@@ -1,8 +1,7 @@
 from django.shortcuts import get_object_or_404
-
 from django.core.paginator import Paginator
 from .models import FoundPosting, FoundThumbnail
-from .serializers import FoundPostingSerializer, FoundImageSerializer,\
+from .serializers import FoundPostingSerializer, FoundImageSerializer, FoundPostingListSerializer, \
     FoundPostingDetailSerializer, CreateFoundPostingSerializer, CreateFoundThumbnailSerializer
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -39,7 +38,7 @@ def get_closer_user(x, y, radius):
     return flag, users
 
 
-@cache_page(60 * 1)
+@cache_page(60 * 2)
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def search_found(request):
@@ -53,10 +52,13 @@ def search_found(request):
 
     color = request.query_params.get('color')
     category = request.query_params.get('category')
-    created_at = request.query_params.get('createdAt')
+    created = request.query_params.get('created')
     x = request.query_params.get('x')
     y = request.query_params.get('y')
     radius = request.query_params.get('radius')
+
+    if not category:
+        return Response(status=400, data={'message: category 는 필수 값입니다.'})
 
     posting_set = FoundPosting.objects.filter(category=category)
 
@@ -66,14 +68,14 @@ def search_found(request):
         if flag:
             datasets = {'message': '유효하지 않은 요청입니다.'}
             data = json.dumps(datasets, ensure_ascii=False)
-            return Response(status=400, data=data, content_type='application.json')
+            return Response(status=403, data=data, content_type='application.json')
         if not user_list:
             return Response(status=204, content_type='application.json')
         else:
             posting_set = posting_set.filter(user_id__in=user_list)
 
-    if created_at:
-        posting_set = posting_set.filter(created_at__gte=created_at)
+    if created:
+        posting_set = posting_set.filter(created__gte=created)
 
     if color:
         posting_set = posting_set.filter(color=color)
@@ -82,35 +84,18 @@ def search_found(request):
     page_number = request.query_params.get('page')
     page_obj = paginator.get_page(page_number)
 
+    serializer = FoundPostingListSerializer(page_obj, many=True)
+
     datasets = {
         'meta': {
             'total_cnt': paginator.count,
             'last_page': paginator.num_pages,
             'page': page_number if page_number else 1,
         },
-        'documents': []
+        'documents': serializer.data
     }
 
-    for posting in page_obj.object_list:
-        user = posting.user.center_name + posting.user.role
-
-        if posting.image:
-            img_path = 'media/' + str(get_object_or_404(FoundThumbnail, posting=posting.id).image)
-        else:
-            img_path = 'media/no_img.png'
-
-        datasets['documents'].append({
-            'id': posting.id,
-            'color': posting.color.color,
-            'category': posting.category.category,
-            'content': posting.content,
-            'status': posting.status,
-            'user': user,
-            'img_path': img_path
-        })
-
-    data = json.dumps(datasets, ensure_ascii=False)
-    return Response(status=200, data=data, content_type='application.json')
+    return Response(status=200, data=datasets, content_type='application.json')
 
 
 @api_view(['POST'])
@@ -124,41 +109,29 @@ def search_by_image(request):
     if request.FILES:
         serializer = FoundImageSerializer(request.POST, request.FILES)
         if serializer.is_valid():
-            image = serializer.save()
+            th_serializer = CreateFoundThumbnailSerializer(request.POST, request.FILES)
+            if th_serializer.is_valid():
+                image = serializer.create(serializer.validated_data)
+                thumbnail_image = th_serializer.create(th_serializer.validated_data)
 
-            #TODO AI 웅앵
+                #TODO AI 웅앵
 
-            images_id_result = [1, 2, 3]
-            posting_set = FoundPosting.objects.filter(image_id__in=images_id_result)
+                images_id_result = [1, 2, 3]
+                posting_set = FoundPosting.objects.filter(image_id__in=images_id_result)
 
-            datasets = {
-                'meta': {
-                    'image_id': image.id,
-                    'total': 0
-                },
-                'documents': []
-            }
+                serializer = FoundPostingListSerializer(posting_set, many=True)
 
-            for posting in posting_set:
-                user = posting.user.center_name + posting.user.role
-                img_path = 'media/' + str(get_object_or_404(FoundThumbnail, posting=posting.id).image)
+                datasets = {
+                    'meta': {
+                        'image_id': thumbnail_image.id,
+                        'total': posting_set.count()
+                    },
+                    'documents': serializer.data
+                }
 
-                datasets['meta']['total'] += 1
-                datasets['documents'].append({
-                    'id': posting.id,
-                    'color': posting.color.color,
-                    'category': posting.category.category,
-                    'content': posting.content,
-                    'status': posting.status,
-                    'user': user,
-                    'img_path': img_path
-                })
-
-            data = json.dumps(datasets, ensure_ascii=False)
-            return Response(status=200, data=data, content_type='application.json')
-        print(serializer.errors)
-        return Response(status=400, data={'Invalid images input'})
-    return Response(status=400, data={'이미지는 필수값입니다.'})
+                return Response(status=200, data=datasets, content_type='application.json')
+        return Response(status=400, data={'message': 'Invalid images input'})
+    return Response(status=403, data={'message': '이미지는 필수값입니다.'})
 
 
 @api_view(['POST'])
@@ -189,9 +162,8 @@ def create_found_image(request):
                     'color': color
                 }
                 return Response(status=200, data=datasets, content_type='application.json')
-            return Response(status=400, data=th_serializer.errors)
-        return Response(status=400, data=serializer.errors)
-    return Response(status=404, data={'message': '이미지는 필수 값입니다.'})
+        return Response(status=400, data={'message': 'Invalid images input'})
+    return Response(status=403, data={'message': '이미지는 필수 값입니다.'})
 
 
 @api_view(['POST'])
@@ -216,8 +188,7 @@ def create_found(request):
             thumbnail.save()
 
         return Response(status=200, data=serializer.data)
-    return Response(status=400, data=serializer.errors)
-
+    return Response(status=400, data={'message': 'Invalid input'})
 
 
 @cache_page(60 * 2)
@@ -250,6 +221,7 @@ def get_found_detail(request, found_id):
 @permission_classes([IsAuthenticated])
 def update_delete_found(request, found_id):
     posting = get_object_or_404(FoundPosting, id=found_id)
+
     if posting.id == request.user:
         data = {
             'color': 6,
@@ -261,8 +233,7 @@ def update_delete_found(request, found_id):
             if serializer.is_valid():
                 serializer.save()
                 return Response(status=200, data=serializer.data)
-            else:
-                return Response(status=400, data=serializer.errors)
+            return Response(status=400, data={'message': 'Invalid input'})
         elif request.method == 'DELETE':
             posting.delete()
             return Response(status=204)

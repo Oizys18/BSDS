@@ -1,5 +1,4 @@
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
+from django.urls import path
 
 
 from . import views
@@ -25,29 +24,3 @@ urlpatterns = [
     path('posting/<int:found_id>/status/', views.update_found_status, name='update_found_status'),
 
 ]
-
-"""
-할 일
-
-2. url 짜야 하는 것들 먼저 기획
-1. 습득물 검색 
-    - 이미지 받기
-    - 검색하기
-    - 결과 리턴하기 (페이지 넘버링)
-2. 습득물 검색 결과에 대해 
-    - 카테고리 설정
-    - 페이지 넘버링
-3. 습득물 신고하기
-    - 이미지 받기
-    - 저장하기
-4. 자신이 작성한 습득물 게시글 조회
-    - 목록 조회
-    - 상세 조회
-5. 자신이 작성한 습득물 게시글 수정
-    - 내용 수정
-    - 상태 수정
-6. 자신이 작성한 습득물 게시글 삭제 
-
-
-3. database 손보고 넣기
-"""
