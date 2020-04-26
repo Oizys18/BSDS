@@ -43,11 +43,12 @@ class LostPosting(TimeStampedModel):
     lost_time = models.DateTimeField(auto_now_add=False)
 
     class Meta:
-        ordering = ('-created',)
+        ordering = ('-lost_time',)
 
 
 class LostThumbnail(models.Model):
     posting = models.ForeignKey(LostPosting, blank=True, null=True, related_name='thumbnail', on_delete=models.CASCADE)
+    origin = models.ForeignKey(LostImage, blank=True, null=True, related_name='thumbnail', on_delete=models.CASCADE)
     image = ProcessedImageField(
         processors=[ResizeToFill(200, 200)],
         upload_to=lost_thumbnail_path,
@@ -63,11 +64,6 @@ class LostAddress(models.Model):
     posting = models.ForeignKey(LostPosting, on_delete=models.CASCADE, related_name='address')
 
     address_name = models.CharField(max_length=200)
-    region_1depth_name = models.CharField(max_length=50)
-    region_2depth_name = models.CharField(max_length=50)
-    region_3depth_name = models.CharField(max_length=50)
-    road_name = models.CharField(max_length=50)
-    zone_no = models.CharField(max_length=20)
 
     x = models.CharField(max_length=50)
     y = models.CharField(max_length=50)
