@@ -1,37 +1,27 @@
 <template>
   <div>
     <h1>Admin Index</h1>
-    <span @click="go('createFound')">
-    <button-default :text="btn1" />
-    </span>
-    <span @click="go('lostList')">
-    <button-default :text="btn2" />
-    </span>
-    <span @click="go('login')">
-      <button-default :text="btn3" />
-    </span>
+    <!-- 나중에 순서 뒤집을 것 -->
+    <component :is="isLoggedIn ? 'admin-login' : 'admin-ddiyong' "></component>
   </div>
 </template>
 
 <script>
-import buttonDefault from '@/components/common/button/buttonDefault'
-
+import adminDdiyong from "./components/adminDdiyong";
+import adminLogin from "./components/adminLogin";
+import { mapGetters } from 'vuex'
 export default {
   name: "adminIndex",
   components: {
-    buttonDefault,
+    adminDdiyong,
+    adminLogin,
   },
   data() {
     return {
-      btn1: "습득물 등록",
-      btn2: "분실신고 목록",
-      btn3: "로그인"
     }
   },
-  methods: {
-    go(path) {
-      this.$router.push({name: path})
-    }
+  computed: {
+    ...mapGetters(['isLoggedIn'])
   }
 }
 </script>

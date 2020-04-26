@@ -9,8 +9,8 @@ import createLost from '@/views/user/components/createLost.vue'
 import createdUser from '@/views/user/components/createdUser.vue'
 import createFound from '@/views/admin/components/createFound.vue'
 import createdAdmin from '@/views/admin/components/createdAdmin.vue'
-import lostList from '@/views/admin/components/lostList.vue'
-import adminLogin from "@/views/admin/components/adminLogin";
+import createdList from "@/views/admin/components/createdList";
+import lostList from "@/views/admin/components/lostList";
 
 // 로그인 여부
 // import getters from "@/store/modules/auth.js";
@@ -74,14 +74,15 @@ const routes = [
     component: createdAdmin
   },
   {
-    path: "/admin/lost",
-    name: "lostList",
-    component: lostList
+    // 이걸 나중에 어케 바꾸지...
+    path: "/admin/createdList",
+    name: "createdList",
+    component: createdList
   },
   {
-    path: "/admin/login",
-    name: "login",
-    component: adminLogin
+    path: "/admin/lostList",
+    name: "lostList",
+    component: lostList
   }
 ]
 
