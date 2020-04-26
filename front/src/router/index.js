@@ -11,7 +11,19 @@ import createdAdmin from '@/views/admin/components/createdAdmin.vue'
 import lostList from '@/views/admin/components/lostList.vue'
 import adminLogin from "@/views/admin/components/adminLogin";
 
+// 로그인 여부
+// import getters from "@/store/modules/auth.js";
+
 Vue.use(VueRouter)
+
+// 로그인 여부
+// const requireAuth = () => (to, from, next) => {
+//   if (getters.isLoggedIn) {
+//     return next();
+//   } else {
+//     return next({ name: 'login' });
+//   }
+// }
 
 const routes = [
   {
@@ -22,7 +34,8 @@ const routes = [
   {
     path: "/admin",
     name: "adminIndex",
-    component: adminIndex
+    component: adminIndex,
+    // beforeEnter: requireAuth()
   },
   {
     path: "/test",
