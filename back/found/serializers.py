@@ -21,14 +21,6 @@ class FoundPostingSerializer(serializers.ModelSerializer):
         fields = ('id', 'color', 'category', 'created', 'modified', 'status', 'thumbnail')
 
 
-class FoundThumbnailSerializer(serializers.ModelSerializer):
-    posting = FoundPostingSerializer()
-
-    class Meta:
-        model = FoundThumbnail
-        fields = ('posting', 'image',)
-
-
 class CreateFoundPostingSerializer(serializers.ModelSerializer):
     class Meta:
         model = FoundPosting

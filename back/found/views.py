@@ -29,8 +29,8 @@ def get_closer_user(x, y, radius):
 
     if result.get('meta'):
         for item in result['documents']:
-            if User.objects.filter(center_name=item['place_name'][:-3]).exists():
-                users.append(User.objects.get(center_name=item['place_name'][:-3]).id)
+            if User.objects.filter(phone_number=item['phone']).exists():
+                users.append(get_object_or_404(User, phone_number=item['phone']).id)
 
     else:
         flag = True
@@ -38,7 +38,7 @@ def get_closer_user(x, y, radius):
     return flag, users
 
 
-@cache_page(60 * 2)
+# @cache_page(60 * 2)
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def search_found(request):

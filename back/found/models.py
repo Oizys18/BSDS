@@ -38,7 +38,6 @@ class FoundImage(models.Model):
 
 class FoundPosting(TimeStampedModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='found')
-    image = models.ForeignKey(FoundImage, blank=True, null=True, on_delete=models.CASCADE)
 
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
