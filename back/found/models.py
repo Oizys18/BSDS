@@ -34,15 +34,6 @@ class FoundImage(models.Model):
     category_2 = models.CharField(max_length=20, blank=True)
     category_3 = models.CharField(max_length=20, blank=True)
     numpy_path = models.CharField(max_length=200, blank=True)
-    thumbnail = ProcessedImageField(
-        processors=[ResizeToFill(200, 200)],
-        upload_to=thumbnail_path,
-        format='JPEG',
-        options={'quality': 90},
-    )
-
-    def __str__(self):
-        return 'media/%s' % self.thumbnail
 
 
 class FoundPosting(TimeStampedModel):
@@ -60,8 +51,8 @@ class FoundPosting(TimeStampedModel):
 
 
 class FoundThumbnail(models.Model):
-    posting = models.ForeignKey(FoundPosting, null=True, related_name='thumbnail', on_delete=models.CASCADE)
-    thumbnail = ProcessedImageField(
+    posting = models.ForeignKey(FoundPosting, blank=True, null=True, related_name='thumbnail', on_delete=models.CASCADE)
+    image = ProcessedImageField(
         processors=[ResizeToFill(200, 200)],
         upload_to=thumbnail_path,
         format='JPEG',
@@ -69,4 +60,4 @@ class FoundThumbnail(models.Model):
     )
 
     def __str__(self):
-        return 'media/%s' % self.thumbnail
+        return 'media/%s' % self.image

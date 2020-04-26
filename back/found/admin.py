@@ -11,7 +11,7 @@ class FoundImageModelAdmin(admin.ModelAdmin):
 
 
 class FoundThumbnailModelAdmin(admin.ModelAdmin):
-    list_display = 'id', 'thumbnail'
+    list_display = 'id', 'image'
 
 
 class ColorModelAdmin(admin.ModelAdmin):

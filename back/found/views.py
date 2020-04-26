@@ -6,7 +6,7 @@ from django.core.paginator import Paginator
 from .forms import FoundImageForm
 from .models import FoundPosting, FoundImage, FoundThumbnail
 from .serializers import FoundPostingSerializer, FoundImageSerializer,\
-    FoundThumbnailSerializer, CreateFoundPostingSerializer, CreateFoundThumbnailSerializer
+    FoundPostingDetailSerializer, CreateFoundPostingSerializer, CreateFoundThumbnailSerializer
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -101,9 +101,7 @@ def search_found(request):
         user = posting.user.center_name + posting.user.role
 
         if posting.image:
-            # img_path = 'media/' + str(get_object_or_404(FoundThumbnail, posting=posting.id).thumbnail)
-            img_path = 'media/' + str(posting.image.thumbnail)
-
+            img_path = 'media/' + str(get_object_or_404(FoundThumbnail, posting=posting.id).image)
         else:
             img_path = 'media/no_img.png'
 
@@ -149,7 +147,7 @@ def search_by_image(request):
 
             for posting in posting_set:
                 user = posting.user.center_name + posting.user.role
-                img_path = 'media/' + str(get_object_or_404(FoundThumbnail, posting=posting.id).thumbnail)
+                img_path = 'media/' + str(get_object_or_404(FoundThumbnail, posting=posting.id).image)
 
                 datasets['meta']['total'] += 1
                 datasets['documents'].append({
@@ -178,53 +176,54 @@ def create_found_image(request):
     :param request: FILES 'image'
     :return: {image_id: int, category: int, color: int}
     """
+    if request.FILES:
+        serializer = FoundImageSerializer(request.POST, request.FILES)
+        if serializer.is_valid():
+            th_serializer = CreateFoundThumbnailSerializer(request.POST, request.FILES)
+            if th_serializer.is_valid():
+                serializer.create(serializer.validated_data)
+                thumbnail_image = th_serializer.create(th_serializer.validated_data)
 
-    serializer = FoundImageSerializer(request.POST, request.FILES)
-    if serializer.is_valid():
-        print(serializer.validated_data)
-        image = serializer.create(serializer.validated_data)
-        cache.set('found_image', request.FILES, 60*10)
-        #TODO Category 분석기
-        category = 1
-        #TODO Color 분석기
-        color = 2
-        datasets = {
-            'image_id': image.id,
-            'category': category,
-            'color': color
-        }
-        return Response(status=200, data=datasets, content_type='application.json')
-    return Response(status=400, data=serializer.errors)
-
+                #TODO Category 분석기
+                category = 1
+                #TODO Color 분석기
+                color = 2
+                #TODO Category image 에 추가 등록하기
+                datasets = {
+                    'image_id': thumbnail_image.id,
+                    'category': category,
+                    'color': color
+                }
+                return Response(status=200, data=datasets, content_type='application.json')
+            return Response(status=400, data=th_serializer.errors)
+        return Response(status=400, data=serializer.errors)
+    return Response(status=404, data={'message': '이미지는 필수 값입니다.'})
 
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_found(request):
-    data = request.data
-    if data.image_id:
-        serializer = CreateFoundPostingSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save(user=request.user)
-            file = cache.get('found_image')
-            if file:
-                thumbnail = CreateFoundThumbnailSerializer(data=file)
-            else:
-                print('img 불러오기')
-            if thumbnail.is_valid():
-                thumbnail.save(posting=serializer.id)
-                return Response(status=200, data=thumbnail.data)
-            else:
-                return Response(status=400, data=thumbnail.errors)
-        else:
-            return Response(status=400, data=serializer.errors)
-    else:
-        serializer = CreateFoundPostingSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save(user=request.user)
-            return Response(status=200, data=serializer.data)
-        else:
-            return Response(status=400, data=serializer.errors)
+    data = {
+        'image_id': 3,
+        'color': 3,
+        'category': 2,
+        'content': 'werewr'
+    }
+
+    serializer = CreateFoundPostingSerializer(data=data)
+    if serializer.is_valid():
+        posting = serializer.save(user=request.user, status=False)
+
+        if data["image_id"]:
+            posting.image_id = data["image_id"]
+            posting.save()
+            thumbnail = get_object_or_404(FoundThumbnail, id=data["image_id"])
+            thumbnail.posting_id = posting.id
+            thumbnail.save()
+
+        return Response(status=200, data=serializer.data)
+    return Response(status=400, data=serializer.errors)
+
 
 
 @cache_page(60 * 2)
@@ -247,7 +246,10 @@ def get_user_found_list(request):
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_found_detail(request, found_id):
-    pass
+    posting = get_object_or_404(FoundPosting, id=found_id)
+    serializer = FoundPostingDetailSerializer(posting)
+
+    return Response(status=200, data=serializer.data)
 
 
 @api_view(['PATCH', 'DELETE'])

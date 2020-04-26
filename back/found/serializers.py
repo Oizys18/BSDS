@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import FoundPosting, FoundImage, FoundThumbnail
 from django.contrib.auth import get_user_model
+from accounts.serializers import UserDetailSerializer
 
 User = get_user_model()
 
@@ -25,7 +26,7 @@ class FoundThumbnailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FoundThumbnail
-        fields = ('posting', 'thumbnail',)
+        fields = ('posting', 'image',)
 
 
 class CreateFoundPostingSerializer(serializers.ModelSerializer):
@@ -37,4 +38,14 @@ class CreateFoundPostingSerializer(serializers.ModelSerializer):
 class CreateFoundThumbnailSerializer(serializers.ModelSerializer):
     class Meta:
         model = FoundThumbnail
-        fields = ('thumbnail',)
+        fields = ('image',)
+
+
+class FoundPostingDetailSerializer(serializers.ModelSerializer):
+    thumbnail = serializers.StringRelatedField(many=True)
+    user = UserDetailSerializer()
+
+    class Meta:
+        model = FoundPosting
+        fields = ('id', 'color', 'category', 'created', 'modified',
+                  'content', 'status', 'thumbnail', 'user')
