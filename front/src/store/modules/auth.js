@@ -11,7 +11,21 @@ const state = {
   token: null,
   errors: [],
   loading: false,
-  username: ''
+  user_id: '',
+  user_info: {
+    username: '',
+    parent_department: '',
+    center_name: '',
+    role: '',
+    phone_number: '',
+    address: [
+      {
+        address_name: '',
+        x: '',
+        y: ''
+      }
+    ]
+  },
 };
 
 // Vuex 에서는 Arrow Function
@@ -19,7 +33,8 @@ const getters = {
   isLoggedIn: state => !!state.token , // 특정 값을 true/false 로 바꾸는 구문
   getErrors: state => state.errors,
   isLoading: state => state.loading,
-  getUsername: state => state.token ? decoded(state.token).username : '',
+  getUserId: state => state.token ? decoded(state.token).id : '',
+  getUserInfo: state => state.user_info
 };
 
 const mutations = {
@@ -30,6 +45,10 @@ const mutations = {
   },
   pushError: (state, error) => state.errors.push(error),
   clearErrors: state => state.errors = [],
+  setUserInfo: (state, data) => {
+    state.user_info = data
+    console.log(state.user_info)
+  }
 };
 
 const actions = {
@@ -93,6 +112,14 @@ const actions = {
             commit('setToken', token.data.token);
             commit('setLoading', false)
             console.log(token)
+            const admin_id = decoded(token).id
+            axios.get(`http://localhost:3001/user/${admin_id}`)
+              .then(res=> {
+                commit('setUserInfo', res.data)
+                console.log(res)
+                console.log(state.user_info)
+              })
+              .catch(err => console.log(err))
             router.push({name: 'adminIndex'})
           })
           .catch(err => {
@@ -150,8 +177,9 @@ const actions = {
           })
       }
     }
+  },
   }
-};
+;
 
 export default {
   state,
