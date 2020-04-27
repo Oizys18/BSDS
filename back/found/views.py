@@ -198,7 +198,8 @@ def create_found(request):
             thumbnail.posting_id = posting.id
             thumbnail.save()
 
-        return Response(status=200, data=serializer.data)
+        posting_serializer = FoundPostingDetailSerializer(posting)
+        return Response(status=200, data=posting_serializer.data)
     return Response(status=400, data={'message': 'Invalid input'})
 
 
@@ -232,13 +233,13 @@ def get_found_detail(request, found_id):
 @permission_classes([IsAuthenticated])
 def update_delete_found(request, found_id):
     posting = get_object_or_404(FoundPosting, id=found_id)
+    data = {
+      'color': 6,
+      'category': 2,
+      'content': 'werewr'
+    }
 
-    if posting.id == request.user:
-        data = {
-            'color': 6,
-            'category': 2,
-            'content': 'werewr'
-        }
+    if posting.user_id == request.user.id:
         if request.method == 'PATCH':
             serializer = CreateFoundPostingSerializer(instance=posting, data=data)
             if serializer.is_valid():
@@ -256,7 +257,7 @@ def update_delete_found(request, found_id):
 @permission_classes([IsAuthenticated])
 def update_found_status(request, found_id):
     posting = get_object_or_404(FoundPosting, id=found_id)
-    if posting.id == request.user:
+    if posting.user_id == request.user.id:
         posting.status = False if posting.status else True
         posting.save()
         return Response(status=204)
