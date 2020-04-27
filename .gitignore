@@ -268,3 +268,5 @@ back/ai/model_shapes.png
 back/ai/test.h5
 back/ai/test/
 back/ai/testdata.png
+back/ai/dataset/test/*
+back/ai/dataset/train/*
