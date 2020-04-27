@@ -13,15 +13,22 @@
             ref="imageInput"
             type="file"
             accept="image/*"
-            @change="onChangeImages"
+            @change="postImage"
           >
-          <img class="image-preview" v-if="imageUrl" :src="imageUrl"/>
+          <img class="image-preview" v-if="getImgUrl" :src="getImgUrl"/>
         </div>
         <div class="category-wrapper">
           <span class="select">물품 분류</span>
           <select-one
             class="select-category"
-            :default="'분류'"
+            :default="getCategory ? getCategory : '분류'"
+          />
+        </div>
+        <div class="category-wrapper">
+          <span class="select">색상</span>
+          <select-one
+            class="select-category"
+            :default="getColor ? getColor : '색상'"
           />
         </div>
         <div class="input-wrapper">
@@ -48,6 +55,7 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex'
 import selectOne from '@/components/common/dropdown/selectOne'
 import buttonDefault from '@/components/common/button/buttonDefault'
 const axios = require('axios')
@@ -60,16 +68,14 @@ export default {
   },
   data () {
     return {
-      image: '',
-      contents: '',
-      imageUrl: null,
+      content: '',
       category: '',
     }
   },
   methods: {
     createContent () {
       const data = {
-        "contents": this.contents,
+        "contents": this.content,
         "imageFile": this.image,
         "category": this.category
       }
@@ -87,28 +93,13 @@ export default {
     onClickImageUpload() {
       this.$refs.imageInput.click();
     },
-    onChangeImages(e) {
-      console.log(e.target.files)
-      const file = e.target.files[0]
-      const formdata = new FormData();
-      this.imageUrl = URL.createObjectURL(file)
-      formdata.append('image', file)
-      // 이미지 post 한번 더 보내서 분류 추가할 것
-      axios.post('http://6572e39f.ngrok.io/found/posting/image/', formdata, {
-        headers: {
-            "Content-Type": "multipart/form-data",
-        }
-      })
-      .then(res=> {
-        console.log(res)
-      })
-      .catch(err => {
-        console.log(err)
-      })
-    },
     go(path) {
       this.$router.push(path)
-    }
+    },
+    ...mapActions(['postImage'])
+  },
+  computed: {
+    ...mapGetters(['getId', 'getCategory', 'getColor', 'getImgUrl'])
   }
 }
 </script>
