@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator
-from .models import FoundPosting, FoundThumbnail
+from .models import FoundPosting, FoundThumbnail, FoundImage
 from .serializers import FoundPostingSerializer, FoundImageSerializer, FoundPostingListSerializer, \
     FoundPostingDetailSerializer, CreateFoundPostingSerializer, FoundThumbnailSerializer, GetFoundImageSerializer
 from lost.serializers import LostThumbnailSerializer, LostImageSerializer
@@ -15,6 +15,15 @@ from datetime import timedelta
 from datetime import datetime
 from django.contrib.auth import get_user_model
 User = get_user_model()
+
+# search_by_image 관련 module
+import mahotas as mh
+import numpy as np
+from scipy.spatial import distance
+from sklearn.model_selection import cross_validate, LeaveOneOut, cross_val_score
+from sklearn.linear_model import LogisticRegression
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
 
 
 def get_closer_user(x, y, radius):
@@ -118,15 +127,59 @@ def search_by_image(request):
                 lost_thumbnail_image.origin_id = lost_image.id
                 lost_thumbnail_image.save()
 
-                #TODO AI 웅앵
+                # 분실자가 Post 한 이미지 전처리 <class 'numpy.ndarray'>
+                im = mh.imread(lost_image.image)
+                im = mh.colors.rgb2gray(im, dtype=np.uint8)
+                im_ftr = mh.features.haralick(im).ravel()
 
+                # 3주 postings 불러오기
                 postings = FoundPosting.objects.filter(created__gt=datetime.now() - timedelta(weeks=3))
-                # postings = FoundPosting.objects.all()
                 print(postings)
                 image_set = FoundThumbnail.objects.filter(posting_id__in=postings).values('origin')
                 print(image_set)
+                origin_images = FoundImage.objects.filter(id__in=image_set)
+                print(origin_images)
 
-                images_id_result = [1, 2, 3]
+                # npy file 불러오기
+                origin_ids = []
+                origin_image_features = []
+                for origin_image in origin_images:
+                    real_numpy_path = './media/' + origin_image.numpy_path
+                    origin_image_feature = np.load(real_numpy_path)
+                    origin_ids.append(origin_image.id)
+                    origin_image_features.append(origin_image_feature)
+
+                origin_ids = [0] + origin_ids
+                origin_image_features = [im_ftr] + origin_image_features
+
+                origin_image_features = np.array(origin_image_features)
+                # print(origin_image_features.shape)
+
+
+                # features & labels numpy.array
+                clf = Pipeline([('preproc', StandardScaler()),
+                                ('classifier', LogisticRegression())])
+
+                cv = LeaveOneOut()
+
+                # scores = cross_val_score(clf, features, labels, cv=cv)
+                # print('Accuracy: {:.2%}'.format(scores.mean()))
+
+                sc = StandardScaler()
+                features = sc.fit_transform(origin_image_features)
+
+                # dists matrix 구하기 (사진 개수 X 사진 개수)
+                dists = distance.squareform(distance.pdist(features, "cosine"))
+                # print(*dists, sep='\n')
+                # print(dists[0])
+                # print(dists[0].argsort().tolist())
+                similar_order = dists[0].argsort().tolist()
+                first = similar_order.index(1)
+                second = similar_order.index(2)
+                third = similar_order.index(3)
+
+                # return
+                images_id_result = [int(first), int(second), int(third)]
 
                 thumb_set = FoundThumbnail.objects.filter(origin_id__in=images_id_result).values('posting')
                 posting_set = FoundPosting.objects.filter(id__in=thumb_set)
