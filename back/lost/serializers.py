@@ -15,9 +15,16 @@ class LostThumbnailSerializer(serializers.ModelSerializer):
         fields = ('image',)
 
 
-class CreateLostPostingSerializer(serializers.ModelSerializer):
+class LostPostingSerializer(serializers.ModelSerializer):
     class Meta:
         model = LostPosting
-        fields = ('category', 'color', 'content', 'lostname',
-                  'email', 'do_notice', 'lost_time')
+        fields = ('category', 'color', 'content',
+                  'email', 'do_notice', 'lost_time', 'x', 'y')
 
+
+class LostPostingDetailSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = LostPosting
+        fields = ('id', 'category', 'color', 'content', 'email',
+                  'do_notice', 'lost_time', 'x', 'y')

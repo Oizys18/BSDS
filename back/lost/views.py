@@ -1,7 +1,8 @@
 from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator
 from .models import LostPosting, LostImage, LostThumbnail, LostAddress
-from .serializers import LostImageSerializer, LostThumbnailSerializer, CreateLostPostingSerializer
+from .serializers import LostImageSerializer, LostThumbnailSerializer, LostPostingSerializer, \
+    LostPostingDetailSerializer
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -9,7 +10,8 @@ import json
 from decouple import config
 import requests
 from django.views.decorators.cache import cache_page
-
+from datetime import datetime
+import hashlib
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
@@ -46,43 +48,87 @@ def create_lost_image(request):
 @permission_classes([AllowAny])
 def create_lost(request):
     data = {
-        'image_id': 3,
+        'image_id': '',
         'color': 3,
         'category': 2,
-        'content': ''
+        'content': '',
+        'password': '1234',
+        'email': 'fsd@na.com',
+        'do_notice': True,
+        'lost_time': '2020-02-02 05:00:00',
+        'x': '',
+        'y': '',
     }
 
-    serializer = CreateLostPostingSerializer(data=data)
+    serializer = LostPostingSerializer(data=data)
     if serializer.is_valid():
-        # 비밀번호 암호화
-        # lost_time error 확인하기
-        posting = serializer.save(status=False)
 
-        if data["image_id"]:
-            thumbnail = get_object_or_404(LostThumbnail, id=data["image_id"])
+        password = hashlib.sha256(data['password'].encode()).hexdigest()
+        lostname = password[-5:] + datetime.today().strftime('%d%H%f')
+        posting = serializer.save(password=password, lostname=lostname, status=False)
+
+        if data['image_id']:
+            thumbnail = get_object_or_404(LostThumbnail, id=data['image_id'])
             thumbnail.posting_id = posting.id
             thumbnail.save()
 
-        return Response(status=200, data=serializer.data)
+        data = {
+            'lost_id': posting.id,
+            'lostname': posting.lostname,
+        }
+
+        return Response(status=200, data=data)
     return Response(status=400, data={'message': 'Invalid input'})
 
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def lost_login(request):
-    pass
+    posting = get_object_or_404(LostPosting, lostname=request.data['lostname'])
+    password = hashlib.sha256(request.data['password'].encode()).hexdigest()
+    if posting.password == password:
+        serializer = LostPostingDetailSerializer(posting)
+        return Response(status=200, data=serializer.data)
+    return Response(status=400, data={'message': '비밀번호가 일치하지 않습니다.'})
+
 
 
 @api_view(['PATCH', 'DELETE'])
 @permission_classes([AllowAny])
-def update_delete_lost(request, lost_id):
-    pass
+def update_delete_lost(request, lostname):
+    posting = get_object_or_404(LostPosting, lostname=lostname)
+    data = {
+        'color': 6,
+        'category': 2,
+        'content': 'werewr',
+        'x': 125.4324,
+        'y': 32.532,
+        'do_notice': False,
+        'email': 'kfjlsdkf@nmvcsd.com',
+        'lost_time': posting.lost_time
+    }
+    if request.method == 'PATCH':
+        serializer = LostPostingSerializer(instance=posting, data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(status=200, data=serializer.data)
+        print(serializer.errors)
+        return Response(status=400, data={'message': 'Invalid input'})
+    elif request.method == 'DELETE':
+        posting.delete()
+        return Response(status=204)
+
 
 
 @api_view(['PATCH'])
 @permission_classes([AllowAny])
 def update_lost_status(request, lost_id):
-    pass
+    posting = get_object_or_404(LostPosting, id=lost_id)
+    posting.status = False if posting.status else True
+    posting.save()
+    return Response(status=204)
+
+
 
 
 @api_view(['GET'])
