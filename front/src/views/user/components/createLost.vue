@@ -22,14 +22,18 @@
           <span class="select">물품 분류</span>
           <select-one
             class="select-category"
-            :default="getCategory ? getCategory : '분류'"
+            :default="this.category === null ? '분류' : this.category"
+            :items="$store.state.categories"
+            @input="onSelectCategory"
           />
         </div>
         <div class="category-wrapper">
           <span class="select">색상</span>
           <select-one
             class="select-category"
-            :default="getColor ? getColor : '색상'"
+            :default="this.color  === null ? '색상' : this.color"
+            :items="$store.state.colors"
+            @input="onSelectColor"
           />
         </div>
         <div class="date-wrapper">
@@ -56,7 +60,7 @@
             class="select-time"
             :default="'선택'"
             :items="timeList"
-            @input="onTimeSelectStart"
+            @input="onTimeSelect"
           />
         </div>
         <div class="input-wrapper">
@@ -107,7 +111,8 @@ export default {
   data() {
     return {
       content: '',
-      category: '',
+      category: this.$store.getters.getCategory,
+      color: this.$store.getters.getColor,
       yItems: [],
       mItems: ['1 월', '2 월', '3 월', '4 월', '5 월', '6 월', '7 월', '8 월', '9 월', '10 월', '11 월', '12 월'],
       dItems: [],
@@ -135,36 +140,42 @@ export default {
   },
   methods: {
     createContent() {
-      const formdata = {
-        "content": this.contents,
-        "lost_time": this.date.reduce(function (accumulator, currentValue) {
+      const data = {
+        "image_id": this.$store.image_id,
+        "category": this.category,
+        "color": this.color,
+        "content": this.content,
+        "lost_time":
+          `${this.date.reduce(function (accumulator, currentValue) {
           return accumulator + currentValue;
-        }),
-        "time": this.startTime.replace(":", "") + this.endTime.replace(":", ""),
+          })}
+          ${this.time}:00`,
         "email": this.email,
-        "password": this.password
+        "password": this.password,
+        "do_notice": true,
+        "x": '',
+        "y": ''
       }
-      axios.post('http://localhost:3001/board', this.formdata, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        }
+      axios.post('http://localhost:3001/board', data)
+      .then(res => {
+        console.log(res)
+        this.$router.push('/created')
+        console.log(this.image_id)
       })
-        .then(res => {
-          console.log(res)
-          console.log(formdata)
-          this.$router.push('/created')
-        })
-        .catch(err => {
-          console.log(err)
-        })
+      .catch(err => {
+        console.log(err)
+      })
     },
     onClickImageUpload() {
       this.$refs.imageInput.click();
     },
-    onChangeInput() {
-      console.log(this.contents)
+    onSelectCategory(value) {
+      this.category = this.$store.state.categories[value].name
     },
-    onTimeSelectStart(value) {
+    onSelectColor(value) {
+      this.color = this.$store.state.colors[value].name
+    },
+    onTimeSelect(value) {
       this.time = this.timeList[value]
       console.log(this.time)
     },
@@ -190,7 +201,7 @@ export default {
       }
       console.log(this.date)
     },
-    ...mapActions(['postImage']),
+    ...mapActions(['postImage', 'getCategories', 'getColors']),
   },
   computed: {
     ...mapGetters(['getId', 'getCategory', 'getColor', 'getImgUrl'])

@@ -21,14 +21,18 @@
           <span class="select">물품 분류</span>
           <select-one
             class="select-category"
-            :default="getCategory ? getCategory : '분류'"
+            :default="this.category === null ? '분류' : this.category"
+            :items="$store.state.categories"
+            @input="onSelectCategory"
           />
         </div>
         <div class="category-wrapper">
           <span class="select">색상</span>
           <select-one
             class="select-category"
-            :default="getColor ? getColor : '색상'"
+            :default="this.color  === null ? '색상' : this.color"
+            :items="$store.state.colors"
+            @input="onSelectColor"
           />
         </div>
         <div class="input-wrapper">
@@ -70,17 +74,18 @@ export default {
     return {
       content: '',
       category: '',
+      color: ''
     }
   },
   methods: {
     createContent () {
       const data = {
-        "contents": this.content,
-        "imageFile": this.image,
-        "category": this.category
+        "image_id": this.$store.image_id,
+        "content": this.content,
+        "category": this.category,
+        "color": this.color,
       }
-      axios.post('http://localhost:3001/board', this.data, {
-      })
+      axios.post('http://localhost:3001/board', data)
       .then(res => {
         console.log(res)
         console.log(data)
@@ -93,10 +98,17 @@ export default {
     onClickImageUpload() {
       this.$refs.imageInput.click();
     },
+    onSelectCategory(value) {
+      this.category = this.$store.state.categories[value].name
+    },
+    onSelectColor(value) {
+      this.color = this.$store.state.colors[value].name
+    },
     go(path) {
       this.$router.push(path)
+      this.$store._mutations.clearState()
     },
-    ...mapActions(['postImage'])
+    ...mapActions(['postImage', 'getCategories', 'getColors'])
   },
   computed: {
     ...mapGetters(['getId', 'getCategory', 'getColor', 'getImgUrl'])
