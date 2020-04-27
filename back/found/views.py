@@ -2,7 +2,8 @@ from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator
 from .models import FoundPosting, FoundThumbnail
 from .serializers import FoundPostingSerializer, FoundImageSerializer, FoundPostingListSerializer, \
-    FoundPostingDetailSerializer, CreateFoundPostingSerializer, CreateFoundThumbnailSerializer
+    FoundPostingDetailSerializer, CreateFoundPostingSerializer, FoundThumbnailSerializer, GetFoundImageSerializer
+from lost.serializers import LostThumbnailSerializer, LostImageSerializer
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -10,7 +11,8 @@ import json
 from decouple import config
 import requests
 from django.views.decorators.cache import cache_page
-
+from datetime import timedelta
+from datetime import datetime
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
@@ -29,8 +31,8 @@ def get_closer_user(x, y, radius):
 
     if result.get('meta'):
         for item in result['documents']:
-            if User.objects.filter(center_name=item['place_name'][:-3]).exists():
-                users.append(User.objects.get(center_name=item['place_name'][:-3]).id)
+            if User.objects.filter(phone_number=item['phone']).exists():
+                users.append(get_object_or_404(User, phone_number=item['phone']).id)
 
     else:
         flag = True
@@ -38,7 +40,7 @@ def get_closer_user(x, y, radius):
     return flag, users
 
 
-@cache_page(60 * 2)
+# @cache_page(60 * 2)
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def search_found(request):
@@ -107,23 +109,32 @@ def search_by_image(request):
     :return: 최근 3주 습득물 중 유사도가 높은 게시글 최대 3개
     """
     if request.FILES:
-        serializer = FoundImageSerializer(request.POST, request.FILES)
+        serializer = LostImageSerializer(request.POST, request.FILES)
         if serializer.is_valid():
-            th_serializer = CreateFoundThumbnailSerializer(request.POST, request.FILES)
+            th_serializer = LostThumbnailSerializer(request.POST, request.FILES)
             if th_serializer.is_valid():
-                image = serializer.create(serializer.validated_data)
-                thumbnail_image = th_serializer.create(th_serializer.validated_data)
+                lost_image = serializer.create(serializer.validated_data)
+                lost_thumbnail_image = th_serializer.create(th_serializer.validated_data)
+                lost_thumbnail_image.origin_id = lost_image.id
+                lost_thumbnail_image.save()
 
                 #TODO AI 웅앵
 
+                postings = FoundPosting.objects.filter(created__gt=datetime.now() - timedelta(weeks=3))
+                # postings = FoundPosting.objects.all()
+                print(postings)
+                image_set = FoundThumbnail.objects.filter(posting_id__in=postings).values('origin')
+                print(image_set)
+
                 images_id_result = [1, 2, 3]
-                posting_set = FoundPosting.objects.filter(image_id__in=images_id_result)
+
+                thumb_set = FoundThumbnail.objects.filter(origin_id__in=images_id_result).values('posting')
+                posting_set = FoundPosting.objects.filter(id__in=thumb_set)
 
                 serializer = FoundPostingListSerializer(posting_set, many=True)
 
                 datasets = {
                     'meta': {
-                        'image_id': thumbnail_image.id,
                         'total': posting_set.count()
                     },
                     'documents': serializer.data
@@ -146,10 +157,12 @@ def create_found_image(request):
     if request.FILES:
         serializer = FoundImageSerializer(request.POST, request.FILES)
         if serializer.is_valid():
-            th_serializer = CreateFoundThumbnailSerializer(request.POST, request.FILES)
+            th_serializer = FoundThumbnailSerializer(request.POST, request.FILES)
             if th_serializer.is_valid():
-                serializer.create(serializer.validated_data)
+                image = serializer.create(serializer.validated_data)
                 thumbnail_image = th_serializer.create(th_serializer.validated_data)
+                thumbnail_image.origin_id = image.id
+                thumbnail_image.save()
 
                 #TODO Category 분석기
                 category = 1
@@ -181,8 +194,6 @@ def create_found(request):
         posting = serializer.save(user=request.user, status=False)
 
         if data["image_id"]:
-            posting.image_id = data["image_id"]
-            posting.save()
             thumbnail = get_object_or_404(FoundThumbnail, id=data["image_id"])
             thumbnail.posting_id = posting.id
             thumbnail.save()

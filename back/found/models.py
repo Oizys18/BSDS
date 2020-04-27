@@ -38,7 +38,6 @@ class FoundImage(models.Model):
 
 class FoundPosting(TimeStampedModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='found')
-    image = models.ForeignKey(FoundImage, blank=True, null=True, on_delete=models.CASCADE)
 
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
@@ -52,6 +51,7 @@ class FoundPosting(TimeStampedModel):
 
 class FoundThumbnail(models.Model):
     posting = models.ForeignKey(FoundPosting, blank=True, null=True, related_name='thumbnail', on_delete=models.CASCADE)
+    origin = models.ForeignKey(FoundImage, blank=True, null=True, related_name='thumbnail', on_delete=models.CASCADE)
     image = ProcessedImageField(
         processors=[ResizeToFill(200, 200)],
         upload_to=thumbnail_path,

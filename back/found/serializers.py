@@ -21,21 +21,13 @@ class FoundPostingSerializer(serializers.ModelSerializer):
         fields = ('id', 'color', 'category', 'created', 'modified', 'status', 'thumbnail')
 
 
-class FoundThumbnailSerializer(serializers.ModelSerializer):
-    posting = FoundPostingSerializer()
-
-    class Meta:
-        model = FoundThumbnail
-        fields = ('posting', 'image',)
-
-
 class CreateFoundPostingSerializer(serializers.ModelSerializer):
     class Meta:
         model = FoundPosting
         fields = ('category', 'color', 'content')
 
 
-class CreateFoundThumbnailSerializer(serializers.ModelSerializer):
+class FoundThumbnailSerializer(serializers.ModelSerializer):
     class Meta:
         model = FoundThumbnail
         fields = ('image',)
@@ -58,3 +50,22 @@ class FoundPostingListSerializer(serializers.ModelSerializer):
     class Meta:
         model = FoundPosting
         fields = ('id', 'color', 'category', 'created', 'status', 'thumbnail', 'user')
+
+
+class FoundThumbnailImageSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = FoundThumbnail
+        fields = ('origin',)
+
+
+class GetFoundImageSerializer(serializers.ModelSerializer):
+    thumbnail = serializers.SlugRelatedField(
+        many=True,
+        read_only=True,
+        slug_field='origin'
+    )
+
+    class Meta:
+        model = FoundPosting
+        fields = ('thumbnail',)

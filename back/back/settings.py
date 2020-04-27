@@ -11,7 +11,7 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
 TEMPLATE_DEBUG = DEBUG
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '651ddb3d.ngrok.io', '[::1]']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '141f9f8b.ngrok.io', '[::1]']
 
 CORS_ALLOW_CREDENTIALS = True
 
