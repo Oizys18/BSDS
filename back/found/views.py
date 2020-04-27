@@ -25,17 +25,9 @@ from sklearn.model_selection import cross_validate, LeaveOneOut, cross_val_score
 from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
-
-# search_by_image 관련 module
-import mahotas as mh
-import numpy as np
-from scipy.spatial import distance
-from sklearn.model_selection import cross_validate, LeaveOneOut, cross_val_score
-from sklearn.linear_model import LogisticRegression
-from sklearn.preprocessing import StandardScaler
-from sklearn.pipeline import Pipeline
 from django.conf import settings
 import os
+from .apps import FoundConfig
 
 
 def get_closer_user(x, y, radius):
@@ -230,13 +222,14 @@ def create_found_image(request):
             if th_serializer.is_valid():
                 image = serializer.create(serializer.validated_data)
 
-                # image 와 같은 folder 에 .npy 파일도 저장 / FoundImage numpy_path column 값 저장
+                # FoundImage의 numpy_path 칼럼 값 저장
                 im = mh.imread(image.image)
                 im = mh.colors.rgb2gray(im, dtype=np.uint8)
                 im_ftr = mh.features.haralick(im).ravel()
                 numpy_path = str(image.image).split('.')[0] + '.npy'
                 image.numpy_path = numpy_path
                 image.save()
+                # image 와 같은 경로 내에 [FoundImage와 같은 이름].npy 파일도 저장
                 numpy_path = os.path.join(settings.MEDIA_ROOT, numpy_path)
                 np.save(numpy_path, im_ftr)
 
@@ -245,8 +238,13 @@ def create_found_image(request):
                 thumbnail_image.origin_id = image.id
                 thumbnail_image.save()
 
-                
+                # apps.py 에서 사용할 model 로드
+                loaded_model = FoundConfig.model
 
+                #TODO load keras model
+                print(loaded_model) # <tensorflow.python.keras.engine.sequential.Sequential object at 0x000001A968DB56C8>
+                
+                #TODO predict (image input & output --> category_1, 2, 3)
 
                 #TODO Category 분석기 결과값(추후 수정)
                 category_1 = 1
