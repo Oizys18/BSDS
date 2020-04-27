@@ -11,7 +11,7 @@ const state = {
 };
 
 const getters = {
-  getId: state => state.Id,
+  getId: state => state.image_id,
   getCategory: state => state.category,
   getColor: state => state.color,
   getImgUrl: state => state.imageUrl,
@@ -28,6 +28,12 @@ const mutations = {
   },
   setImgUrl: (state, imageUrl) => {
     state.imageUrl = imageUrl
+  },
+  clearState: (state) => {
+    state.image_id = null,
+    state.category = null,
+    state.color = null
+    state.imageUrl = null
   }
 };
 
