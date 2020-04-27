@@ -35,7 +35,7 @@
       </div>
       <div class="user-index-button">
         사진이 없다면
-        <span @click="go('test')">
+        <span @click="go('/keywordsearch')">
           <buttonDefault
             :text="btnText"
             :bgColor="bgColor"
