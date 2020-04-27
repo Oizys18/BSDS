@@ -174,8 +174,8 @@ params = {
     'cp_path': 'checkpoint/',
     'model_path': 'model/',
     'mode': 'fe',
-    'lr': 0.01,
-    'epoch': 10,
+    'lr': 0.0001,
+    'epoch': 1,
     'network_params': {
     'include_top' : False,  
     'weights' : 'imagenet', 
