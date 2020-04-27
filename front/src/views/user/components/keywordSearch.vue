@@ -102,7 +102,7 @@ export default {
 }
 .keyword-search-card {
   margin-top: 50px;
-  border: 1.5px solid black;
+  border: 1px solid black;
   height: 500px;
   border-radius: 40px;
 }
@@ -156,7 +156,7 @@ export default {
 /* searchbar */
 .search-container {
   height: 70px;
-  border: 1.3px solid black;
+  border: 1px solid black;
   border-radius: 50px;
 }
 .custom-select {

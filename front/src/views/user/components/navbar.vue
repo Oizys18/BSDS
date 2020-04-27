@@ -8,7 +8,7 @@
       <span @click="go('/found')">
         <buttonDefault :text="btnText2" />
       </span>
-      <span @click="go('')">
+      <span @click="go('/searchlost')">
         <buttonDefault  :text="btnText3" />
       </span>
     </div>
