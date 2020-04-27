@@ -261,7 +261,7 @@ yarn-error.log
 
 # End of https://www.gitignore.io/api/venv,vuejs,django,python,pycharm,jupyternotebooks,visualstudiocode
 
-###### model 
+### model 
 back/ai/logs/
 back/ai/model.png
 back/ai/model_shapes.png
