@@ -18,7 +18,6 @@
           <td class="img-cell">{{item.image}}</td>
           <td>{{item.category}}</td>
           <td>{{item.date}}</td>
-          <td>{{item.time}}</td>
           <td><button-default :text="'조회'" /></td>
         </tr>
       </tbody>
