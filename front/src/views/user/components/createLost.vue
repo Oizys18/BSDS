@@ -14,15 +14,22 @@
             ref="imageInput"
             type="file"
             accept="image/*"
-            @change="onChangeImages"
+            @change="postImage"
           >
-          <img class="image-preview" v-if="imageUrl" :src="imageUrl"/>
+          <img class="image-preview" v-if="getImgUrl" :src="getImgUrl"/>
         </div>
         <div class="category-wrapper">
           <span class="select">물품 분류</span>
           <select-one
             class="select-category"
-            :default="'분류'"
+            :default="getCategory ? getCategory : '분류'"
+          />
+        </div>
+        <div class="category-wrapper">
+          <span class="select">색상</span>
+          <select-one
+            class="select-category"
+            :default="getColor ? getColor : '색상'"
           />
         </div>
         <div class="date-wrapper">
@@ -45,20 +52,11 @@
             :items="dItems"
             @input="onDateSelectD"
           />
-        </div>
-        <div class="time-wrapper">
-          <span class="select">분실 추정 시각</span>
           <select-one
             class="select-time"
             :default="'선택'"
             :items="timeList"
             @input="onTimeSelectStart"
-          /> ~
-          <select-one
-            class="select-time"
-            :default="'선택'"
-            :items="timeList"
-            @input="onTimeSelectEnd"
           />
         </div>
         <div class="input-wrapper">
@@ -96,6 +94,7 @@
 import selectOne from '@/components/common/dropdown/selectOne'
 import navbar from '@/views/user/components/navbar'
 import buttonDefault from '@/components/common/button/buttonDefault'
+import {mapActions, mapGetters} from "vuex";
 const axios = require('axios')
 
 export default {
@@ -105,43 +104,40 @@ export default {
     navbar,
     buttonDefault
   },
-  data () {
+  data() {
     return {
-      image: '',
-      contents: '',
-      imageUrl: null,
+      content: '',
+      category: '',
       yItems: [],
-      mItems: ['1 월', '2 월', '3 월','4 월','5 월','6 월','7 월','8 월','9 월','10 월','11 월','12 월'],
+      mItems: ['1 월', '2 월', '3 월', '4 월', '5 월', '6 월', '7 월', '8 월', '9 월', '10 월', '11 월', '12 월'],
       dItems: [],
       date: ['2020', '-', '00', '-', '00'],
       timeList: [],
-      startTime: '',
-      endTime: '',
+      time: '',
       password: '',
       email: ''
     }
   },
-  mounted () {
-    for (let i=0; i<25; i++) {
-      if (i<10) {
-          this.timeList.push('0' + i.toString() + ':00') 
+  mounted() {
+    for (let i = 0; i < 25; i++) {
+      if (i < 10) {
+        this.timeList.push('0' + i.toString() + ':00')
       } else {
-          this.timeList.push(i.toString() + ':00') 
+        this.timeList.push(i.toString() + ':00')
       }
     }
-    for (let y=2020; y>1920; y--) {
+    for (let y = 2020; y > 1920; y--) {
       this.yItems.push(y.toString() + ' 년')
     }
-    for (let d=1; d<32; d++) {
+    for (let d = 1; d < 32; d++) {
       this.dItems.push(d.toString() + ' 일')
     }
   },
   methods: {
-    createContent () {
+    createContent() {
       const formdata = {
-        "contents": this.contents,
-        "imageFile": this.image,
-        "date": this.date.reduce(function (accumulator, currentValue) {
+        "content": this.contents,
+        "lost_time": this.date.reduce(function (accumulator, currentValue) {
           return accumulator + currentValue;
         }),
         "time": this.startTime.replace(":", "") + this.endTime.replace(":", ""),
@@ -150,45 +146,34 @@ export default {
       }
       axios.post('http://localhost:3001/board', this.formdata, {
         headers: {
-            "Content-Type": "multipart/form-data",
+          "Content-Type": "multipart/form-data",
         }
       })
-      .then(res => {
-        console.log(res)
-        console.log(formdata)
-        this.$router.push('/created')
-      })
-      .catch(err => {
-        console.log(err)
-      })
+        .then(res => {
+          console.log(res)
+          console.log(formdata)
+          this.$router.push('/created')
+        })
+        .catch(err => {
+          console.log(err)
+        })
     },
     onClickImageUpload() {
       this.$refs.imageInput.click();
-    },
-    onChangeImages(e) {
-      console.log(e.target.files)
-      const file = e.target.files[0] 
-      this.image = file
-      this.imageUrl = URL.createObjectURL(file) 
-      console.log(this.image)
-      // 이미지 post 한번 더 보내서 분류 추가할것
     },
     onChangeInput() {
       console.log(this.contents)
     },
     onTimeSelectStart(value) {
-      this.startTime = this.timeList[value]
-      console.log(this.startTime)
-    },
-    onTimeSelectEnd(value) {
-      this.endTime = this.timeList[value]
+      this.time = this.timeList[value]
+      console.log(this.time)
     },
     onDateSelectY(value) {
       this.date[0] = this.yItems[value].slice(0, -2)
       console.log(this.date)
     },
     onDateSelectM(value) {
-      var temp = this.mItems[value].slice(0, -2)
+      const temp = this.mItems[value].slice(0, -2)
       if (temp < 10) {
         this.date[2] = '0' + temp
       } else {
@@ -197,7 +182,7 @@ export default {
       console.log(this.date)
     },
     onDateSelectD(value) {
-      var temp = this.dItems[value].slice(0, -2)
+      const temp = this.dItems[value].slice(0, -2)
       if (temp < 10) {
         this.date[4] = '0' + temp
       } else {
@@ -205,6 +190,10 @@ export default {
       }
       console.log(this.date)
     },
+    ...mapActions(['postImage']),
+  },
+  computed: {
+    ...mapGetters(['getId', 'getCategory', 'getColor', 'getImgUrl'])
   }
 }
 </script>
@@ -227,20 +216,12 @@ export default {
   .select-year {
     width: 100px;
     margin: 3px 5px 5px;
+    height: 1.5rem;
   }
-  .select-month {
+  .select-month, .select-day, .select-time {
     width: 80px;
     margin: 3px 5px 5px;
-  }
-  .select-day {
-    width: 80px;
-    margin: 3px 5px 5px;
-    padding: 2px;
-  }
-  .select-time {
-    width: 80px;
-    margin-left: 5px;
-    padding: 2px;
+    height: 1.5rem;
   }
   .container {
     margin-top: 150px;
