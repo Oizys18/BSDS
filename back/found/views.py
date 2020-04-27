@@ -24,6 +24,8 @@ from sklearn.model_selection import cross_validate, LeaveOneOut, cross_val_score
 from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
+from django.conf import settings
+import os
 
 
 def get_closer_user(x, y, radius):
@@ -136,7 +138,7 @@ def search_by_image(request):
                 postings = FoundPosting.objects.filter(created__gt=datetime.now() - timedelta(weeks=3))
                 print(postings)
                 image_set = FoundThumbnail.objects.filter(posting_id__in=postings).values('origin')
-                print(image_set)
+                print(image_set) # 해당 이미지 id 담긴 list
                 origin_images = FoundImage.objects.filter(id__in=image_set)
                 print(origin_images)
 
@@ -144,9 +146,11 @@ def search_by_image(request):
                 origin_ids = []
                 origin_image_features = []
                 for origin_image in origin_images:
-                    real_numpy_path = './media/' + origin_image.numpy_path
+                    real_numpy_path = os.path.join(settings.MEDIA_ROOT, origin_image.numpy_path)
+                    print(real_numpy_path)
                     origin_image_feature = np.load(real_numpy_path)
                     origin_ids.append(origin_image.id)
+                    print(origin_image_feature)
                     origin_image_features.append(origin_image_feature)
 
                 origin_ids = [0] + origin_ids
@@ -180,7 +184,6 @@ def search_by_image(request):
 
                 # return
                 images_id_result = [int(first), int(second), int(third)]
-
                 thumb_set = FoundThumbnail.objects.filter(origin_id__in=images_id_result).values('posting')
                 posting_set = FoundPosting.objects.filter(id__in=thumb_set)
 
@@ -213,19 +216,36 @@ def create_found_image(request):
             th_serializer = FoundThumbnailSerializer(request.POST, request.FILES)
             if th_serializer.is_valid():
                 image = serializer.create(serializer.validated_data)
+
+                # image 와 같은 folder 에 .npy 파일도 저장 / FoundImage numpy_path column 값 저장
+                im = mh.imread(image.image)
+                im = mh.colors.rgb2gray(im, dtype=np.uint8)
+                im_ftr = mh.features.haralick(im).ravel()
+                numpy_path = str(image.image).split('.')[0] + '.npy'
+                image.numpy_path = numpy_path
+                image.save()
+                numpy_path = os.path.join(settings.MEDIA_ROOT, numpy_path)
+                np.save(numpy_path, im_ftr)
+
+                # thumbnail
                 thumbnail_image = th_serializer.create(th_serializer.validated_data)
                 thumbnail_image.origin_id = image.id
                 thumbnail_image.save()
 
-                #TODO Category 분석기
-                category = 1
-                #TODO Color 분석기
-                color = 2
+                
+
+
+                #TODO Category 분석기 결과값(추후 수정)
+                category_1 = 1
+                category_2 = 2
+                category_3 = 3
+
                 #TODO Category image 에 추가 등록하기
                 datasets = {
                     'image_id': thumbnail_image.id,
-                    'category': category,
-                    'color': color
+                    'category_1': category_1,
+                    'category_2': category_2,
+                    'category_3': category_3,
                 }
                 return Response(status=200, data=datasets, content_type='application.json')
         return Response(status=400, data={'message': 'Invalid images input'})
