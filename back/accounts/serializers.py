@@ -11,8 +11,14 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('id', 'username')
 
 
+class AddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Address
+        fields = ('address_name', 'x', 'y')
+
+
 class UserDetailSerializer(serializers.ModelSerializer):
-    address = serializers.StringRelatedField(many=True)
+    address = AddressSerializer(many=True)
 
     class Meta:
         model = User
@@ -20,7 +26,7 @@ class UserDetailSerializer(serializers.ModelSerializer):
 
 
 class UserInfoSerializer(serializers.ModelSerializer):
-    address = serializers.StringRelatedField(many=True)
+    address = AddressSerializer(many=True)
 
     class Meta:
         model = User
