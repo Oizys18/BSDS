@@ -32,15 +32,18 @@ class LostImage(models.Model):
 class LostPosting(TimeStampedModel):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     color = models.ForeignKey(Color, on_delete=models.CASCADE)
-    status = models.BooleanField()
-    content = models.TextField()
+    status = models.BooleanField(blank=True)
+    content = models.TextField(blank=True)
 
-    lostname = models.CharField(max_length=100)
-    password = models.CharField(max_length=200)
+    lostname = models.CharField(max_length=100, blank=True)
+    password = models.CharField(max_length=200, blank=True)
 
     email = models.EmailField()
     do_notice = models.BooleanField()
     lost_time = models.DateTimeField(auto_now_add=False)
+
+    x = models.CharField(max_length=50, blank=True, null=True)
+    y = models.CharField(max_length=50, blank=True, null=True)
 
     class Meta:
         ordering = ('-lost_time',)
@@ -70,3 +73,5 @@ class LostAddress(models.Model):
 
     def __str__(self):
         return '%s' % self.address_name
+
+

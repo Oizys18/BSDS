@@ -12,12 +12,38 @@ class LostImageSerializer(serializers.ModelSerializer):
 class LostThumbnailSerializer(serializers.ModelSerializer):
     class Meta:
         model = LostThumbnail
-        fields = ('image',)
+        fields = ('image', )
 
 
-class CreateLostPostingSerializer(serializers.ModelSerializer):
+class LostPostingSerializer(serializers.ModelSerializer):
     class Meta:
         model = LostPosting
-        fields = ('category', 'color', 'content', 'lostname',
-                  'email', 'do_notice', 'lost_time')
+        fields = ('category', 'color', 'content', 'status',
+                  'email', 'do_notice', 'lost_time', 'x', 'y')
 
+
+class LostPostingDetailSerializer(serializers.ModelSerializer):
+    thumbnail = serializers.StringRelatedField(many=True)
+
+    class Meta:
+        model = LostPosting
+        fields = ('id', 'category', 'status', 'color', 'content', 'email',
+                  'do_notice', 'lost_time', 'x', 'y', 'thumbnail')
+
+
+class AdminLostDetailSerializer(serializers.ModelSerializer):
+    thumbnail = serializers.StringRelatedField(many=True)
+
+    class Meta:
+        model = LostPosting
+        fields = ('id', 'category', 'status', 'color', 'content',
+                  'lost_time', 'x', 'y', 'thumbnail')
+
+
+class AdminLostListSerializer(serializers.ModelSerializer):
+    thumbnail = serializers.StringRelatedField(many=True)
+
+    class Meta:
+        model = LostPosting
+        fields = ('id', 'category', 'status', 'color',
+                  'lost_time', 'thumbnail')

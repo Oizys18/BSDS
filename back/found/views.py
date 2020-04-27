@@ -15,6 +15,7 @@ from datetime import timedelta
 from datetime import datetime
 from django.contrib.auth import get_user_model
 User = get_user_model()
+from django.core.cache import cache
 
 # search_by_image 관련 module
 import mahotas as mh
@@ -49,7 +50,6 @@ def get_closer_user(x, y, radius):
     return flag, users
 
 
-# @cache_page(60 * 2)
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def search_found(request):
@@ -71,7 +71,11 @@ def search_found(request):
     if not category:
         return Response(status=400, data={'message: category 는 필수 값입니다.'})
 
-    posting_set = FoundPosting.objects.filter(category=category)
+    posting_set = cache.get(f'found_search_{category}')
+
+    if not posting_set:
+        posting_set = FoundPosting.objects.filter(category=category)
+        cache.set(f'found_search_{category}', posting_set, 60 * 5)
 
     if x:
         radius = radius if radius else 1000
@@ -235,23 +239,24 @@ def create_found_image(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_found(request):
-    data = {
-        'image_id': 3,
-        'color': 3,
-        'category': 2,
-        'content': 'werewr'
-    }
-
+    # data = {
+    #     'image_id': 3,
+    #     'color': 3,
+    #     'category': 2,
+    #     'content': 'werewr'
+    # }
+    data = request.data
     serializer = CreateFoundPostingSerializer(data=data)
     if serializer.is_valid():
         posting = serializer.save(user=request.user, status=False)
 
-        if data["image_id"]:
-            thumbnail = get_object_or_404(FoundThumbnail, id=data["image_id"])
+        if data['image_id']:
+            thumbnail = get_object_or_404(FoundThumbnail, id=data['image_id'])
             thumbnail.posting_id = posting.id
             thumbnail.save()
 
-        return Response(status=200, data=serializer.data)
+        posting_serializer = FoundPostingDetailSerializer(posting)
+        return Response(status=200, data=posting_serializer.data)
     return Response(status=400, data={'message': 'Invalid input'})
 
 
@@ -272,6 +277,7 @@ def get_user_found_list(request):
     return Response(status=200, data=datasets)
 
 
+@cache_page(60 * 2)
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_found_detail(request, found_id):
@@ -285,13 +291,13 @@ def get_found_detail(request, found_id):
 @permission_classes([IsAuthenticated])
 def update_delete_found(request, found_id):
     posting = get_object_or_404(FoundPosting, id=found_id)
-
-    if posting.id == request.user:
-        data = {
-            'color': 6,
-            'category': 2,
-            'content': 'werewr'
-        }
+    # data = {
+    #   'color': 6,
+    #   'category': 2,
+    #   'content': 'werewr'
+    # }
+    data = request.data
+    if posting.user_id == request.user.id:
         if request.method == 'PATCH':
             serializer = CreateFoundPostingSerializer(instance=posting, data=data)
             if serializer.is_valid():
@@ -309,7 +315,7 @@ def update_delete_found(request, found_id):
 @permission_classes([IsAuthenticated])
 def update_found_status(request, found_id):
     posting = get_object_or_404(FoundPosting, id=found_id)
-    if posting.id == request.user:
+    if posting.user_id == request.user.id:
         posting.status = False if posting.status else True
         posting.save()
         return Response(status=204)
