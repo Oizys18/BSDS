@@ -28,7 +28,7 @@ export default {
 
 <style scoped>
 .button-micro {
-  border: 1px solid black;
+  border: 1px solid #999999;
   min-width: 2rem;
   border-radius: 5px;
   margin: 3px;
@@ -39,6 +39,13 @@ export default {
   background-color: white;
 }
 .button-micro:hover {
-  background-color: grey;
+  box-shadow: 2px 2px 10px 0 grey;
+  border: 1px solid white;
+  outline: none;
+}
+.button-micro:active {
+  box-shadow: inset 0 0 5px grey;
+  border: 1px solid grey;
+  outline: none;
 }
 </style>

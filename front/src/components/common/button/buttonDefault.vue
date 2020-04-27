@@ -28,7 +28,7 @@ export default {
 
 <style scoped>
 .button-default {
-  border: 1px solid black;
+  border: 1px solid #999999;
   border-radius: 6px;
   min-width: 3rem;
   margin: 3px;
@@ -37,6 +37,15 @@ export default {
   font-size: 15px;
   background-color: white;
   padding: 3px 6px 3px 6px;
-  box-shadow: 2px 2px 5px 0 grey;
+}
+.button-default:hover {
+  box-shadow: 2px 2px 10px 0 grey;
+  border: 1px solid white;
+  outline: none;
+}
+.button-default:active {
+  box-shadow: inset 0 0 5px grey;
+  border: 1px solid grey;
+  outline: none;
 }
 </style>

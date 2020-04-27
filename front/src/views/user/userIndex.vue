@@ -3,27 +3,21 @@
     <navbar />
     <div class="user-index-container">
       <h1 class="user-index-title">이미지 검색</h1>
-      <form class="search-container">
-        <div class="search-icon">
+
+      <div class="file-box">
+        <label for="uploadfile">
           <span class="material-icons"> search </span>
-        </div>
+          <span class="file-box-text" v-if="!file"
+            >클릭하여 파일을 업로드해주세요.</span
+          >
+          <span class="file-box-text" v-else>{{ imgTitle }}</span>
+        </label>
+        <input type="file" id="uploadfile" @change="checkTitle()" />
+      </div>
+      <div class="file-send" @click="imgSearch()">
+        <buttonHuge :text="btnText3" :bgColor="bgColor2" :txtColor="txtColor" />
+      </div>
 
-        <div class="filebox">
-          <label for="uploadfile">클릭하여 파일을 업로드해주세요.</label>
-          <input type="file" id="uploadfile" />
-        </div>
-
-        <!-- <div class="search-img-title">
-          <span v-if="!searched">
-            <input class="search-img-inner-title" type="file">
-          </span>
-          <span v-else>
-            <span class="search-img-inner-title">
-              {{ imgTitle }}
-            </span>
-          </span>
-        </div> -->
-      </form>
       <div class="user-index-select-container" v-if="searched">
         <span class="user-index-select">
           분류
@@ -74,7 +68,7 @@
 </template>
 
 <script>
-// import axios from "axios"
+import axios from "axios";
 import navbar from "@/views/user/components/navbar.vue";
 import cardBig from "@/components/common/card/cardBig.vue";
 import modalHuge from "@/components/common/modal/modalHuge.vue";
@@ -98,16 +92,18 @@ export default {
       colors: ["검정", "노랑", "빨강", "주황"],
       btnText: "다음",
       btnText2: "상세검색",
+      btnText3: "검색",
       bgColor: "#0A95FF",
+      bgColor2: "white",
       txtColor: "black",
       isClicked: false,
       searched: false,
-      imgTitle: "클릭하여 이미지를 업로드해주세요",
+      imgTitle: "이미지가 없어요!",
       file: "",
       items: {
-        // 1: ["image1", "title1", "content1"],
-        // 2: ["image2", "title2", "content2"],
-        // 3: ["image3", "title3", "content3"],
+        // 0: ["image1", "title1", "content1"],
+        // 1: ["image2", "title2", "content2"],
+        // 2: ["image3", "title3", "content3"],
       },
     };
   },
@@ -122,8 +118,27 @@ export default {
     exit_Modal(flag) {
       this.isClicked = !flag;
     },
-    uploadFile() {
-      this.file = this.$refs.file.files[0];
+    checkTitle() {
+      this.imgTitle = event.target.files[0].name;
+      this.file = event.target.files[0];
+      console.log(event.target.files[0].name);
+    },
+    imgSearch() {
+      let formData = new FormData();
+      let url = "";
+      formData.append("file", this.file);
+      axios
+        .post(url + "/found/search/image/", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((res) => {
+          console.log(res);
+        })
+        .catch(function() {
+          console.log("FAILURE!!");
+        });
     },
   },
 };
@@ -139,7 +154,7 @@ export default {
   display: flex;
 }
 .user-index-container {
-  width: 57%;
+  width: 40%;
 }
 .user-index-title {
   justify-content: flex-start;
@@ -150,44 +165,45 @@ export default {
 }
 .user-index-select-container {
   margin-top: 10px;
-  justify-content: flex-start;
+  justify-content: center;
   display: flex;
 }
 .user-index-select {
-  margin-left: 15px;
+  margin-left: 30px;
   font-size: 1.1rem;
   font-weight: bold;
 }
-.user-index-button {
-  position: fixed;
-  align-items: center;
-  display: flex;
-  top: 370px;
-  right: 22%;
-}
 .user-index-card-container {
-  margin-top: 10px;
-  justify-content: space-between;
+  margin-top: 30px;
+  justify-content: center;
+  display: flex;
+}
+.user-index-button {
+  position: absolute;
+  width: inherit;
+  bottom: 10vh;
+  align-items: center;
+  justify-content: flex-end;
   display: flex;
 }
 
 /* img upload */
-.filebox label {
-  margin-left:10%;
-  width:max-content;
-  display: inline-block;
-  padding: 0.5em 0.75em;
-  color: #999;
-  font-size: inherit;
-  line-height: normal;
-  vertical-align: middle;
+.file-box label {
+  width: 100%;
+  height: 2em;
+  display: flex;
+  color: rgb(100, 100, 100);
+  font-size: 1.7em;
+  justify-content: flex-start;
+  align-items: center;
   background-color: #fdfdfd;
   cursor: pointer;
   border: 1px solid #ebebeb;
   border-bottom-color: #e2e2e2;
-  border-radius: 0.25em;
+  border-radius: 20px;
+  overflow: hidden;
 }
-.filebox input[type="file"] {
+.file-box input[type="file"] {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -198,51 +214,33 @@ export default {
   border: 0;
 }
 
-/* searchbar */
-.search-container {
-  width: 100%;
-  border: 1px solid rgb(194, 194, 194);
-  border-radius: 20px;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  background-color: white;
-  outline: none;
-}
-.search-container:hover {
+/* file */
+.file-box :hover {
   box-shadow: 2px 2px 10px 0 grey;
-  border: none;
+  border: 1px solid #ebebeb;
   outline: none;
 }
-
-.search-container:active {
+.file-box :active {
   box-shadow: inset 0 0 5px grey;
+  border: 1px solid #ebebeb;
+  outline: none;
+}
+.material-icons,
+.file-box-text:hover {
+  box-shadow: none;
+  border: none;
+  outline: none;
+}
+.material-icons,
+.file-box-text:active {
+  box-shadow: none;
   border: none;
   outline: none;
 }
 
-.search-img-title {
-  border: none;
-  width: 100%;
-  height: 70%;
-  font-size: 1.5em;
-  margin-left: 5%;
-  justify-content: flex-start;
+.file-send {
+  margin-top: 20px;
   display: flex;
-  color: rgb(90, 90, 90);
-}
-.search-img-inner-title {
-  font-size: 1.5rem;
-}
-.search-icon {
-  border: none;
-  display: flex;
-  justify-content: flex-start;
-  background: none;
-  position: relative;
-}
-
-.material-icons {
-  font-size: 50px;
+  justify-content: center;
 }
 </style>
