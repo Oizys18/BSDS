@@ -6,24 +6,23 @@
         <span class="unselected" @click="go('/')">
           이미지 검색
         </span>
-        <span class="selected" >
+        <span class="selected">
           상세검색
         </span>
       </div>
-      <searchBar :inputText="inputText" />
       <div class="keyword-search-card">
         <div class="keyword-search-select-container">
           <span class="keyword-search-select-category">
             분류
-            <selectOne :items="categories" :default="categoryDefault" />
+            <selectOne :items="categories" :default="categoryDefault" @input="updateInput"/>
           </span>
           <span class="keyword-search-select-color">
             색상
-            <selectOne :items="colors" :default="colorDefault" />
+            <selectOne :items="colors" :default="colorDefault" @input="updateInput"/>
           </span>
           <span class="keyword-search-select-location">
             예상분실위치
-            <span @click="showModal()"> 
+            <span @click="showModal()">
               <buttonDefault
                 :text="btnText2"
                 :bgColor="white"
@@ -51,7 +50,6 @@
 
 <script>
 import navbar from "@/views/user/components/navbar.vue";
-import searchBar from "@/components/common/search/searchBar.vue";
 import selectOne from "@/components/common/dropdown/selectOne.vue";
 import buttonHuge from "@/components/common/button/buttonHuge.vue";
 import modalMap from "@/components/common/modal/modalMap.vue";
@@ -60,7 +58,6 @@ export default {
   name: "keywordSearch",
   components: {
     navbar,
-    searchBar,
     selectOne,
     buttonHuge,
     modalMap,
@@ -69,21 +66,22 @@ export default {
   data() {
     return {
       categoryDefault: "분류를 선택해주세요",
-      categories: ["의류", "전자기기", "식품"],
       colorDefault: "색상을 선택해주세요",
-      colors: ["검정", "노랑", "빨강", "주황"],
       btnText: "검색",
       btnText2: "클릭하여 지도확인",
       bgColor: "#0A95FF",
       txtColor: "black",
       isClicked: false,
-      inputText:"검색어를 입력해주세요 ex)가방,신발",
-      items: {
-        1: ["image1", "title1", "content1"],
-        2: ["image2", "title2", "content2"],
-        3: ["image3", "title3", "content3"],
-      },
+      inputColor:'',
     };
+  },
+  computed: {
+    categories() {
+      return this.$store.state.categories;
+    },
+    colors() {
+      return this.$store.state.colors;
+    },
   },
   methods: {
     go(path) {
@@ -118,11 +116,11 @@ export default {
   width: 40%;
 }
 .keyword-search-select-container {
-  margin: 5%;
+  margin: 10%;
   display: grid;
-  height: 70%;
+  height: 100%;
   align-items: center;
-  grid-template-rows: repeat(4, 25%);
+  grid-template-rows: repeat(6, 15%);
   grid-template-columns: repeat(4, 25%);
 }
 .keyword-search-select-category {
@@ -198,5 +196,4 @@ export default {
   border: 1px solid #ebebeb;
   outline: none;
 }
-
 </style>

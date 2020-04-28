@@ -12,6 +12,7 @@
     "core-js": "^3.6.4",
     "jwt-decode": "^2.2.0",
     "node-sass": "^4.13.1",
+    "node-vibrant": "^3.1.5",
     "sass-loader": "^8.0.2",
     "vue": "^2.6.11",
     "vue-router": "^3.1.6",
