@@ -62,16 +62,3 @@ class LostThumbnail(models.Model):
     def __str__(self):
         return 'media/%s' % self.image
 
-
-class LostAddress(models.Model):
-    posting = models.ForeignKey(LostPosting, on_delete=models.CASCADE, related_name='address')
-
-    address_name = models.CharField(max_length=200)
-
-    x = models.CharField(max_length=50)
-    y = models.CharField(max_length=50)
-
-    def __str__(self):
-        return '%s' % self.address_name
-
-

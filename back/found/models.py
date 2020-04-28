@@ -8,13 +8,13 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
-def thumbnail_path(instance, filename):
+def found_thumbnail_path(instance, filename):
     filename = datetime.today().strftime('%Y%m%d%H%M%f')
     day = datetime.today().strftime('%Y%m%d')
     return f'found/thumbnail/{day}/{filename}.jpeg'
 
 
-def image_path(instance, filename):
+def found_image_path(instance, filename):
     filename = datetime.today().strftime('%Y%m%d%H%M%f')
     day = datetime.today().strftime('%Y%m%d')
     return f'found/origin/{day}/{filename}.jpeg'
@@ -29,7 +29,7 @@ class Category(models.Model):
 
 
 class FoundImage(models.Model):
-    image = models.ImageField(upload_to=image_path)
+    image = models.ImageField(upload_to=found_image_path)
     category_1 = models.CharField(max_length=20, blank=True)
     category_2 = models.CharField(max_length=20, blank=True)
     category_3 = models.CharField(max_length=20, blank=True)
@@ -54,7 +54,7 @@ class FoundThumbnail(models.Model):
     origin = models.ForeignKey(FoundImage, blank=True, null=True, related_name='thumbnail', on_delete=models.CASCADE)
     image = ProcessedImageField(
         processors=[ResizeToFill(200, 200)],
-        upload_to=thumbnail_path,
+        upload_to=found_thumbnail_path,
         format='JPEG',
         options={'quality': 90},
     )

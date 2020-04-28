@@ -43,15 +43,6 @@ class FoundPostingDetailSerializer(serializers.ModelSerializer):
                   'content', 'status', 'thumbnail', 'user')
 
 
-class FoundPostingListSerializer(serializers.ModelSerializer):
-    thumbnail = serializers.StringRelatedField(many=True)
-    user = serializers.StringRelatedField()
-
-    class Meta:
-        model = FoundPosting
-        fields = ('id', 'color', 'category', 'created', 'status', 'thumbnail', 'user')
-
-
 class FoundThumbnailImageSerializer(serializers.ModelSerializer):
 
     class Meta:
