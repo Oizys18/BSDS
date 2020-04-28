@@ -27,6 +27,28 @@ from django.conf import settings
 import os
 from .apps import FoundConfig
 
+import io
+from PIL import Image
+import json
+
+
+# create_found_image 관련 함수
+def prepare_image(img):
+    # convert to handle png file format
+    img = Image.open(io.BytesIO(img)).convert(mode='RGB')
+    img = img.resize((224,224))
+    img_array = np.array(img) / 255.0
+    img_array = np.expand_dims(img_array, axis=0)
+    return img_array
+
+
+def parse_result(pred, cat_code):
+    pred_classes = np.argsort(pred[0])[-3:][::-1]
+    pred_probs = np.sort(pred[0])[-3:][::-1]
+    result = [(cat_code[str(pred_classes[i])],pred_probs[i]) for i in range(3)]
+    return result
+
+
 
 def get_closer_user(x, y, radius):
     keywords = f'x={x}&y={y}&radius={radius}&categoru_group_code=PO3&query=경찰서'
@@ -159,10 +181,11 @@ def search_by_image(request):
                 # print(dists[0])
                 # print(dists[0].argsort().tolist())
                 similar_order = dists[0].argsort().tolist()
-                first = similar_order.index(1)
-                second = similar_order.index(2)
-                third = similar_order.index(3)
-
+                similar_order.reverse()
+                print(similar_order)
+                first, second, third = similar_order[0], similar_order[1], similar_order[2]
+                print(first, second, third)
+                
                 # return
                 images_id_result = [int(first), int(second), int(third)]
                 thumb_set = FoundThumbnail.objects.filter(origin_id__in=images_id_result).values('posting')
@@ -176,7 +199,6 @@ def search_by_image(request):
                     },
                     'documents': serializer.data
                 }
-
                 return Response(status=200, data=datasets, content_type='application.json')
         return Response(status=400, data={'message': 'Invalid images input'})
     return Response(status=403, data={'message': '이미지는 필수값입니다.'})
@@ -208,23 +230,47 @@ def create_found_image(request):
                 thumbnail_image.origin_id = image.id
                 thumbnail_image.save()
 
-                # apps.py 에서 사용할 model 로드
-                loaded_model = FoundConfig.model
-
                 #TODO load keras model
-                print(loaded_model) # <tensorflow.python.keras.engine.sequential.Sequential object at 0x000001A968DB56C8>
-                
-                #TODO predict (image input & output --> category_1, 2, 3)
+                print("---- load Keras model")
+                loaded_model = FoundConfig.model
+                print(loaded_model) # <tensorflow.python.keras.engine.sequential.Sequential object at 0x00000240F8F3B648> 
 
-                #TODO Category 분석기 결과값(추후 수정)
-                category_1 = 1
-                category_2 = 2
-                category_3 = 3
-                image.category_1 = category_1
-                image.category_2 = category_2
-                image.category_3 = category_3
-                image.save()
-                #TODO Category image 에 추가 등록하기
+                #TODO predict (image input & output --> category_1, 2, 3)
+                image = request.FILES["image"]
+                print(image) # <class 'PIL.JpegImagePlugin.JpegImageFile'>
+                print(type(image)) # <class 'bytes'>
+
+                image = Image.open(image).convert(mode='RGB')
+                print(image)
+                image = image.resize((224, 224))
+                print(image)
+                img_array = np.array(image) / 255.0
+                print(img_array)
+                print(img_array.shape)
+                img_array = np.expand_dims(img_array, axis=0)
+                print(img_array)
+                print(img_array.shape)
+
+                preds = loaded_model.predict(img_array)
+                print(preds)
+                
+                
+                path = os.path.join(settings.BASE_DIR, 'found', 'category_code.json')
+                with open(path) as file:
+                    cat_code = json.loads(file.read())
+                print(cat_code)
+
+                print(preds[0]) # <class 'numpy.ndarray'>
+                predictions = np.argsort(preds[0]).tolist()
+                predictions.reverse()
+                predictions = predictions[:3]
+
+                # Category 분석기 결과값
+                category_1 = predictions[0] + 1
+                category_2 = predictions[1] + 1
+                category_3 = predictions[2] + 1
+
+                # Category image 에 추가 등록하기
                 datasets = {
                     'image_id': thumbnail_image.id,
                     'category': category_1,
