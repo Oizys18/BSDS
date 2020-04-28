@@ -67,6 +67,7 @@ export default {
   right: 0;
   border:none;
   background:transparent;
+  z-index:10;
   font-size:25px;
 }
 .modal-huge-image {

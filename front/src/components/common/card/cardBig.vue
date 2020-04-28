@@ -1,14 +1,14 @@
 <template>
   <div class="card-big-container">
-    <div class="card-big-image">
-      {{ this.image }}
+    <div class="card-big-image" >
+      <img :src="this.image" alt="No image">
     </div>
     <div class="card-big-text">
       <div class="card-big-title">
-        {{ this.title }}
+        보관기관:{{ this.title }}
       </div>
       <div class="card-big-content">
-        {{ this.content }}
+        습득일:{{ this.content }}
       </div>
     </div>
   </div>
@@ -42,6 +42,7 @@ export default {
 
 <style scoped>
 .card-big-container {
+  font-size:13px;
   margin: 5px;
   border: 1px solid black;
   width: 350px;

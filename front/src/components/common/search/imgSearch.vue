@@ -18,6 +18,27 @@ export default {
       default: "No input",
     },
   },
+  methods: {
+    imgSearch() {
+      this.searched = true;
+      let formData = new FormData();
+      let url = "http://4756fe7c.ngrok.io";
+      formData.append("image", this.file);
+      axios
+        .post(url + "/found/search/image/", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((res) => {
+          this.items = res.data.documents;
+          console.log(res.data.documents);
+        })
+        .catch(function() {
+          console.log("FAILURE!!");
+        });
+    },
+  },
 };
 </script>
 

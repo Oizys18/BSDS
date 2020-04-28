@@ -2,7 +2,14 @@
   <div class="user-index-wrapper">
     <navbar />
     <div class="user-index-container">
-      <h1 class="user-index-title">이미지 검색</h1>
+      <div class="title-container">
+        <span class="selected">
+          이미지 검색
+        </span>
+        <span class="unselected" @click="go('/keywordsearch')">
+          상세검색
+        </span>
+      </div>
 
       <div class="file-box">
         <label for="uploadfile">
@@ -14,10 +21,12 @@
         </label>
         <input type="file" id="uploadfile" @change="checkTitle()" />
       </div>
-      <div class="file-send" @click="imgSearch()">
+      <div class="system-message">
+        {{ message }}
+      </div>
+      <div class="file-send" @click="imgSearch()" v-if="!searched">
         <buttonHuge :text="btnText3" :bgColor="bgColor2" :txtColor="txtColor" />
       </div>
-
       <div class="user-index-select-container" v-if="searched">
         <span class="user-index-select">
           분류
@@ -40,12 +49,15 @@
             :key="index.id"
             @click="showModal(index)"
           >
-            <cardBig :image="item[0]" :title="item[1]" :content="item[2]" />
+            <cardBig
+              :image="baseurl + item['thumbnail'][0]"
+              :title="item['user']"
+              :content="item['created']"
+            />
           </div>
         </div>
-        <div style="margin-top: 100px;" v-else>
-          <h1>띠용! 검색결과가 하나도 없어요!</h1>
-          <span @click="go('/keywordsearch')">
+        <div class="keyword-button">
+          <span @click="go('/keywordsearch')" id="keyword-search-button">
             <buttonHuge
               :text="btnText2"
               :bgColor="bgColor"
@@ -54,15 +66,9 @@
           </span>
         </div>
       </div>
-      <div class="user-index-button" v-else>
-        <h2>사진이 없다면</h2>
-        <span @click="go('/keywordsearch')">
-          <buttonHuge :text="btnText" :bgColor="bgColor" :txtColor="txtColor" />
-        </span>
-        <modal v-if="isClicked" class="user-index-modal">
-          <modalHuge @exit_Clicked="exit_Modal" />
-        </modal>
-      </div>
+      <modal v-if="isClicked" class="user-index-modal">
+        <modalHuge @exit_Clicked="exit_Modal" />
+      </modal>
     </div>
   </div>
 </template>
@@ -73,7 +79,6 @@ import navbar from "@/views/user/components/navbar.vue";
 import cardBig from "@/components/common/card/cardBig.vue";
 import modalHuge from "@/components/common/modal/modalHuge.vue";
 import selectOne from "@/components/common/dropdown/selectOne.vue";
-// import buttonDefault from "@/components/common/button/buttonDefault.vue";
 import buttonHuge from "@/components/common/button/buttonHuge.vue";
 export default {
   name: "userIndex",
@@ -98,13 +103,11 @@ export default {
       txtColor: "black",
       isClicked: false,
       searched: false,
+      baseurl: "http://4756fe7c.ngrok.io/",
       imgTitle: "이미지가 없어요!",
+      message: "",
       file: "",
-      items: {
-        // 0: ["image1", "title1", "content1"],
-        // 1: ["image2", "title2", "content2"],
-        // 2: ["image3", "title3", "content3"],
-      },
+      items: {},
     };
   },
   methods: {
@@ -122,23 +125,32 @@ export default {
       this.imgTitle = event.target.files[0].name;
       this.file = event.target.files[0];
       console.log(event.target.files[0].name);
+      this.searched = false;
+      this.message = "";
     },
     imgSearch() {
-      let formData = new FormData();
-      let url = "";
-      formData.append("file", this.file);
-      axios
-        .post(url + "/found/search/image/", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then((res) => {
-          console.log(res);
-        })
-        .catch(function() {
-          console.log("FAILURE!!");
-        });
+      if (this.file) {
+        this.searched = true;
+        this.message = "";
+        let formData = new FormData();
+        let url = "http://8c6a607d.ngrok.io";
+        formData.append("image", this.file);
+        axios
+          .post(url + "/found/search/image/", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          })
+          .then((res) => {
+            this.items = res.data.documents;
+            console.log(res.data.documents);
+          })
+          .catch(function() {
+            console.log("FAILURE!!");
+          });
+      } else {
+        this.message = "파일이 없습니다.";
+      }
     },
   },
 };
@@ -148,7 +160,7 @@ export default {
 .user-index-wrapper {
   width: 100%;
   height: 100%;
-  margin-top: 150px;
+  margin-top: 250px;
   justify-content: center;
   align-items: center;
   display: flex;
@@ -156,13 +168,58 @@ export default {
 .user-index-container {
   width: 40%;
 }
-.user-index-title {
-  justify-content: flex-start;
+.title-container {
   display: flex;
-  padding: 0;
-  margin-top: 100px;
-  margin-bottom: 5px;
+  justify-content: space-between;
 }
+.system-message {
+  display: flex;
+  justify-content: flex-start;
+  color: red;
+  padding-left: 5%;
+  font-weight: bold;
+}
+.user-index-title {
+  padding: 0.5em;
+  margin-bottom: 1em;
+  font-size: 1.25em;
+  border: 1px solid #ebebeb;
+  border-bottom-color: #e2e2e2;
+  border-radius: 20px;
+}
+.selected {
+  color: rgb(255, 255, 255);
+  background-color: rgb(39, 39, 39);
+  padding: 0.5em;
+  margin-bottom: 1em;
+  font-size: 1.25em;
+  border: 1px solid #ebebeb;
+  border-bottom-color: #e2e2e2;
+  border-radius: 20px;
+}
+.unselected {
+  padding: 0.5em;
+  margin-bottom: 1em;
+  font-size: 1.25em;
+  border: 1px solid #ebebeb;
+  /* border-bottom-color: #e2e2e2; */
+  border-radius: 20px;
+  color: black;
+  background-color: white;
+}
+
+.unselected:hover {
+  box-shadow: 2px 2px 10px 0 grey;
+  border: 1px solid #ebebeb;
+  border-radius: 20px;
+  outline: none;
+}
+.unselected:active {
+  box-shadow: inset 0 0 5px grey;
+  border: 1px solid #ebebeb;
+  outline: none;
+}
+
 .user-index-select-container {
   margin-top: 10px;
   justify-content: center;
@@ -178,12 +235,11 @@ export default {
   justify-content: center;
   display: flex;
 }
-.user-index-button {
+.keyword-button {
   position: absolute;
-  width: inherit;
   bottom: 10vh;
+  right: 50%;
   align-items: center;
-  justify-content: flex-end;
   display: flex;
 }
 
@@ -193,7 +249,8 @@ export default {
   height: 2em;
   display: flex;
   color: rgb(100, 100, 100);
-  font-size: 1.7em;
+  font-size: 1.3em;
+  padding-left: 10px;
   justify-content: flex-start;
   align-items: center;
   background-color: #fdfdfd;

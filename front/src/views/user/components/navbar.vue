@@ -9,7 +9,7 @@
         <buttonDefault :text="btnText2" />
       </span>
       <span @click="go('/searchlost')">
-        <buttonDefault  :text="btnText3" />
+        <buttonDefault :text="btnText3" />
       </span>
     </div>
   </div>
@@ -22,7 +22,7 @@ export default {
   data() {
     return {
       btnText: "분실물 등록",
-      btnText2: "분실물 목록",
+      btnText2: "습득물 목록",
       btnText3: "분실신고조회",
     };
   },
