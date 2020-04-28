@@ -1,11 +1,9 @@
-// const HOST = process.env.VUE_APP_SERVER_HOST;
-const HOST = 'http://8c6a607d.ngrok.io'
+// import store from '../index'
+import router from '../../router';
 
+const HOST = "http://0a4767a2.ngrok.io/"
 const axios = require('axios');
 const decoded = require('jwt-decode');
-import router from '../../router';
-// auth.js  인증관련 모든 State 를 작성.
-// State 에 접근/변경 하는 모든 로직은 여기로.
 
 const state = {
   token: null,
@@ -87,7 +85,7 @@ const actions = {
       }
       // 요청 start
       else {
-        axios.post(`${HOST}/api-token/`, credentials)
+        axios.post(`${HOST}api-token/`, credentials)
           .then(token => {
             commit('setToken', token.data.token);
             commit('setLoading', false)
@@ -119,7 +117,7 @@ const actions = {
   userInfo: ({commit}) => {
     const token = sessionStorage.getItem('jwt')
     const admin_id = decoded(token).user_id
-    axios.get(`${HOST}/user/${admin_id}/`)
+    axios.get(`${HOST}user/${admin_id}/`)
       .then(res => {
         commit('setUserInfo', res.data)
         console.log(res)

@@ -21,8 +21,8 @@
           <span class="select">물품 분류</span>
           <select-one
             class="select-category"
-            :default="this.getCategory === null ? '분류' : this.getCategory"
-            :items="$store.state.categories"
+            :default="this.getCategory === null ? '분류' : this.getCategoryName"
+            :items="Object.values($store.state.categories)"
             @input="onSelectCategory"
           />
           <span class="error" v-if="!checkForm(this.category)">* 필수 입력란입니다.</span>
@@ -32,7 +32,7 @@
           <select-one
             class="select-category"
             :default="this.getColor  === null ? '색상' : this.getColor"
-            :items="$store.state.colors"
+            :items="Object.values($store.state.colors)"
             @input="onSelectColor"
           />
           <span class="error" v-if="!checkForm(this.color)">* 필수 입력란입니다.</span>
@@ -86,7 +86,7 @@ export default {
         "category": this.category,
         "color": this.color,
       }
-      axios.post('http://8c6a607d.ngrok.io/found/posting/', data, {
+      axios.post(`${this.$store.state.baseURL}found/posting/`, data, {
         headers: {
           "Authorization": `JWT ${sessionStorage.getItem('jwt')}`
         }
@@ -118,10 +118,10 @@ export default {
       this.$router.push(path)
       this.$store._mutations.clearState()
     },
-    ...mapActions(['postImageAdmin', 'getCategories', 'getColors'])
+    ...mapActions(['postImageAdmin'])
   },
   computed: {
-    ...mapGetters(['getId', 'getCategory', 'getColor', 'getImgUrl']),
+    ...mapGetters(['getId', 'getCategory', 'getColor', 'getImgUrl', 'getCategoryName']),
     ...mapState(['image_id'])
   }
 }
@@ -155,10 +155,10 @@ export default {
     float: left;
     width: 50em;
     border: 1px solid black;
+    border-radius: 2%;
     margin-right: 3em;
     margin-bottom: 2em;
     padding: 1rem;
-    border-radius: 10px;
   }
   .button-wrapper {
     border: none;

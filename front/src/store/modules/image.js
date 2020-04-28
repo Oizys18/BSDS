@@ -1,5 +1,5 @@
 import store from '../index'
-const HOST = 'http://8c6a607d.ngrok.io'
+const HOST = "http://0a4767a2.ngrok.io/"
 
 const axios = require('axios');
 
@@ -13,6 +13,7 @@ const state = {
 const getters = {
   getId: state => state.image_id,
   getCategory: state => state.category,
+  getCategoryName: state => store.state.categories[state.category],
   getColor: state => state.color,
   getImgUrl: state => state.imageUrl,
 };
@@ -20,8 +21,9 @@ const getters = {
 const mutations = {
   setId: (state, img_id) => state.image_id = img_id,
   setCategory: (state, ctgr) => {
-    state.category = store.state.categories[ctgr].name
+    state.category = ctgr
     console.log(store.state.categories)
+    console.log(state.category)
   },
   setColor: (state, clr) => {
     state.color = store.state.colors[clr].name
@@ -45,7 +47,7 @@ const actions= {
     const formdata = new FormData();
     commit('setImgUrl', URL.createObjectURL(file))
     formdata.append('image', file)
-    axios.post(`${HOST}/lost/posting/image/`, formdata, {
+    axios.post(`${HOST}lost/posting/image/`, formdata, {
         headers: {
             "Content-Type": "multipart/form-data",
         }
@@ -65,7 +67,7 @@ const actions= {
     const formdata = new FormData();
     commit('setImgUrl', URL.createObjectURL(file))
     formdata.append('image', file)
-    axios.post(`${HOST}/found/posting/image/`, formdata, {
+    axios.post(`${HOST}found/posting/image/`, formdata, {
         headers: {
             "Content-Type": "multipart/form-data",
             'Authorization': `JWT ${sessionStorage.getItem('jwt')}`

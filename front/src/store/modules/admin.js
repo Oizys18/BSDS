@@ -1,5 +1,5 @@
-// import router from '@/router'
-const HOST = 'http://8c6a607d.ngrok.io'
+// import store from '../index'
+// const HOST = "http://0a4767a2.ngrok.io/"
 const axios = require('axios')
 
 const state = {
@@ -34,17 +34,19 @@ const mutations = {
 const actions = {
   getCreatedList: ({ commit }) => {
     commit('setLoading', true)
-    axios.get(`${HOST}/found/posting/admin/list/`, {
-      headers: {
-      'Authorization': `JWT ${sessionStorage.getItem('jwt')}`
-    }
-    })
+    // axios.get(`${HOST}found/posting/admin/list/`, {
+    //   headers: {
+    //   'Authorization': `JWT ${sessionStorage.getItem('jwt')}`
+    // }
+    // })
+    axios.get('http://localhost:3001/user')
       .then(res => {
-        const data = res.data
+        const data = res.data[0]
         console.log(data)
         commit('setMeta', data.meta)
         commit('setDoc', data.documents)
         commit('setLoading', false)
+
       })
       .catch(err => console.log(err))
   }
