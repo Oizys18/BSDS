@@ -103,7 +103,6 @@ export default {
       txtColor: "black",
       isClicked: false,
       searched: false,
-      baseurl: "http://4756fe7c.ngrok.io/",
       imgTitle: "이미지가 없어요!",
       message: "",
       file: "",
@@ -143,7 +142,7 @@ export default {
           })
           .then((res) => {
             this.items = res.data.documents;
-            console.log(res.data.documents);
+            // console.log(res.data.documents);
           })
           .catch(function() {
             console.log("FAILURE!!");
@@ -151,6 +150,11 @@ export default {
       } else {
         this.message = "파일이 없습니다.";
       }
+    },
+  },
+  computed: {
+    baseurl() {
+      return this.$store.state.baseURL;
     },
   },
 };
