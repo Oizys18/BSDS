@@ -38,22 +38,37 @@ const mutations = {
 };
 
 const actions= {
-  postImage: ({ commit }, e) => {
+  postImageUser: ({ commit }, e) => {
     console.log(e)
     console.log(e.target.files)
     const file = e.target.files[0]
     const formdata = new FormData();
     commit('setImgUrl', URL.createObjectURL(file))
-    let pageUrl = ''
-    if (window.location.href.includes('admin')) {
-      pageUrl = 'found'
-    } else {
-      pageUrl = 'lost'
-    }
     formdata.append('image', file)
-    axios.post(`${HOST}/${pageUrl}/posting/image/`, formdata, {
+    axios.post(`${HOST}/lost/posting/image/`, formdata, {
         headers: {
             "Content-Type": "multipart/form-data",
+        }
+      })
+      .then(res => {
+        commit('setId', res.data.image_id)
+        commit('setCategory', res.data.category)
+        console.log(res)
+        console.log(state)
+      })
+      .catch(err => console.log(err))
+  },
+  postImageAdmin: ({ commit }, e) => {
+    console.log(e)
+    console.log(e.target.files)
+    const file = e.target.files[0]
+    const formdata = new FormData();
+    commit('setImgUrl', URL.createObjectURL(file))
+    formdata.append('image', file)
+    axios.post(`${HOST}/found/posting/image/`, formdata, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+            'Authorization': `JWT ${sessionStorage.getItem('jwt')}`
         }
       })
       .then(res => {

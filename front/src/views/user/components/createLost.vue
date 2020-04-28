@@ -14,7 +14,7 @@
             ref="imageInput"
             type="file"
             accept="image/*"
-            @change="postImage"
+            @change="postImageUser"
           >
           <img class="image-preview" v-if="getImgUrl" :src="getImgUrl"/>
         </div>
@@ -26,6 +26,7 @@
             :items="$store.state.categories"
             @input="onSelectCategory"
           />
+          <span class="error" v-if="!checkForm(this.category)">* 필수 입력란입니다.</span>
         </div>
         <div class="category-wrapper">
           <span class="select">색상</span>
@@ -35,6 +36,7 @@
             :items="$store.state.colors"
             @input="onSelectColor"
           />
+          <span class="error" v-if="!checkForm(this.color)">* 필수 입력란입니다.</span>
         </div>
         <div class="date-wrapper">
           <span class="select">분실 추정 일자</span>
@@ -58,10 +60,11 @@
           />
           <select-one
             class="select-time"
-            :default="'선택'"
+            :default="'시각'"
             :items="timeList"
             @input="onTimeSelect"
           />
+          <span class="error" v-if="!checkForm(this.time)">* 필수 입력란입니다.</span>
         </div>
         <div class="category-wrapper">
           <span class="select-location">
@@ -69,8 +72,8 @@
             <span @click="showModal()">
               <buttonDefault
                 :text="'지도에서 위치 선택'"
-                :bgColor="white"
-                :txtColor="txtColor"
+                :bgColor="'white'"
+                :txtColor="'txtColor'"
               />
             </span>
           </span>
@@ -88,18 +91,27 @@
         </div>
       </div>
       <div class="right-wrapper">
-        <div class="password">
-        <span class="select">비밀번호</span>
-        <p class="description">등록한 비밀번호는 내용 수정 및 분실상태 변경 시 사용됩니다.</p>
-        <input class="input-password-email" type="password" v-model="password">
+        <div class="description-wrapper">
+          <div class="password">
+            <label for="password" class="select">비밀번호</label>
+            <p class="description">등록한 비밀번호는 내용 수정 및 분실상태 변경 시 사용됩니다.</p>
+            <input id="password" class="input-password-email" type="password" v-model="password">
+            <span class="error" v-if="!checkPassword(this.password)">* 비밀번호는 네 글자 이상 입력해주세요.</span>
+          </div>
+          <div class="email">
+            <label for="email" class="select">이메일</label>
+            <p class="description">유사한 습득물 등록 시 이메일로 알림을 보내드립니다.</p>
+            <input id="email" class="input-password-email" type="email" v-model="email">
+            <span class="error" v-if="!validEmail(this.email)">* 이메일 형식에 맞게 입력해주세요.</span>
+          </div>
         </div>
-        <div class="email">
-        <span class="select">이메일</span>
-        <p class="description">유사한 습득물 등록 시 이메일로 알림을 보내드립니다.</p>
-        <input class="input-password-email" type="email" v-model="email">
-        </div>
-        <div class="submit-btn" @click="createContent">
-          <button-default :text="'등록하기'"/>
+        <div class="button-wrapper">
+          <div class="submit-btn" @click="createContent">
+            <button-default class="user-btn" :text="'등록하기'"/>
+          </div>
+          <div @click="go('/')">
+            <button-default class="user-btn" :text="'취소'"/>
+          </div>
         </div>
       </div>
     </form>
@@ -127,8 +139,8 @@ export default {
   data() {
     return {
       content: '',
-      category: this.$store.getters.getCategory,
-      color: this.$store.getters.getColor,
+      category: this.getCategory,
+      color: this.getColor,
       yItems: [],
       mItems: ['1 월', '2 월', '3 월', '4 월', '5 월', '6 월', '7 월', '8 월', '9 월', '10 월', '11 월', '12 월'],
       dItems: [],
@@ -137,7 +149,7 @@ export default {
       time: '',
       password: '',
       email: '',
-      isClicked: false,
+      isClicked: false
     }
   },
   mounted() {
@@ -148,7 +160,7 @@ export default {
         this.timeList.push(i.toString() + ':00')
       }
     }
-    for (let y = 2020; y > 1920; y--) {
+    for (let y = 2020; y > 2018; y--) {
       this.yItems.push(y.toString() + ' 년')
     }
     for (let d = 1; d < 32; d++) {
@@ -158,9 +170,9 @@ export default {
   methods: {
     createContent() {
       const data = {
-        "image_id": this.image_id,
-        "category": this.category,
-        "color": this.color,
+        "image_id": this.getId,
+        "category": this.getCategory,
+        "color": this.getColor,
         "content": this.content,
         "lost_time":
           `${this.date.reduce(function (accumulator, currentValue) {
@@ -174,14 +186,15 @@ export default {
       }
       console.log(data)
       axios.post('http://8c6a607d.ngrok.io/lost/posting/', data)
-      .then(res => {
-        console.log(res)
-        this.$router.push('created')
-        console.log(this.image_id)
-      })
-      .catch(err => {
-        console.log(err)
-      })
+        .then(res => {
+          console.log(res)
+          this.$router.push('created')
+          console.log(this.image_id)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+
     },
     onClickImageUpload() {
       this.$refs.imageInput.click();
@@ -225,7 +238,25 @@ export default {
     exit_Modal(flag) {
       this.isClicked = !flag;
     },
-    ...mapActions(['postImage', 'getCategories', 'getColors']),
+    validEmail(email) {
+        if (/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+          return true
+        } else if (email.length === 0) {
+          return true
+        }
+    },
+    checkForm(value) {
+      if (value) {
+        return true
+      }
+    },
+    checkPassword(password) {
+      if (password.length > 3) {
+        return true
+      }
+    }
+  ,
+    ...mapActions(['postImageUser', 'getCategories', 'getColors']),
   },
   computed: {
     ...mapGetters(['getId', 'getCategory', 'getColor', 'getImgUrl']),
@@ -277,11 +308,23 @@ export default {
     padding: 1rem;
   }
   .right-wrapper {
+    float: left;
+    width: 20em;
+
+    text-align: initial;
+  }
+  .description-wrapper {
     border: 1px solid black;
     float: left;
     width: 20em;
     padding: 10px;
     text-align: initial;
+  }
+  .button-wrapper {
+    border: none;
+    width: 20em;
+    padding: 0px 10px 10px 10px;
+    text-align: center;
   }
   .img-wrapper {
     margin: 5px; 
@@ -318,5 +361,15 @@ export default {
   }
   .submit-btn {
     text-align: center;
+  }
+  .user-btn {
+    width: 300px;
+    margin-top: 15px;
+  }
+  .error {
+    font-size: 0.8em;
+    color: #FB121D;
+    padding-top: 2px;
+    margin: 0 15px 0px 10px;
   }
 </style>
