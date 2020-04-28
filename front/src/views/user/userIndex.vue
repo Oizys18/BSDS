@@ -10,24 +10,25 @@
           상세검색
         </span>
       </div>
-
-      <div class="file-box">
-        <label for="uploadfile">
-          <span class="material-icons"> search </span>
-          <span class="file-box-text" v-if="!file"
-            >클릭하여 파일을 업로드해주세요.</span
-          >
-          <span class="file-box-text" v-else>{{ imgTitle }}</span>
-        </label>
-        <input type="file" id="uploadfile" @change="checkTitle()" />
-        <buttonHuge
-          class="file-send"
-          @click="imgSearch()"
-          v-if="!searched"
-          :text="btnText3"
-          :bgColor="bgColor2"
-          :txtColor="txtColor"
-        />
+      <div class="file-bar">
+        <div class="file-box">
+          <label for="uploadfile">
+            <span class="material-icons"> search </span>
+            <span class="file-box-text" v-if="!file"
+              >클릭하여 파일을 업로드해주세요.</span
+            >
+            <span class="file-box-text" v-else>{{ imgTitle }}</span>
+          </label>
+          <input type="file" id="uploadfile" @change="checkTitle()" />
+        </div>
+        <div @click="imgSearch()">
+          <buttonHuge
+            class="file-send"
+            :text="btnText3"
+            :bgColor="bgColor2"
+            :txtColor="txtColor"
+          />
+        </div>
       </div>
       <div class="system-message">
         {{ message }}
@@ -64,11 +65,6 @@
         </div>
         <div class="keyword-button">
           <span @click="go('/keywordsearch')" id="keyword-search-button">
-            <buttonHuge
-              :text="btnText2"
-              :bgColor="bgColor"
-              :txtColor="txtColor"
-            />
           </span>
         </div>
       </div>
@@ -135,6 +131,7 @@ export default {
     },
     imgSearch() {
       if (this.file) {
+        console.log("hello");
         this.searched = true;
         this.message = "";
         let formData = new FormData();
@@ -148,6 +145,7 @@ export default {
           })
           .then((res) => {
             this.items = res.data.documents;
+            console.log(this.items);
           })
           .catch(function() {
             console.log("FAILURE!!");
@@ -167,8 +165,8 @@ export default {
 
 <style scoped>
 .user-index-wrapper {
-  width: 100%;
-  height: 100%;
+  /* width: 100%;
+  height: 100%; */
   margin-top: 250px;
   justify-content: center;
   align-items: center;
@@ -251,15 +249,17 @@ export default {
   align-items: center;
   display: flex;
 }
-
+.file-bar {
+  display: flex;
+  align-items: center;
+  justify-content: stretch;
+}
 /* img upload */
 .file-box {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  width: 85%;
+  /* overflow-x: hidden; */
 }
 .file-box label {
-  width: 90%;
   height: 2em;
   display: flex;
   color: rgb(100, 100, 100);
@@ -292,9 +292,19 @@ export default {
   border-radius: 20px;
   overflow: hidden;
   width: 10%;
-  /* margin-top: 20px; */
   display: flex;
   justify-content: center;
+}
+/* file */
+file-send :hover {
+  box-shadow: none;
+  border: none;
+  outline: none;
+}
+.file-send :active {
+  box-shadow: none;
+  border: none;
+  outline: none;
 }
 
 /* file */
@@ -308,6 +318,7 @@ export default {
   border: 1px solid #ebebeb;
   outline: none;
 }
+
 .material-icons,
 .file-box-text:hover {
   box-shadow: none;
