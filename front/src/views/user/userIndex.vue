@@ -20,13 +20,19 @@
           <span class="file-box-text" v-else>{{ imgTitle }}</span>
         </label>
         <input type="file" id="uploadfile" @change="checkTitle()" />
+        <buttonHuge
+          class="file-send"
+          @click="imgSearch()"
+          v-if="!searched"
+          :text="btnText3"
+          :bgColor="bgColor2"
+          :txtColor="txtColor"
+        />
       </div>
       <div class="system-message">
         {{ message }}
       </div>
-      <div class="file-send" @click="imgSearch()" v-if="!searched">
-        <buttonHuge :text="btnText3" :bgColor="bgColor2" :txtColor="txtColor" />
-      </div>
+
       <div class="user-index-select-container" v-if="searched">
         <span class="user-index-select">
           분류
@@ -247,8 +253,13 @@ export default {
 }
 
 /* img upload */
+.file-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .file-box label {
-  width: 100%;
+  width: 90%;
   height: 2em;
   display: flex;
   color: rgb(100, 100, 100);
@@ -273,6 +284,18 @@ export default {
   clip: rect(0, 0, 0, 0);
   border: 0;
 }
+.file-send {
+  background-color: #fdfdfd;
+  cursor: pointer;
+  border: 1px solid #ebebeb;
+  border-bottom-color: #e2e2e2;
+  border-radius: 20px;
+  overflow: hidden;
+  width: 10%;
+  /* margin-top: 20px; */
+  display: flex;
+  justify-content: center;
+}
 
 /* file */
 .file-box :hover {
@@ -296,11 +319,5 @@ export default {
   box-shadow: none;
   border: none;
   outline: none;
-}
-
-.file-send {
-  margin-top: 20px;
-  display: flex;
-  justify-content: center;
 }
 </style>
