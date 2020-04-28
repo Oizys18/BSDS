@@ -2,7 +2,14 @@
   <div class="keyword-search-wrapper">
     <navbar />
     <div class="keyword-search-container">
-      <h1 class="keyword-search-title">무엇을 잃어버리셨나요?</h1>
+      <div class="title-container">
+        <span class="unselected" @click="go('/')">
+          이미지 검색
+        </span>
+        <span class="selected" >
+          상세검색
+        </span>
+      </div>
       <searchBar :inputText="inputText" />
       <div class="keyword-search-card">
         <div class="keyword-search-select-container">
@@ -16,7 +23,7 @@
           </span>
           <span class="keyword-search-select-location">
             예상분실위치
-            <span @click="showModal()">
+            <span @click="showModal()"> 
               <buttonDefault
                 :text="btnText2"
                 :bgColor="white"
@@ -95,25 +102,20 @@ export default {
 
 <style scoped>
 .keyword-search-wrapper {
-  margin-top: 150px;
+  margin-top: 250px;
   justify-content: center;
   align-items: center;
   display: flex;
 }
 .keyword-search-card {
-  margin-top: 50px;
+  height: 2em;
+  margin-top: 10px;
   border: 1px solid black;
-  height: 500px;
+  height: 300px;
   border-radius: 40px;
 }
 .keyword-search-container {
-  width: 60%;
-}
-.keyword-search-title {
-  justify-content: flex-start;
-  display: flex;
-  padding: 0;
-  margin-bottom: 5px;
+  width: 40%;
 }
 .keyword-search-select-container {
   margin: 5%;
@@ -148,19 +150,53 @@ export default {
   right: 20%;
 }
 .keyword-search-card-container {
-  margin-top: 100px;
+  /* margin-top: 100px; */
   justify-content: space-between;
   display: flex;
 }
 
 /* searchbar */
-.search-container {
-  height: 70px;
-  border: 1px solid black;
-  border-radius: 50px;
-}
 .custom-select {
   height: 2.5rem;
   width: 80%;
 }
+
+.title-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.selected {
+  color: rgb(255, 255, 255);
+  background-color: rgb(39, 39, 39);
+  padding: 0.5em;
+  margin-bottom: 1em;
+  font-size: 1.25em;
+  border: 1px solid #ebebeb;
+  border-bottom-color: #e2e2e2;
+  border-radius: 20px;
+}
+.unselected {
+  padding: 0.5em;
+  margin-bottom: 1em;
+  font-size: 1.25em;
+  border: 1px solid #ebebeb;
+  /* border-bottom-color: #e2e2e2; */
+  border-radius: 20px;
+  color: black;
+  background-color: white;
+}
+
+.unselected:hover {
+  box-shadow: 2px 2px 10px 0 grey;
+  border: 1px solid #ebebeb;
+  border-radius: 20px;
+  outline: none;
+}
+.unselected:active {
+  box-shadow: inset 0 0 5px grey;
+  border: 1px solid #ebebeb;
+  outline: none;
+}
+
 </style>
