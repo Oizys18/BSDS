@@ -45,6 +45,9 @@ class LostPosting(TimeStampedModel):
     x = models.CharField(max_length=50, blank=True, null=True)
     y = models.CharField(max_length=50, blank=True, null=True)
 
+    p1 = models.IntegerField(blank=True, null=True)
+    p2 = models.IntegerField(blank=True, null=True)
+
     class Meta:
         ordering = ('-lost_time',)
 
