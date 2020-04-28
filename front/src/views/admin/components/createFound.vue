@@ -13,7 +13,7 @@
             ref="imageInput"
             type="file"
             accept="image/*"
-            @change="postImage"
+            @change="postImageAdmin"
           >
           <img class="image-preview" v-if="getImgUrl" :src="getImgUrl"/>
         </div>
@@ -21,31 +21,32 @@
           <span class="select">물품 분류</span>
           <select-one
             class="select-category"
-            :default="this.category === null ? '분류' : this.category"
+            :default="this.getCategory === null ? '분류' : this.getCategory"
             :items="$store.state.categories"
             @input="onSelectCategory"
           />
+          <span class="error" v-if="!checkForm(this.category)">* 필수 입력란입니다.</span>
         </div>
         <div class="category-wrapper">
           <span class="select">색상</span>
           <select-one
             class="select-category"
-            :default="this.color  === null ? '색상' : this.color"
+            :default="this.getColor  === null ? '색상' : this.getColor"
             :items="$store.state.colors"
             @input="onSelectColor"
           />
+          <span class="error" v-if="!checkForm(this.color)">* 필수 입력란입니다.</span>
         </div>
         <div class="input-wrapper">
             <textarea
               class="content-area"
-              v-model="contents"
+              v-model="content"
               type="textarea"
               placeholder="필요한 내용이 있다면 입력해주세요."
-              @input="onChangeInput"
             />
         </div>
       </div>
-      <div class="right-wrapper">
+      <div class="button-wrapper">
         <div @click="createContent">
           <button-default class="admin-btn" :text="'등록하기'"/>
         </div>
@@ -59,7 +60,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+  import {mapGetters, mapActions, mapState} from 'vuex'
 import selectOne from '@/components/common/dropdown/selectOne'
 import buttonDefault from '@/components/common/button/buttonDefault'
 const axios = require('axios')
@@ -73,19 +74,23 @@ export default {
   data () {
     return {
       content: '',
-      category: '',
-      color: ''
+      category: this.getCategory,
+      color: this.getColor
     }
   },
   methods: {
     createContent () {
       const data = {
-        "image_id": this.$store.image_id,
+        "image_id": this.getId,
         "content": this.content,
         "category": this.category,
         "color": this.color,
       }
-      axios.post('http://localhost:3001/board', data)
+      axios.post('http://8c6a607d.ngrok.io/found/posting/', data, {
+        headers: {
+          "Authorization": `JWT ${sessionStorage.getItem('jwt')}`
+        }
+      })
       .then(res => {
         console.log(res)
         console.log(data)
@@ -99,19 +104,25 @@ export default {
       this.$refs.imageInput.click();
     },
     onSelectCategory(value) {
-      this.category = this.$store.state.categories[value].name
+      this.category = value
     },
     onSelectColor(value) {
-      this.color = this.$store.state.colors[value].name
+      this.color = value
+    },
+    checkForm(value) {
+      if (value) {
+        return true
+      }
     },
     go(path) {
       this.$router.push(path)
       this.$store._mutations.clearState()
     },
-    ...mapActions(['postImage', 'getCategories', 'getColors'])
+    ...mapActions(['postImageAdmin', 'getCategories', 'getColors'])
   },
   computed: {
-    ...mapGetters(['getId', 'getCategory', 'getColor', 'getImgUrl'])
+    ...mapGetters(['getId', 'getCategory', 'getColor', 'getImgUrl']),
+    ...mapState(['image_id'])
   }
 }
 </script>
@@ -149,7 +160,7 @@ export default {
     padding: 1rem;
     border-radius: 10px;
   }
-  .right-wrapper {
+  .button-wrapper {
     border: none;
     float: left;
     width: 20em;
@@ -176,6 +187,12 @@ export default {
     margin: 0 15px 0px 10px;
   }
   .admin-btn {
-    width: 20em;
+    width: 300px;
+  }
+  .error {
+    font-size: 0.8em;
+    color: #FB121D;
+    padding-top: 2px;
+    margin: 0 15px 0px 10px;
   }
 </style>
