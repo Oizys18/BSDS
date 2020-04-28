@@ -1,8 +1,7 @@
 from django.shortcuts import get_object_or_404
-from django.core.paginator import Paginator
 from .models import FoundPosting, FoundThumbnail, FoundImage
-from .serializers import FoundPostingSerializer, FoundImageSerializer, FoundPostingListSerializer, \
-    FoundPostingDetailSerializer, CreateFoundPostingSerializer, FoundThumbnailSerializer, GetFoundImageSerializer
+from .serializers import FoundPostingSerializer, FoundImageSerializer, \
+    FoundPostingDetailSerializer, CreateFoundPostingSerializer, FoundThumbnailSerializer
 from lost.serializers import LostThumbnailSerializer, LostImageSerializer
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -15,7 +14,6 @@ from datetime import timedelta
 from datetime import datetime
 from django.contrib.auth import get_user_model
 User = get_user_model()
-from django.core.cache import cache
 
 # search_by_image 관련 module
 import mahotas as mh
@@ -78,14 +76,6 @@ def get_closer_user(x, y, radius):
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def search_found(request):
-    """
-    습득물 조회 + 분류
-
-    :param category_id:
-    :param request: color, category, created_at, x, y, radius
-    """
-    # TODO 길이 조정하기, 잘라보내기
-
     color = request.query_params.get('color')
     category = request.query_params.get('category')
     created = request.query_params.get('created')
@@ -93,14 +83,10 @@ def search_found(request):
     y = request.query_params.get('y')
     radius = request.query_params.get('radius')
 
-    if not category:
-        return Response(status=400, data={'message: category 는 필수 값입니다.'})
+    posting_set = FoundPosting.objects.all()
 
-    posting_set = cache.get(f'found_search_{category}')
-
-    if not posting_set:
-        posting_set = FoundPosting.objects.filter(category=category)
-        cache.set(f'found_search_{category}', posting_set, 60 * 5)
+    if category:
+        posting_set = posting_set.filter(category=category)
 
     if x:
         radius = radius if radius else 1000
@@ -120,17 +106,12 @@ def search_found(request):
     if color:
         posting_set = posting_set.filter(color=color)
 
-    paginator = Paginator(posting_set, 8)
-    page_number = request.query_params.get('page')
-    page_obj = paginator.get_page(page_number)
-
-    serializer = FoundPostingListSerializer(page_obj, many=True)
+    posting_set = posting_set[:50]
+    serializer = FoundPostingDetailSerializer(posting_set, many=True)
 
     datasets = {
         'meta': {
-            'total_cnt': paginator.count,
-            'last_page': paginator.num_pages,
-            'page': page_number if page_number else 1,
+            'total_cnt': posting_set.count()
         },
         'documents': serializer.data
     }
@@ -141,11 +122,6 @@ def search_found(request):
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def search_by_image(request):
-    """
-    습득물 이미지 검색
-    :param request: FILES 'image'
-    :return: 최근 3주 습득물 중 유사도가 높은 게시글 최대 3개
-    """
     if request.FILES:
         serializer = LostImageSerializer(request.POST, request.FILES)
         if serializer.is_valid():
@@ -162,7 +138,7 @@ def search_by_image(request):
                 im_ftr = mh.features.haralick(im).ravel()
 
                 # 3주 postings 불러오기
-                postings = FoundPosting.objects.filter(created__gt=datetime.now() - timedelta(weeks=3))
+                postings = FoundPosting.objects.filter(created__gt=datetime.now() - timedelta(weeks=2))
                 print(postings)
                 image_set = FoundThumbnail.objects.filter(posting_id__in=postings).values('origin')
                 print(image_set) # 해당 이미지 id 담긴 list
@@ -215,7 +191,7 @@ def search_by_image(request):
                 thumb_set = FoundThumbnail.objects.filter(origin_id__in=images_id_result).values('posting')
                 posting_set = FoundPosting.objects.filter(id__in=thumb_set)
 
-                serializer = FoundPostingListSerializer(posting_set, many=True)
+                serializer = FoundPostingDetailSerializer(posting_set, many=True)
 
                 datasets = {
                     'meta': {
@@ -231,12 +207,6 @@ def search_by_image(request):
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def create_found_image(request):
-    """
-    습득물 게시글 작성을 위해 이미지 제출 (header jwt 필요)
-
-    :param request: FILES 'image'
-    :return: {image_id: int, category: int, color: int}
-    """
     if request.FILES:
         serializer = FoundImageSerializer(request.POST, request.FILES)
         if serializer.is_valid():
@@ -303,9 +273,7 @@ def create_found_image(request):
                 # Category image 에 추가 등록하기
                 datasets = {
                     'image_id': thumbnail_image.id,
-                    'category_1': category_1,
-                    'category_2': category_2,
-                    'category_3': category_3,
+                    'category': category_1,
                 }
                 return Response(status=200, data=datasets, content_type='application.json')
         return Response(status=400, data={'message': 'Invalid images input'})
@@ -315,18 +283,12 @@ def create_found_image(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_found(request):
-    # data = {
-    #     'image_id': 3,
-    #     'color': 3,
-    #     'category': 2,
-    #     'content': 'werewr'
-    # }
     data = request.data
     serializer = CreateFoundPostingSerializer(data=data)
     if serializer.is_valid():
         posting = serializer.save(user=request.user, status=False)
 
-        if data['image_id']:
+        if data.get('image_id'):
             thumbnail = get_object_or_404(FoundThumbnail, id=data['image_id'])
             thumbnail.posting_id = posting.id
             thumbnail.save()
@@ -367,11 +329,6 @@ def get_found_detail(request, found_id):
 @permission_classes([IsAuthenticated])
 def update_delete_found(request, found_id):
     posting = get_object_or_404(FoundPosting, id=found_id)
-    # data = {
-    #   'color': 6,
-    #   'category': 2,
-    #   'content': 'werewr'
-    # }
     data = request.data
     if posting.user_id == request.user.id:
         if request.method == 'PATCH':

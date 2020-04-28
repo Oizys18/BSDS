@@ -136,10 +136,18 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
-        'LOCATION': 'my_cache_table',
+        'LOCATION': 'cache_table',
         'TIMEOUT': 120,
         'OPTIONS': {
             'MAX_ENTRIES': 500
         }
     }
 }
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.googlemail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = config('EMAILUSER')
+EMAIL_HOST_PASSWORD = config('EMAILPASSWORD')

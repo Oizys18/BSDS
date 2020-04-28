@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator
-from .models import LostPosting, LostImage, LostThumbnail, LostAddress
+from .models import LostPosting, LostImage, LostThumbnail
 from .serializers import LostImageSerializer, LostThumbnailSerializer, LostPostingSerializer, \
     LostPostingDetailSerializer, AdminLostDetailSerializer, AdminLostListSerializer
 from rest_framework.decorators import api_view, permission_classes
@@ -15,6 +15,9 @@ import hashlib
 from django.contrib.auth import get_user_model
 User = get_user_model()
 from django.core.cache import cache
+from django.core.mail import send_mail
+from django.conf import settings
+from back.settings import EMAIL_HOST_USER as email_from
 
 
 @api_view(['POST'])
@@ -48,18 +51,6 @@ def create_lost_image(request):
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def create_lost(request):
-    # data = {
-    #     'image_id': 63,
-    #     'color': 3,
-    #     'category': 2,
-    #     'content': 'ttttest',
-    #     'password': '1234',
-    #     'email': 'fsd@na.com',
-    #     'do_notice': True,
-    #     'lost_time': '2020-02-02 05:00:00',
-    #     'x': '',
-    #     'y': '',
-    # }
     data = request.data
     serializer = LostPostingSerializer(data=data)
     if serializer.is_valid():
@@ -68,7 +59,7 @@ def create_lost(request):
         lostname = password[-5:] + datetime.today().strftime('%d%H%f')
         posting = serializer.save(password=password, lostname=lostname, status=False)
 
-        if data['image_id']:
+        if data.get('image_id'):
             thumbnail = get_object_or_404(LostThumbnail, id=data['image_id'])
             thumbnail.posting_id = posting.id
             thumbnail.save()
@@ -97,17 +88,7 @@ def lost_login(request):
 @permission_classes([AllowAny])
 def update_delete_lost(request, lostname):
     posting = get_object_or_404(LostPosting, lostname=lostname)
-    # data = {
-    #     'color': 6,
-    #     'category': 2,
-    #     'content': 'werewr',
-    #     'x': 125.4324,
-    #     'y': 32.532,
-    #     'do_notice': False,
-    #     'status': False,
-    #     'email': 'kfjlsdkf@nmvcsd.com',
-    #     'lost_time': posting.lost_time
-    # }
+
     if request.method == 'PATCH':
         serializer = LostPostingSerializer(instance=posting, data=request.data)
         if serializer.is_valid():
@@ -205,7 +186,21 @@ def get_lost_detail_admin(request, lost_id):
 def send_lost_notice(request, lost_id):
     posting = get_object_or_404(LostPosting, id=lost_id)
     if posting.email:
-        print('hi')
-        #TODO EMAIL
+        print('email')
+        # subject = f'[분실둥실] {request.user.center_name}{request.user.role}에서 분실물을 보관중입니다.'
+        # message = f'{request.user.center_name}{request.user.role}에서 게시글 {posting.lostname}의 물품을 보관하고있습니다.'
+        # recipient_list = ['jay.hyundong@gmail.com']
+        # send_mail(subject, message, email_from, recipient_list, html_message=message)
+
     return Response(status=203)
 
+"""
+잃어버린 생각이 뭉게뭉게☁ 날 때,
+분실물 클라우드 <분실둥실> 입니다.
+
+{name}에서 등록하신 분실품과 유사한 물품을 보관중입니다.
+{게시글 상세 링크}에서 확인하시기 바랍니다.
+해당 물품을 관할기관에서 수령할 시 본인임을 증명할 수 있는 서류(신분증 등)가 필요할 수 있습니다.
+
+감사합니다.
+"""
