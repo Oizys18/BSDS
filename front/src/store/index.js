@@ -4,40 +4,49 @@ import auth from './modules/auth'
 import image from './modules/image'
 import admin from './modules/admin';
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    categories: [
-      { id: 1, name: '가방' },
-      { id: 2, name: '귀금속' },
-      { id: 3, name: '도서류' },
-      { id: 4, name: '의류' },
-      { id: 5, name: '지갑' },
-      { id: 6, name: '전자제품' },
-      { id: 7, name: '휴대폰' },
-      { id: 8, name: '카드' },
-      { id: 9, name: '열쇠' },
-      { id: 10, name: '기타' },
-    ],
-    colors: [
-      { id: 1, name: '빨강' },
-      { id: 2, name: '주황' },
-      { id: 3, name: '노랑' },
-      { id: 4, name: '파랑' },
-      { id: 5, name: '초록' },
-      { id: 6, name: '분홍' },
-      { id: 7, name: '보라' },
-      { id: 8, name: '갈색' },
-      { id: 9, name: '회색' },
-      { id: 10, name: '흰색' },
-      { id: 11, name: '검정' },
-    ]
+    items:{},
+    baseURL: "http://4756fe7c.ngrok.io/",
+    categories: {
+      1: "가방",
+      2: "귀금속",
+      3: "도서용품",
+      4: "산업용품",
+      5: "서류",
+      6: "쇼핑백",
+      7: "스포츠용품",
+      8: "악기",
+      9: "유가증권",
+      10: "의류",
+      11: "자동차",
+      12: "전자기기",
+      13: "증명서",
+      14: "지갑",
+      15: "카드",
+      16: "컴퓨터",
+      17: "현금",
+      18: "휴대폰",
+      19: "기타",
+    },
+    colors: {
+      1: "빨강",
+      2: "주황",
+      3: "노랑",
+      4: "파랑",
+      5: "초록",
+      6: "분홍",
+      7: "보라",
+      8: "갈색",
+      9: "회색",
+      10: "흰색",
+      11: "검정",
+    },
   },
-  mutations: {
-  },
-  actions: {
-  },
+  mutations: {},
+  actions: {},
   modules: {
     auth,
     image,
