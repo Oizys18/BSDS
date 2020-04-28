@@ -25,18 +25,23 @@
         <buttonHuge :text="btnText" />
       </div>
     </div>
+    <modal v-if="isClicked" class="user-index-modal">
+      <modalHuge @exit_Clicked="exit_Modal" />
+    </modal>
   </div>
 </template>
 
 <script>
 import axios from "axios";
 import navbar from "@/views/user/components/navbar.vue";
+import modalHuge from "@/components/common/modal/modalHuge.vue";
 import buttonHuge from "@/components/common/button/buttonHuge.vue";
 export default {
   name: "searchLost",
   components: {
     navbar,
     buttonHuge,
+    modalHuge,
   },
   data() {
     return {
@@ -44,9 +49,9 @@ export default {
       idHelper: "아이디를 입력해주세요",
       idType: "id",
       pwType: "password",
+      btnText: "조회",
       lostname: "",
       password: "",
-      btnText: "조회",
     };
   },
   computed: {
@@ -83,12 +88,11 @@ export default {
   margin: 0.5em;
 }
 .search-lost-container {
-  width: 40%;
+  width: 35%;
   color: rgb(37, 37, 37);
   font-size: 1em;
-  padding-left: 10px;
+  /* padding-left: 10px; */
   background-color: #fdfdfd;
-  cursor: pointer;
   border: 1px solid #ebebeb;
   border-bottom-color: #e2e2e2;
   border-radius: 20px;
@@ -99,21 +103,20 @@ export default {
   flex-direction: column;
 }
 .search-header {
-  width: 50%;
+  width: 40%;
 }
 .search-container {
   margin: 15px;
   height: 2em;
-  width: 70%;
+  width: 60%;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   color: rgb(36, 36, 36);
   font-weight: bold;
   font-size: 1.3em;
   padding-left: 10px;
   background-color: #fdfdfd;
-  cursor: pointer;
   border: 1px solid #ebebeb;
   border-bottom-color: #e2e2e2;
   border-radius: 20px;

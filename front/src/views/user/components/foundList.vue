@@ -68,7 +68,6 @@ export default {
   },
   computed: {
     baseurl() {
-      console.log(this.$store.state.baseURL);
       return this.$store.state.baseURL;
     },
   },
