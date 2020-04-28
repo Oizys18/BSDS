@@ -1,45 +1,18 @@
-from django.shortcuts import get_object_or_404
 from .models import FoundPosting, FoundThumbnail, FoundImage
 from .serializers import FoundPostingSerializer, FoundImageSerializer, \
     FoundPostingDetailSerializer, CreateFoundPostingSerializer, FoundThumbnailSerializer
-from lost.serializers import LostThumbnailSerializer, LostImageSerializer
+from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from decouple import config
-import requests
 from django.views.decorators.cache import cache_page
-from datetime import timedelta
-from datetime import datetime
+from datetime import timedelta, datetime
+import json
+from lost.serializers import LostThumbnailSerializer, LostImageSerializer
+from lost.models import LostPosting, LostThumbnail
+from ai.views import get_numpy_path, get_category, get_similar_image, get_closer_user
 from django.contrib.auth import get_user_model
 User = get_user_model()
-
-import json
-
-from ai.views import get_numpy_path, get_category, get_similar_image
-
-
-def get_closer_user(x, y, radius):
-    keywords = f'x={x}&y={y}&radius={radius}&categoru_group_code=PO3&query=경찰서'
-    URL = 'https://dapi.kakao.com/v2/local/search/keyword.json?&sort=distance&'
-    headers = {"Authorization": f"KakaoAK {config('KAKAOAK')}"}
-
-    url = URL + keywords
-    res = requests.get(url, headers=headers)
-    result = json.loads(res.text)
-
-    flag = False
-    users = []
-
-    if result.get('meta'):
-        for item in result['documents']:
-            if User.objects.filter(phone_number=item['phone']).exists():
-                users.append(get_object_or_404(User, phone_number=item['phone']).id)
-
-    else:
-        flag = True
-
-    return flag, users
 
 
 @api_view(['GET'])
@@ -100,14 +73,10 @@ def search_by_image(request):
                 lost_thumbnail_image.origin_id = lost_image.id
                 lost_thumbnail_image.save()
 
-                # 3주 postings 불러오기
                 postings = FoundPosting.objects.filter(created__gt=datetime.now() - timedelta(weeks=2))
-                print(postings)
                 image_set = FoundThumbnail.objects.filter(posting_id__in=postings).values('origin')
-                print(image_set) # 해당 이미지 id 담긴 list
                 origin_images = FoundImage.objects.filter(id__in=image_set)
-                print(origin_images)
-
+                # TODO 확인 3
                 images_id_result = get_similar_image(lost_image.image, origin_images)
 
                 thumb_set = FoundThumbnail.objects.filter(origin_id__in=images_id_result).values('posting')
@@ -135,24 +104,22 @@ def create_found_image(request):
             th_serializer = FoundThumbnailSerializer(request.POST, request.FILES)
             if th_serializer.is_valid():
                 image = serializer.create(serializer.validated_data)
-
-                numpy_path = get_numpy_path(image)
-                image.numpy_path = numpy_path
-
-                # thumbnail
                 thumbnail_image = th_serializer.create(th_serializer.validated_data)
                 thumbnail_image.origin_id = image.id
                 thumbnail_image.save()
 
+                numpy_path = get_numpy_path(image)
+                image.numpy_path = numpy_path
+                # TODO 확인 4
                 c1, c2, c3 = get_category(request.FILES['image'])
                 image.category_1, image.category_2, image.category_3 = c1, c2, c3
                 image.save()
 
-                # Category image 에 추가 등록하기
                 datasets = {
                     'image_id': thumbnail_image.id,
                     'category': c1,
                 }
+
                 return Response(status=200, data=datasets, content_type='application.json')
         return Response(status=400, data={'message': 'Invalid images input'})
     return Response(status=403, data={'message': '이미지는 필수 값입니다.'})
@@ -170,6 +137,8 @@ def create_found(request):
             thumbnail = get_object_or_404(FoundThumbnail, id=data['image_id'])
             thumbnail.posting_id = posting.id
             thumbnail.save()
+            # TODO 확인 5 + 가벙 할일 여기부터 셀렉팅 시작할 것
+            lost_postings = LostPosting.objects.filter(category=posting.category, color=posting.color)
 
         posting_serializer = FoundPostingDetailSerializer(posting)
         return Response(status=200, data=posting_serializer.data)

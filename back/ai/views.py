@@ -1,4 +1,7 @@
 # search_by_image 관련 module
+from django.shortcuts import get_object_or_404
+from decouple import config
+import requests
 import mahotas as mh
 import numpy as np
 from scipy.spatial import distance
@@ -12,6 +15,8 @@ from .apps import AiConfig
 import json
 import io
 from PIL import Image
+from django.contrib.auth import get_user_model
+User = get_user_model()
 
 
 # create_found_image 관련 함수
@@ -135,3 +140,25 @@ def get_similar_image(lost_image, origin_images):
     images_id_result = [int(first), int(second), int(third)]
 
     return images_id_result
+
+
+def get_closer_user(x, y, radius):
+    keywords = f'x={x}&y={y}&radius={radius}&categoru_group_code=PO3&query=경찰서'
+    URL = 'https://dapi.kakao.com/v2/local/search/keyword.json?&sort=distance&'
+    headers = {"Authorization": f"KakaoAK {config('KAKAOAK')}"}
+
+    url = URL + keywords
+    res = requests.get(url, headers=headers)
+    result = json.loads(res.text)
+
+    flag = False
+    users = []
+
+    if result.get('meta'):
+        for item in result['documents']:
+            if User.objects.filter(phone_number=item['phone']).exists():
+                users.append(get_object_or_404(User, phone_number=item['phone']).id)
+    else:
+        flag = True
+
+    return flag, users
