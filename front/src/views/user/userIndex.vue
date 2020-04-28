@@ -17,7 +17,7 @@
             <span class="file-box-text" v-if="!file"
               >클릭하여 파일을 업로드해주세요.</span
             >
-            <span class="file-box-text" v-else>{{ imgTitle }}</span>
+            <span class="file-box-text" v-else>{{ file.name }}</span>
           </label>
           <input type="file" id="uploadfile" @change="checkTitle()" />
         </div>
@@ -77,6 +77,7 @@
 
 <script>
 import axios from "axios";
+import * as Vibrant from "node-vibrant";
 import navbar from "@/views/user/components/navbar.vue";
 import cardBig from "@/components/common/card/cardBig.vue";
 import modalHuge from "@/components/common/modal/modalHuge.vue";
@@ -105,10 +106,11 @@ export default {
       txtColor: "black",
       isClicked: false,
       searched: false,
-      imgTitle: "이미지가 없어요!",
       message: "",
       file: "",
+      imgurl: "",
       items: {},
+      colorData: [],
     };
   },
   methods: {
@@ -123,22 +125,39 @@ export default {
       this.isClicked = !flag;
     },
     checkTitle() {
-      this.imgTitle = event.target.files[0].name;
-      this.file = event.target.files[0];
-      console.log(event.target.files[0].name);
       this.searched = false;
       this.message = "";
+      this.imgTitle = event.target.files[0].name;
+      this.file = event.target.files[0];
+      this.imgurl = URL.createObjectURL(this.file);
+      this.colorData = [];
+      Vibrant.from(this.imgurl)
+        .getPalette()
+        .then((palette) => {
+          this.colorData.push(palette.Vibrant.hex);
+          this.colorData.push(palette.Vibrant.population);
+          this.colorData.push(palette.Muted.hex);
+          this.colorData.push(palette.Muted.population);
+          this.colorData.push(palette.DarkVibrant.hex);
+          this.colorData.push(palette.DarkVibrant.population);
+          this.colorData.push(palette.DarkMuted.hex);
+          this.colorData.push(palette.DarkMuted.population);
+          this.colorData.push(palette.LightVibrant.hex);
+          this.colorData.push(palette.LightVibrant.population);
+          this.colorData.push(palette.LightMuted.hex);
+          this.colorData.push(palette.LightMuted.population);
+        });
     },
     imgSearch() {
       if (this.file) {
-        console.log("hello");
         this.searched = true;
         this.message = "";
         let formData = new FormData();
-        let url = "http://8c6a607d.ngrok.io";
+        let url = this.baseurl;
         formData.append("image", this.file);
+        formData.append("colorData", this.colorData);
         axios
-          .post(url + "/found/search/image/", formData, {
+          .post(url + "found/search/image/", formData, {
             headers: {
               "Content-Type": "multipart/form-data",
             },
