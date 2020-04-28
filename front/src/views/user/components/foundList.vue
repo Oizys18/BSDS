@@ -12,9 +12,22 @@
       >
         <cardBig :image="item[0]" :title="item[1]" :content="item[2]" />
       </div>
-      <div v-if="isClicked" class="user-index-modal">
-        <modalHuge @exit_Clicked="exit_Modal" />
-      </div>
+    </div>
+    <!-- <div class="btn-cover">
+      <button :disabled="pageNum === 0" @click="prevPage" class="page-btn">
+        이전
+      </button>
+      <span class="page-count">{{ pageNum + 1 }} / {{ pageCount }} 페이지</span>
+      <button
+        :disabled="pageNum >= pageCount - 1"
+        @click="nextPage"
+        class="page-btn"
+      >
+        다음
+      </button>
+    </div> -->
+    <div v-if="isClicked" class="user-index-modal">
+      <modalHuge @exit_Clicked="exit_Modal" />
     </div>
   </div>
 </template>
@@ -62,9 +75,10 @@ export default {
 #found-wrapper {
   width: 100%;
   height: 100%;
-  margin-top: 100px;
-  justify-content: space-around;
+  margin-top: 60px;
+  justify-content: center;
   align-items: center;
+  flex-direction: column;
   display: flex;
   flex-wrap: wrap;
 }
@@ -75,6 +89,7 @@ export default {
   grid-template-columns: repeat(2, 360px);
   justify-content: space-around;
   align-items: center;
+  margin: 10px;
 }
 .found-card {
   margin: auto;
