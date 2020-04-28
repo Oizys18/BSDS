@@ -9,7 +9,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     items:{},
-    baseURL: "http://4756fe7c.ngrok.io/",
+    baseURL: "http://8c6a607d.ngrok.io/",
     categories: {
       1: "가방",
       2: "귀금속",

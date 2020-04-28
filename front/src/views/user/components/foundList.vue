@@ -10,9 +10,14 @@
         :key="index.id"
         class="found-card"
       >
-        <cardBig :image="item[0]" :title="item[1]" :content="item[2]" />
+        <cardBig
+          :image="baseurl + item['thumbnail']"
+          :title="item['user']['center_name']"
+          :content="item['created']"
+        />
       </div>
     </div>
+
     <!-- <div class="btn-cover">
       <button :disabled="pageNum === 0" @click="prevPage" class="page-btn">
         이전
@@ -26,6 +31,7 @@
         다음
       </button>
     </div> -->
+
     <div v-if="isClicked" class="user-index-modal">
       <modalHuge @exit_Clicked="exit_Modal" />
     </div>
@@ -33,6 +39,7 @@
 </template>
 
 <script>
+import axios from "axios";
 import navbar from "@/views/user/components/navbar";
 import cardBig from "@/components/common/card/cardBig.vue";
 import modalHuge from "@/components/common/modal/modalHuge.vue";
@@ -45,17 +52,9 @@ export default {
   },
   data() {
     return {
-      items: {
-        1: ["image1", "title1", "content1"],
-        2: ["image2", "title2", "content2"],
-        3: ["image3", "title3", "content3"],
-        4: ["image4", "title4", "content4"],
-        5: ["image3", "title3", "content3"],
-        6: ["image4", "title4", "content4"],
-        7: ["image3", "title3", "content3"],
-        8: ["image4", "title4", "content4"],
-      },
+      items: {},
       isClicked: false,
+      pageSize:8,
     };
   },
   methods: {
@@ -67,7 +66,23 @@ export default {
       this.isClicked = !flag;
     },
   },
-  mounted: {},
+  computed: {
+    baseurl() {
+      console.log(this.$store.state.baseURL);
+      return this.$store.state.baseURL;
+    },
+  },
+  mounted() {
+    axios
+      .get(this.baseurl + "found/search/")
+      .then((res) => {
+        console.log(res);
+        this.items = res.data.documents.slice(0,8);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  },
 };
 </script>
 
