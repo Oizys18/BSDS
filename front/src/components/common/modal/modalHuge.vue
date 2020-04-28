@@ -19,6 +19,17 @@ export default {
       isClicked: false,
     };
   },
+  props: {
+    category: {},
+    color: {},
+    content: {},
+    created: {},
+    id: {},
+    modified: {},
+    status: {},
+    thumbnail: {},
+    user: {},
+  },
   methods: {
     exitModal() {
       this.isClicked = true;
@@ -45,30 +56,22 @@ export default {
   background-color: ghostwhite;
   color: black;
   font-size: 1rem;
-
-
-  /* justify-content: center;
-  align-items: center; */
 }
 
-.modal-huge-container{
-  width:100%;
-  height:100%;
-    /* contents align */
+.modal-huge-container {
+  width: 100%;
+  height: 100%;
   display: grid;
-  grid-template-rows: repeat(2,50%);
+  grid-template-rows: repeat(2, 50%);
   grid-template-columns: repeat(2, 50%);
-
 }
-
-
 .modal-huge-collide {
   position: absolute;
   right: 0;
-  border:none;
-  background:transparent;
-  z-index:10;
-  font-size:25px;
+  border: none;
+  background: transparent;
+  z-index: 10;
+  font-size: 25px;
 }
 .modal-huge-image {
   width: 100%;
@@ -77,14 +80,14 @@ export default {
   border-radius: 15px;
   grid-row: 1 / 4;
 }
-.modal-huge-title{
-  grid-row:1/1;
-  grid-column:2/2;
+.modal-huge-title {
+  grid-row: 1/1;
+  grid-column: 2/2;
   background: lightgreen;
   border-radius: 15px;
 }
-.modal-huge-content{
-  grid-row:2/2;
+.modal-huge-content {
+  grid-row: 2/2;
   grid-column: 2/2;
   background: yellow;
   border-radius: 15px;

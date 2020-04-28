@@ -88,8 +88,8 @@ export default {
       this.$router.push(path);
     },
     showModal(index) {
+      console.log(index+'게시글 모달 띄우기')
       this.isClicked = true;
-      console.log(index + "번 게시글 모달 생성");
     },
     exit_Modal(flag) {
       this.isClicked = !flag;

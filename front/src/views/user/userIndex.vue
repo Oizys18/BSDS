@@ -33,21 +33,6 @@
       <div class="system-message">
         {{ message }}
       </div>
-
-      <div class="user-index-select-container" v-if="searched">
-        <span class="user-index-select">
-          분류
-        </span>
-        <span class="user-index-select">
-          <selectOne :items="categories" :default="categoryDefault" />
-        </span>
-        <span class="user-index-select">
-          색상
-        </span>
-        <span class="user-index-select">
-          <selectOne :items="colors" :default="colorDefault" />
-        </span>
-      </div>
       <div class="user-index-result" v-if="searched">
         <div class="user-index-card-container" v-if="items[0]">
           <div
@@ -65,6 +50,8 @@
         </div>
         <div class="keyword-button">
           <span @click="go('/keywordsearch')" id="keyword-search-button">
+            찾으시는 물건이 없나요?
+            <buttonHuge :text="btnText2" />
           </span>
         </div>
       </div>
@@ -81,23 +68,17 @@ import * as Vibrant from "node-vibrant";
 import navbar from "@/views/user/components/navbar.vue";
 import cardBig from "@/components/common/card/cardBig.vue";
 import modalHuge from "@/components/common/modal/modalHuge.vue";
-import selectOne from "@/components/common/dropdown/selectOne.vue";
 import buttonHuge from "@/components/common/button/buttonHuge.vue";
 export default {
   name: "userIndex",
   components: {
     navbar,
     cardBig,
-    selectOne,
     modalHuge,
     buttonHuge,
   },
   data() {
     return {
-      categoryDefault: "분류를 선택해주세요",
-      categories: ["의류", "전자기기", "식품"],
-      colorDefault: "색상을 선택해주세요",
-      colors: ["검정", "노랑", "빨강", "주황"],
       btnText: "다음",
       btnText2: "상세검색",
       btnText3: "검색",
@@ -150,7 +131,6 @@ export default {
     },
     imgSearch() {
       if (this.file) {
-        this.searched = true;
         this.message = "";
         let formData = new FormData();
         let url = this.baseurl;
@@ -164,7 +144,7 @@ export default {
           })
           .then((res) => {
             this.items = res.data.documents;
-            console.log(this.items);
+            this.searched = true;
           })
           .catch(function() {
             console.log("FAILURE!!");
@@ -184,8 +164,6 @@ export default {
 
 <style scoped>
 .user-index-wrapper {
-  /* width: 100%;
-  height: 100%; */
   margin-top: 250px;
   justify-content: center;
   align-items: center;
@@ -262,10 +240,9 @@ export default {
   display: flex;
 }
 .keyword-button {
-  position: absolute;
-  bottom: 10vh;
-  right: 50%;
+  margin-top: 30px;
   align-items: center;
+  justify-content: center;
   display: flex;
 }
 .file-bar {
