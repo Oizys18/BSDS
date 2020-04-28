@@ -22,8 +22,8 @@
           <span class="select">물품 분류</span>
           <select-one
             class="select-category"
-            :default="this.category === null ? '분류' : this.category"
-            :items="$store.state.categories"
+            :items="Object.values($store.state.categories)"
+            :default="this.getCategory === null ? '분류' : this.getCategoryName"
             @input="onSelectCategory"
           />
           <span class="error" v-if="!checkForm(this.category)">* 필수 입력란입니다.</span>
@@ -32,8 +32,8 @@
           <span class="select">색상</span>
           <select-one
             class="select-category"
-            :default="this.color  === null ? '색상' : this.color"
-            :items="$store.state.colors"
+            :items="Object.values($store.state.colors)"
+            :default="this.getColor  === null ? '색상' : this.getColor"
             @input="onSelectColor"
           />
           <span class="error" v-if="!checkForm(this.color)">* 필수 입력란입니다.</span>
@@ -185,7 +185,7 @@ export default {
         "y": ''
       }
       console.log(data)
-      axios.post('http://8c6a607d.ngrok.io/lost/posting/', data)
+      axios.post(`${this.$store.state.baseURL}lost/posting/`, data)
         .then(res => {
           console.log(res)
           this.$router.push('created')
@@ -200,6 +200,7 @@ export default {
       this.$refs.imageInput.click();
     },
     onSelectCategory(value) {
+      console.log(value)
       this.category = value
     },
     onSelectColor(value) {
@@ -256,10 +257,10 @@ export default {
       }
     }
   ,
-    ...mapActions(['postImageUser', 'getCategories', 'getColors']),
+    ...mapActions(['postImageUser']),
   },
   computed: {
-    ...mapGetters(['getId', 'getCategory', 'getColor', 'getImgUrl']),
+    ...mapGetters(['getId', 'getCategory', 'getColor', 'getImgUrl', 'getCategoryName']),
     ...mapState(['image_id'])
   }
 }

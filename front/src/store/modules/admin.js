@@ -1,5 +1,5 @@
-// import router from '@/router'
-const HOST = 'http://8c6a607d.ngrok.io'
+// import store from '../index'
+const HOST = "http://0a4767a2.ngrok.io/"
 const axios = require('axios')
 
 const state = {
@@ -34,7 +34,7 @@ const mutations = {
 const actions = {
   getCreatedList: ({ commit }) => {
     commit('setLoading', true)
-    axios.get(`${HOST}/found/posting/admin/list/`, {
+    axios.get(`${HOST}found/posting/admin/list/`, {
       headers: {
       'Authorization': `JWT ${sessionStorage.getItem('jwt')}`
     }
