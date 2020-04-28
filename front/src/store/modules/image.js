@@ -1,5 +1,5 @@
 import store from '../index'
-const HOST = 'http://141f9f8b.ngrok.io'
+const HOST = 'http://8c6a607d.ngrok.io'
 
 const axios = require('axios');
 
@@ -59,7 +59,6 @@ const actions= {
       .then(res => {
         commit('setId', res.data.image_id)
         commit('setCategory', res.data.category)
-        commit('setColor', res.data.color)
         console.log(res)
         console.log(state)
       })

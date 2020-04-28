@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="user-info">
-      {{ getUserInfo.username}}
+      {{ getUserInfo.username }}
     </div>
     <div class="page-link-button">
     <span @click="go('createFound')">

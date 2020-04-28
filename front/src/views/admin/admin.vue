@@ -2,7 +2,7 @@
   <div>
     <h1>Admin Index</h1>
     <!-- 나중에 순서 뒤집을 것 -->
-    <component :is="isLoggedIn ? 'admin-login' : 'admin-detail' "></component>
+    <component :is="isLoggedIn ? 'admin-detail' : 'admin-login' "></component>
   </div>
 </template>
 
@@ -23,6 +23,9 @@ export default {
   },
   computed: {
     ...mapGetters(['isLoggedIn'])
+  },
+  created() {
+    this.$store.dispatch('userInfo')
   }
 }
 </script>

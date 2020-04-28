@@ -15,9 +15,14 @@
       <tbody>
         <tr v-for="item in calData" :key="item.id">
           <td>{{item.id}}</td>
-          <td class="img-cell">{{item.image}}</td>
-          <td>{{item.category}}</td>
-          <td>{{item.date}}</td>
+          <td class="img-cell" >
+            <img
+              :src="item.thumbnail.length > 0
+              ? `http://8c6a607d.ngrok.io/${item.thumbnail}`
+              : 'http://8c6a607d.ngrok.io/media/no_image.png'">
+          </td>
+          <td>{{ item.category }}</td>
+          <td>{{ item.created }}</td>
           <td><button-default :text="'조회'" /></td>
         </tr>
       </tbody>
@@ -49,17 +54,15 @@ export default {
     itemHeader: Array,
     pageHead: {
       type: String,
-      default: "먼리스트"
+      default: ""
     }
   },
   data() {
     return {
       pageNum: 1,
-      pageSize: 3
+      pageSize: 3,
+      imagesrc: 'media/no_image.png',
     }
-  },
-  created() {
-    console.log(this.pageNum)
   },
   methods: {
     nextPage() {
@@ -126,5 +129,8 @@ export default {
     bottom: 5%;
     left: 50%;
     transform:translateX(-50%);
+  }
+  .list-page-btn > span {
+    /*pointer-events: none;*/
   }
 </style>
