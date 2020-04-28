@@ -1,5 +1,5 @@
 // const HOST = process.env.VUE_APP_SERVER_HOST;
-const HOST = 'http://141f9f8b.ngrok.io'
+const HOST = 'http://8c6a607d.ngrok.io'
 
 const axios = require('axios');
 const decoded = require('jwt-decode');
@@ -30,11 +30,12 @@ const state = {
 
 // Vuex 에서는 Arrow Function
 const getters = {
-  isLoggedIn: state => !!state.token , // 특정 값을 true/false 로 바꾸는 구문
+  isLoggedIn: () => !!sessionStorage.jwt, // 특정 값을 true/false 로 바꾸는 구문
   getErrors: state => state.errors,
   isLoading: state => state.loading,
-  getUserId: state => state.token ? decoded(state.token).id : '',
-  getUserInfo: state => state.user_info
+  getUserId: state => state.token ? decoded(state.token).user_id : '',
+  getUserInfo: state => state.user_info,
+  getToken: state => state.token
 };
 
 const mutations = {
@@ -65,29 +66,8 @@ const actions = {
   pushError: ({ commit }, error) => {
     commit('pushError', error)
   },
-  // sendLoginRequest: (credentials) => {
-  //   axios.then(token => {
-  //     commit('setToken', token.data.token);
-  //     commit('setLoading', false)
-  //     router.push('/');
-  //   })
-  //     .catch(err => {
-  //       if (!err.response) { // no reponse
-  //         commit('pushError', 'Network Error..')
-  //       } else if (err.response.status === 400) {
-  //         commit('pushError', 'Invalid username or password');
-  //       } else if (err.response.status === 500) {
-  //         commit('pushError', 'Internal Server error. Please try again later');
-  //       } else {
-  //         commit('pushError', 'Some error occured');
-  //       }
-  //       commit('setLoading', false);
-  //     })
-  // },
 
-  login: ({ commit, getters }, credentials) => {
-    // 이미 로그인 했다면,
-    // module 안에서는, getters 함수들은 computed 처럼, 리턴 값으로 존재한다. 실행 불가능 (getters.isLoggedIn() 은 Error)
+  login: ({ commit, getters, dispatch }, credentials) => {
     if (getters.isLoggedIn)  {
       router.push('/');
     }
@@ -107,20 +87,18 @@ const actions = {
       }
       // 요청 start
       else {
-        axios.post(HOST + '/api-token/', credentials)
+        axios.post(`${HOST}/api-token/`, credentials)
           .then(token => {
             commit('setToken', token.data.token);
             commit('setLoading', false)
+            dispatch('userInfo')
             console.log(token)
-            const admin_id = decoded(token).id
-            axios.get(`http://localhost:3001/user/${admin_id}`)
-              .then(res=> {
-                commit('setUserInfo', res.data)
-                console.log(res)
-                console.log(state.user_info)
-              })
-              .catch(err => console.log(err))
-            router.push({name: 'adminIndex'})
+          router.replace({name: 'adminIndex'})
+            .catch(error => {
+              if (error.name === "NavigationsDuplicated") {
+                throw error
+              }
+            })
           })
           .catch(err => {
             if (!err.response) { // no reponse
@@ -138,48 +116,18 @@ const actions = {
     }
   },
 
-  // signup: ({ commit, getters, dispatch }, userInput) => {
-  signup: ({ commit, getters }, userInput) => {
-    if (getters.isLoggedIn) {
-      router.push('/');
-    } else {
-      commit('clearErrors');
-      commit('setLoading', true);
-      if (userInput.password !== userInput.passwordConfirmation) {
-        commit('pushError', 'Password & Password Confirmation did not match');
-        commit('setLoading', false);
-      } else {
-        axios.post(HOST + '/signup/', userInput)
-          .then(res => {
-            if (res.data.status == 200){
-              axios.post(HOST + '/api-token-auth/', {username: userInput.username, password: userInput.password })
-                .then(token => {
-                  commit('setToken', token.data.token);
-                  commit('setLoading', false)
-                  router.push('/');
-                })
-                .catch(err => {
-                  if (!err.response) { // no reponse
-                    commit('pushError', 'Network Error..')
-                  } else if (err.response.status === 400) {
-                    commit('pushError', 'Invalid username or password');
-                  } else if (err.response.status === 500) {
-                    commit('pushError', 'Internal Server error. Please try again later');
-                  } else {
-                    commit('pushError', 'Some error occured');
-                  }
-                  commit('setLoading', false);
-                })
-            }
-          })
-          .catch(err => {
-            commit('pushError', err.response)
-          })
-      }
-    }
+  userInfo: ({commit}) => {
+    const token = sessionStorage.getItem('jwt')
+    const admin_id = decoded(token).user_id
+    axios.get(`${HOST}/user/${admin_id}/`)
+      .then(res => {
+        commit('setUserInfo', res.data)
+        console.log(res)
+        console.log(state.user_info)
+      })
+      .catch(err => console.log(err))
   },
-  }
-;
+};
 
 export default {
   state,

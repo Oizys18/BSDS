@@ -63,13 +63,27 @@
             @input="onTimeSelect"
           />
         </div>
+        <div class="category-wrapper">
+          <span class="select-location">
+            예상분실위치
+            <span @click="showModal()">
+              <buttonDefault
+                :text="'지도에서 위치 선택'"
+                :bgColor="white"
+                :txtColor="txtColor"
+              />
+            </span>
+          </span>
+          <div v-if="isClicked" class="keyword-search-modal">
+            <modalMap @exit_Clicked="exit_Modal" />
+          </div>
+        </div>
         <div class="input-wrapper">
             <textarea
               class="content-area"
-              v-model="contents"
+              v-model="content"
               type="textarea"
               placeholder="필요한 내용이 있다면 입력해주세요."
-              @input="onChangeInput"
             />
         </div>
       </div>
@@ -82,7 +96,7 @@
         <div class="email">
         <span class="select">이메일</span>
         <p class="description">유사한 습득물 등록 시 이메일로 알림을 보내드립니다.</p>
-        <input class="input-password-email" type="text" v-model="email">
+        <input class="input-password-email" type="email" v-model="email">
         </div>
         <div class="submit-btn" @click="createContent">
           <button-default :text="'등록하기'"/>
@@ -98,7 +112,8 @@
 import selectOne from '@/components/common/dropdown/selectOne'
 import navbar from '@/views/user/components/navbar'
 import buttonDefault from '@/components/common/button/buttonDefault'
-import {mapActions, mapGetters} from "vuex";
+import modalMap from "@/components/common/modal/modalMap";
+import {mapActions, mapGetters, mapState} from "vuex";
 const axios = require('axios')
 
 export default {
@@ -106,7 +121,8 @@ export default {
   components: {
     selectOne,
     navbar,
-    buttonDefault
+    buttonDefault,
+    modalMap
   },
   data() {
     return {
@@ -116,11 +132,12 @@ export default {
       yItems: [],
       mItems: ['1 월', '2 월', '3 월', '4 월', '5 월', '6 월', '7 월', '8 월', '9 월', '10 월', '11 월', '12 월'],
       dItems: [],
-      date: ['2020', '-', '00', '-', '00'],
+      date: ['2020', '-', '01', '-', '01'],
       timeList: [],
       time: '',
       password: '',
-      email: ''
+      email: '',
+      isClicked: false,
     }
   },
   mounted() {
@@ -141,25 +158,25 @@ export default {
   methods: {
     createContent() {
       const data = {
-        "image_id": this.$store.image_id,
+        "image_id": this.image_id,
         "category": this.category,
         "color": this.color,
         "content": this.content,
         "lost_time":
           `${this.date.reduce(function (accumulator, currentValue) {
           return accumulator + currentValue;
-          })}
-          ${this.time}:00`,
+          })} ${this.time}:00`,
         "email": this.email,
         "password": this.password,
         "do_notice": true,
         "x": '',
         "y": ''
       }
-      axios.post('http://localhost:3001/board', data)
+      console.log(data)
+      axios.post('http://8c6a607d.ngrok.io/lost/posting/', data)
       .then(res => {
         console.log(res)
-        this.$router.push('/created')
+        this.$router.push('created')
         console.log(this.image_id)
       })
       .catch(err => {
@@ -170,10 +187,10 @@ export default {
       this.$refs.imageInput.click();
     },
     onSelectCategory(value) {
-      this.category = this.$store.state.categories[value].name
+      this.category = value
     },
     onSelectColor(value) {
-      this.color = this.$store.state.colors[value].name
+      this.color = value
     },
     onTimeSelect(value) {
       this.time = this.timeList[value]
@@ -201,10 +218,18 @@ export default {
       }
       console.log(this.date)
     },
+    showModal(index) {
+      this.isClicked = true;
+      console.log(index + "번 게시글 모달 생성");
+    },
+    exit_Modal(flag) {
+      this.isClicked = !flag;
+    },
     ...mapActions(['postImage', 'getCategories', 'getColors']),
   },
   computed: {
-    ...mapGetters(['getId', 'getCategory', 'getColor', 'getImgUrl'])
+    ...mapGetters(['getId', 'getCategory', 'getColor', 'getImgUrl']),
+    ...mapState(['image_id'])
   }
 }
 </script>
@@ -272,7 +297,7 @@ export default {
   .image-upload {
     margin-right: 20px;
   }
-  .select {
+  .select, .select-location {
     font-size: 1.1rem;
     font-weight: bold;
     margin: 0 15px 0px 10px;
