@@ -29,6 +29,28 @@ from django.conf import settings
 import os
 from .apps import FoundConfig
 
+import io
+from PIL import Image
+
+
+
+# create_found_image 관련 함수
+def prepare_image(img):
+    # convert to handle png file format
+    img = Image.open(io.BytesIO(img)).convert(mode='RGB')
+    img = img.resize((224,224))
+    img_array = np.array(img) / 255.0
+    img_array = np.expand_dims(img_array, axis=0)
+    return img_array
+
+
+def parse_result(pred, cat_code):
+    pred_classes = np.argsort(pred[0])[-3:][::-1]
+    pred_probs = np.sort(pred[0])[-3:][::-1]
+    result = [(cat_code[str(pred_classes[i])],pred_probs[i]) for i in range(3)]
+    return result
+
+
 
 def get_closer_user(x, y, radius):
     keywords = f'x={x}&y={y}&radius={radius}&categoru_group_code=PO3&query=경찰서'
@@ -200,7 +222,6 @@ def search_by_image(request):
                     },
                     'documents': serializer.data
                 }
-
                 return Response(status=200, data=datasets, content_type='application.json')
         return Response(status=400, data={'message': 'Invalid images input'})
     return Response(status=403, data={'message': '이미지는 필수값입니다.'})
@@ -238,13 +259,39 @@ def create_found_image(request):
                 thumbnail_image.origin_id = image.id
                 thumbnail_image.save()
 
-                # apps.py 에서 사용할 model 로드
-                loaded_model = FoundConfig.model
-
                 #TODO load keras model
-                print(loaded_model) # <tensorflow.python.keras.engine.sequential.Sequential object at 0x000001A968DB56C8>
-                
+                print("---- load Keras model")
+                loaded_model = FoundConfig.model
+                print(loaded_model) # <tensorflow.python.keras.engine.sequential.Sequential object at 0x00000240F8F3B648> 
+
                 #TODO predict (image input & output --> category_1, 2, 3)
+                image = request.FILES["image"]
+                print(image) # <class 'django.core.files.uploadedfile.InMemoryUploadedFile'>
+                print(type(image))
+                print(image.image)
+                print(type(image.image)) # <PIL.JpegImagePlugin.JpegImageFile image mode=RGB size=575x410 at 0x1BEBFF5A408>
+                
+                image = request.FILES["image"]
+                print(image) # <class 'PIL.JpegImagePlugin.JpegImageFile'>
+                print(type(image)) # <class 'bytes'>
+
+                image = Image.open(image).convert(mode='RGB')
+                print(image)
+                image = image.resize((224, 224))
+                print(image)
+                img_array = np.array(image) / 255.0
+                print(img_array)
+                print(img_array.shape)
+                img_array = np.expand_dims(img_array, axis=0)
+                print(img_array)
+                print(img_array.shape)
+                preds = loaded_model.predict(img_array)
+                print(preds)
+
+
+
+
+
 
                 #TODO Category 분석기 결과값(추후 수정)
                 category_1 = 1
