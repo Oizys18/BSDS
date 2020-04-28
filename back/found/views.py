@@ -31,7 +31,7 @@ from .apps import FoundConfig
 
 import io
 from PIL import Image
-
+import json
 
 
 # create_found_image 관련 함수
@@ -205,10 +205,11 @@ def search_by_image(request):
                 # print(dists[0])
                 # print(dists[0].argsort().tolist())
                 similar_order = dists[0].argsort().tolist()
-                first = similar_order.index(1)
-                second = similar_order.index(2)
-                third = similar_order.index(3)
-
+                similar_order.reverse()
+                print(similar_order)
+                first, second, third = similar_order[0], similar_order[1], similar_order[2]
+                print(first, second, third)
+                
                 # return
                 images_id_result = [int(first), int(second), int(third)]
                 thumb_set = FoundThumbnail.objects.filter(origin_id__in=images_id_result).values('posting')
@@ -266,12 +267,6 @@ def create_found_image(request):
 
                 #TODO predict (image input & output --> category_1, 2, 3)
                 image = request.FILES["image"]
-                print(image) # <class 'django.core.files.uploadedfile.InMemoryUploadedFile'>
-                print(type(image))
-                print(image.image)
-                print(type(image.image)) # <PIL.JpegImagePlugin.JpegImageFile image mode=RGB size=575x410 at 0x1BEBFF5A408>
-                
-                image = request.FILES["image"]
                 print(image) # <class 'PIL.JpegImagePlugin.JpegImageFile'>
                 print(type(image)) # <class 'bytes'>
 
@@ -285,20 +280,27 @@ def create_found_image(request):
                 img_array = np.expand_dims(img_array, axis=0)
                 print(img_array)
                 print(img_array.shape)
+
                 preds = loaded_model.predict(img_array)
                 print(preds)
+                
+                
+                path = os.path.join(settings.BASE_DIR, 'found', 'category_code.json')
+                with open(path) as file:
+                    cat_code = json.loads(file.read())
+                print(cat_code)
 
+                print(preds[0]) # <class 'numpy.ndarray'>
+                predictions = np.argsort(preds[0]).tolist()
+                predictions.reverse()
+                predictions = predictions[:3]
 
+                # Category 분석기 결과값
+                category_1 = predictions[0] + 1
+                category_2 = predictions[1] + 1
+                category_3 = predictions[2] + 1
 
-
-
-
-                #TODO Category 분석기 결과값(추후 수정)
-                category_1 = 1
-                category_2 = 2
-                category_3 = 3
-
-                #TODO Category image 에 추가 등록하기
+                # Category image 에 추가 등록하기
                 datasets = {
                     'image_id': thumbnail_image.id,
                     'category_1': category_1,
