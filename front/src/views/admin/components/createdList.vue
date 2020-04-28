@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="getItemSize">
-    <paginated-list :pageHead="'작성한 글 목록'" :items="getItems" :itemHeader="itemHeader"/>
+    <paginated-card :pageHead="'작성한 글 목록'" :items="getItems" :itemHeader="itemHeader"/>
     </div>
     <div v-else>로딩중</div>
   </div>
@@ -9,11 +9,12 @@
 
 <script>
 import  { mapState, mapGetters } from 'vuex'
-import paginatedList from "@/views/admin/components/paginatedList";
+// import paginatedList from "@/views/admin/components/paginatedList";
+import paginatedCard from "./paginatedCard";
 export default {
   name: "createdList",
   components: {
-    paginatedList
+    paginatedCard
   },
   data() {
     return {

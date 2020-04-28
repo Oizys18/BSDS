@@ -68,7 +68,7 @@
         </div>
         <div class="category-wrapper">
           <span class="select-location">
-            예상분실위치
+            분실 추정 위치
             <span @click="showModal()">
               <buttonDefault
                 :text="'지도에서 위치 선택'"
@@ -100,9 +100,24 @@
           </div>
           <div class="email">
             <label for="email" class="select">이메일</label>
-            <p class="description">유사한 습득물 등록 시 이메일로 알림을 보내드립니다.</p>
-            <input id="email" class="input-password-email" type="email" v-model="email">
+            <input id="email" class="input-password-email" type="email" v-model="email" >
             <span class="error" v-if="!validEmail(this.email)">* 이메일 형식에 맞게 입력해주세요.</span>
+          </div>
+          <div class="email">
+            <label class="select">알림 제공 동의</label>
+            <p class="description">유사한 습득물 등록 시 이메일로 알림을 보내드립니다.</p>
+              <div class="email-radio" data-toggle="buttons">
+                <label class="box-radio-input">
+                  <input type="radio" name="cp_item" value="true" v-model="do_notice">
+                  <span class="check">V</span>
+                  <span class="description">동의</span>
+                </label>
+                <label class="box-radio-input">
+                  <input type="radio" name="cp_item" value="false" v-model="do_notice">
+                  <span class="check">V</span>
+                  <span class="description">비동의</span>
+                </label>
+              </div>
           </div>
         </div>
         <div class="button-wrapper">
@@ -110,7 +125,7 @@
             <button-default class="user-btn" :text="'등록하기'"/>
           </div>
           <div @click="go('/')">
-            <button-default class="user-btn" :text="'취소'"/>
+            <button-default class="user-btn btn-option" :text="'취소'"/>
           </div>
         </div>
       </div>
@@ -149,7 +164,8 @@ export default {
       time: '',
       password: '',
       email: '',
-      isClicked: false
+      isClicked: false,
+      do_notice: true,
     }
   },
   mounted() {
@@ -180,7 +196,7 @@ export default {
           })} ${this.time}:00`,
         "email": this.email,
         "password": this.password,
-        "do_notice": true,
+        "do_notice": this.do_notice,
         "x": '',
         "y": ''
       }
@@ -255,6 +271,9 @@ export default {
       if (password.length > 3) {
         return true
       }
+    },
+    changeDonotice(value) {
+      this.do_notice = value
     }
   ,
     ...mapActions(['postImageUser']),
@@ -304,6 +323,7 @@ export default {
     float: left;
     width: 50em;
     border: 1px solid black;
+    border-radius: 2%;
     margin-right: 3em;
     margin-bottom: 2em;
     padding: 1rem;
@@ -316,6 +336,7 @@ export default {
   }
   .description-wrapper {
     border: 1px solid black;
+    border-radius: 2%;
     float: left;
     width: 20em;
     padding: 10px;
@@ -330,7 +351,7 @@ export default {
   .img-wrapper {
     margin: 5px; 
   }
-  .category-wrapper, .date-wrapper, .img-wrapper, .time-wrapper, .input-wrapper {
+  .category-wrapper, .date-wrapper, .img-wrapper, .input-wrapper {
     display: flex;
     margin-bottom: 15px;
   }
@@ -355,9 +376,13 @@ export default {
     border-bottom: black 1px solid;
     margin: 10px;
   }
+  input[type="password"], input[type="email"] {
+    height: 2em;
+  }
   .description {
     font-size: 1rem;
-    margin: 0 15px 0px 10px;
+    margin: 5px 15px 0px 10px;
+    line-height: 1.4em;
     word-break: keep-all;
   }
   .submit-btn {
@@ -367,10 +392,41 @@ export default {
     width: 300px;
     margin-top: 15px;
   }
+  .btn-option {
+    margin: 3px;
+  }
   .error {
     font-size: 0.8em;
     color: #FB121D;
     padding-top: 2px;
     margin: 0 15px 0px 10px;
   }
+  .email-radio{
+    display: flex;
+    padding: 10px;
+    justify-content: space-around;
+  }
+  .box-radio-input input[type="radio"]{
+    display:none;
+  }
+  .box-radio-input input[type="radio"] + span{
+    display:inline-block;
+    background:none;
+    border:1px solid #dfdfdf;
+    border-radius: 10px;
+    padding:0px 10px;
+    text-align:center;
+    height:35px;
+    line-height:33px;
+    font-weight:500;
+    cursor:pointer;
+    margin: 10px 10px 0 10px
+  }
+  .box-radio-input input[type="radio"]:checked + span{
+    border:1px solid #0A95FF;
+    background:#0A95FF;
+    color:#fff;
+  }
+
+
 </style>

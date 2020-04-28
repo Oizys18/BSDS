@@ -155,10 +155,10 @@ export default {
     float: left;
     width: 50em;
     border: 1px solid black;
+    border-radius: 2%;
     margin-right: 3em;
     margin-bottom: 2em;
     padding: 1rem;
-    border-radius: 10px;
   }
   .button-wrapper {
     border: none;
