@@ -1,0 +1,72 @@
+[
+{
+    "model": "found.category",
+    "pk": 1,
+    "fields": {
+        "category": "\uac00\ubc29"
+    }
+},
+{
+    "model": "found.category",
+    "pk": 2,
+    "fields": {
+        "category": "\uadc0\uae08\uc18d"
+    }
+},
+{
+    "model": "found.category",
+    "pk": 3,
+    "fields": {
+        "category": "\ub3c4\uc11c\ub958"
+    }
+},
+{
+    "model": "found.category",
+    "pk": 4,
+    "fields": {
+        "category": "\uc758\ub958"
+    }
+},
+{
+    "model": "found.category",
+    "pk": 5,
+    "fields": {
+        "category": "\uc9c0\uac11"
+    }
+},
+{
+    "model": "found.category",
+    "pk": 6,
+    "fields": {
+        "category": "\uc804\uc790\uc81c\ud488"
+    }
+},
+{
+    "model": "found.category",
+    "pk": 7,
+    "fields": {
+        "category": "\ud734\ub300\ud3f0"
+    }
+},
+{
+    "model": "found.category",
+    "pk": 8,
+    "fields": {
+        "category": "\uce74\ub4dc"
+    }
+},
+{
+    "model": "found.category",
+    "pk": 9,
+    "fields": {
+        "category": "\uc5f4\uc1e0"
+    }
+},
+{
+    "model": "found.category",
+    "pk": 10,
+    "fields": {
+        "category": "\uae30\ud0c0"
+    }
+}
+]
