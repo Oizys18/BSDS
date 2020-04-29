@@ -2,7 +2,7 @@
   <div id="paginatedList-wrapper">
     <div id="card-container">
       <div
-        @click="showModal(index)"
+        @click="showModal(index) + getDetailFound(item.id)"
         v-for="(item, index) in calData"
         :key="index.id"
         class="card-list"
@@ -25,21 +25,22 @@
       </span>
     </div>
     <div v-if="isClicked" class="index-modal">
-      <modalHuge @exit_Clicked="exit_Modal" />
+      <modal-props @exit_Clicked="exit_Modal" :data="getData"/>
     </div>
   </div>
 </template>
 
 <script>
+import { mapActions, mapGetters } from "vuex"
 import buttonDefault from "@/components/common/button/buttonDefault"
 import cardBig from "@/components/common/card/cardBig";
-import modalHuge from "@/components/common/modal/modalHuge";
+import modalProps from "@/components/common/modal/modalProps";
 export default {
   name: "paginatedCard",
   components: {
     buttonDefault,
     cardBig,
-    modalHuge
+    modalProps
   },
   props: {
     items: Array,
@@ -76,6 +77,7 @@ export default {
     exit_Modal(flag) {
       this.isClicked = !flag;
     },
+    ...mapActions(["getDetailFound"])
   },
   computed: {
     startPage() {
@@ -100,6 +102,7 @@ export default {
       console.log(this.$store.state.baseURL);
       return this.$store.state.baseURL;
     },
+    ...mapGetters(["getData"])
   }
 }
 </script>

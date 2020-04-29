@@ -1,5 +1,5 @@
 // import store from '../index'
-const HOST = "http://f66b6c33.ngrok.io/"
+const HOST = process.env.VUE_APP_BASE_URL
 const axios = require('axios')
 
 const state = {

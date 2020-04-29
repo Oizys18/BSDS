@@ -2,7 +2,8 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import auth from './modules/auth'
 import image from './modules/image'
-import admin from './modules/admin';
+import admin from './modules/admin'
+import posting from "./modules/posting"
 
 Vue.use(Vuex);
 
@@ -50,6 +51,7 @@ export default new Vuex.Store({
   modules: {
     auth,
     image,
-    admin
+    admin,
+    posting
   }
 })
