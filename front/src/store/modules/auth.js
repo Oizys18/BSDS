@@ -1,7 +1,6 @@
 // import store from '../index'
 import router from '../../router';
-
-const HOST = "http://f66b6c33.ngrok.io/"
+const HOST = process.env.VUE_APP_BASE_URL
 const axios = require('axios');
 const decoded = require('jwt-decode');
 
