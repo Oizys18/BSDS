@@ -1,9 +1,30 @@
 <template>
   <div id="app">
-    <router-view/>
+    <fade-loader
+    class="spinner"
+      :loading="this.$store.state.loading"
+      :color="color"
+      :height="height"
+      :width="width"
+    ></fade-loader>
+    <router-view />
   </div>
 </template>
-
+<script>
+import FadeLoader from "vue-spinner/src/FadeLoader.vue";
+export default {
+  name: "app",
+  components: {
+    FadeLoader,
+  },
+  data(){
+    return{
+      width:"10px",
+      height:"10px",
+    }
+  }
+};
+</script>
 <style>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -24,5 +45,9 @@
 
 #nav a.router-link-exact-active {
   color: #42b983;
+}
+.spinner {
+  top: 40vh;
+  left: 50vw;
 }
 </style>
