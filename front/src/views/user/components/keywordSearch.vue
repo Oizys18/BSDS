@@ -10,54 +10,63 @@
           상세검색
         </span>
       </div>
-      <div class="keyword-search-card">
-        <div class="keyword-search-select-container">
-          <span class="keyword-search-select-category">
-            분류
-            <selectOne
-              :items="categories"
-              :default="categoryDefault"
-              @input="updateCategory"
-            />
+      <div class="search-card">
+        <div class="selectors">
+          <span class="selector">
+            <label for="selectcategory">분류</label>
+            <span id="selectcategory">
+              <selectOne
+                :items="categories"
+                :default="categoryDefault"
+                @input="updateCategory"
+              />
+            </span>
           </span>
-          <span class="keyword-search-select-color">
-            색상
-            <selectOne
-              :items="colors"
-              :default="colorDefault"
-              @input="updateColor"
-            />
+          <span class="selector">
+            <label for="selectcolor">색상</label>
+            <span id="selectcolor">
+              <selectOne
+                :items="colors"
+                :default="colorDefault"
+                @input="updateColor"
+              />
+            </span>
           </span>
-          <span class="keyword-search-select-location">
-            예상분실위치
-            <input v-model="addressInput" type="text" />
-            <span @click="showModal()">
+        </div>
+        <div class="search-address">
+          <label for="addressinput">예상 분실위치</label>
+          <div>
+            <input id="addressinput" type="text" v-model="addressInput" />
+            <span @click="searchAddress">
               <buttonDefault
                 :text="btnText2"
                 :bgColor="bgColor"
                 :txtColor="txtColor"
               />
             </span>
-          </span>
-        </div>
-        <div class="keyword-search-button">
-          <span @click="go('test')">
-            <buttonHuge
-              :text="btnText"
-              :bgColor="bgColor"
-              :txtColor="txtColor"
-            />
-          </span>
+          </div>
+          <div class="search-results">
+            <span class="results" v-for="result in results" :key="result.id">
+              <span @click="showModal(result)"> {{ result.address.address_name }}</span>
+            </span>
+          </div>
         </div>
       </div>
+      <div class="keyword-search-button">
+        <span @click="go('test')">
+          <buttonHuge :text="btnText" :bgColor="bgColor" :txtColor="txtColor" />
+        </span>
+      </div>
+
       <div v-if="isClicked" class="keyword-search-modal">
-        <modalMap @exit_Clicked="exit_Modal" :input="addressInput" />
+        <modalMap @exit_Clicked="exit_Modal" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import axios from "axios";
 import navbar from "@/views/user/components/navbar.vue";
 import selectOne from "@/components/common/dropdown/selectOne.vue";
 import buttonHuge from "@/components/common/button/buttonHuge.vue";
@@ -77,12 +86,14 @@ export default {
       categoryDefault: "분류를 선택해주세요",
       colorDefault: "색상을 선택해주세요",
       btnText: "검색",
-      btnText2: "클릭하여 지도확인",
+      btnText2: "주소검색",
       bgColor: "white",
       txtColor: "black",
       isClicked: false,
       inputColor: "",
       addressInput: "",
+      addressMap:"",
+      results: "",
     };
   },
   computed: {
@@ -94,10 +105,27 @@ export default {
     },
   },
   methods: {
+    searchAddress() {
+      axios
+        .get("https://dapi.kakao.com/v2/local/search/address.json", {
+          params: {
+            query: this.addressInput,
+          },
+          headers: {
+            Authorization: "KakaoAK f8d38a34b065785c71e6beed1528657f",
+          },
+        })
+        .then((res) => {
+          this.results = res.data.documents.slice(0,5);
+        });
+    },
     go(path) {
       this.$router.push(path);
     },
-    showModal() {
+    showModal(e) {
+      console.log(e)
+      this.$store.state.locationX = e.x
+      this.$store.state.locationY = e.y
       this.isClicked = true;
     },
     exit_Modal(flag) {
@@ -120,58 +148,79 @@ export default {
   align-items: center;
   display: flex;
 }
-.keyword-search-card {
-  height: 2em;
-  margin-top: 10px;
+.search-card {
   border: 1px solid black;
   height: 300px;
   border-radius: 40px;
+  justify-content: space-around;
+  align-items: center;
+  display: flex;
+}
+.selectors {
+  width: 50%;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+.selector {
+  padding: 0.5em;
+  align-items: center;
+  width: 100%;
+  justify-content: center;
+  display: flex;
+  flex-direction: row;
+}
+.selector label {
+  padding: 1em;
+  font-size: 1.3em;
 }
 .keyword-search-container {
   width: 40%;
+  justify-content: center;
 }
-.keyword-search-select-container {
-  margin: 10%;
-  display: grid;
-  height: 100%;
+.search-address {
+  justify-content: center;
   align-items: center;
-  grid-template-rows: repeat(6, 15%);
-  grid-template-columns: repeat(4, 25%);
-}
-.keyword-search-select-category {
-  grid-column: 1/3;
-  grid-row: 1/1;
-  font-size: 1.5rem;
-  font-weight: bold;
-}
-.keyword-search-select-color {
-  grid-column: 1/3;
-  grid-row: 3/3;
-  font-size: 1.5rem;
-  font-weight: bold;
-}
-.keyword-search-select-location {
-  grid-column: 3/5;
-  grid-row: 1/1;
-  font-size: 1.5rem;
-  font-weight: bold;
+  display: flex;
+  flex-direction: column;
+  width: 50%;
 }
 
-.keyword-search-button {
-  position: absolute;
-  bottom: 5%;
-  right: 20%;
+.search-address label {
+  padding: 0.1em;
+  font-size: 1.3em;
 }
-.keyword-search-card-container {
-  /* margin-top: 100px; */
-  justify-content: space-between;
+.search-address input {
+  font-size: 1em;
+}
+.search-results {
+  margin: 5px;
+  width: 65%;
+  height: 130px;
+  background: white;
+  border: 1px solid black;
   display: flex;
+  flex-direction: column;
+  border-radius: 15px;
+  padding: 5px;
+}
+.search-results span {
+  font-size: 1em;
+  color:rgb(70, 70, 255);
+}
+.search-results span:hover{
+  font-weight: bold;
+  color:blue;
+}
+.keyword-search-button {
+  position: relative;
 }
 
 /* searchbar */
 .custom-select {
   height: 2.5rem;
-  width: 80%;
+  width: 100%;
 }
 
 .title-container {

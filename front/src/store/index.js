@@ -1,15 +1,17 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-import auth from './modules/auth'
-import image from './modules/image'
-import admin from './modules/admin'
-import posting from "./modules/posting"
+import Vue from "vue";
+import Vuex from "vuex";
+import auth from "./modules/auth";
+import image from "./modules/image";
+import admin from "./modules/admin";
+import posting from "./modules/posting";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    items:{},
+    locationX: "33.450701",
+    locationY: "126.570667",
+    items: {},
     baseURL: "http://f66b6c33.ngrok.io/",
     categories: {
       1: "가방",
@@ -52,6 +54,6 @@ export default new Vuex.Store({
     auth,
     image,
     admin,
-    posting
-  }
-})
+    posting,
+  },
+});

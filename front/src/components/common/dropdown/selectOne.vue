@@ -25,9 +25,9 @@ export default {
       default: "선택해주세요",
     },
     items: {
-      type: Array,
+      type: Object,
       default: function() {
-        return { 1: "선택1", 2: "선택2", 3: "선택3" };
+        return {};
       },
     },
   },
