@@ -302,13 +302,11 @@ export default {
   }
   .select-year {
     width: 100px;
-    margin: 3px 5px 5px;
-    height: 1.5rem;
+    margin-right: 10px;
   }
   .select-month, .select-day, .select-time {
     width: 80px;
-    margin: 3px 5px 5px;
-    height: 1.5rem;
+    margin-right: 10px;
   }
   .container {
     margin-top: 150px;
@@ -324,13 +322,13 @@ export default {
     width: 50em;
     border: 1px solid black;
     border-radius: 2%;
-    margin-right: 3em;
-    margin-bottom: 2em;
+    margin-right: 45px;
+    margin-bottom: 30px;
     padding: 1rem;
   }
   .right-wrapper {
     float: left;
-    width: 20em;
+    width: 320px;
 
     text-align: initial;
   }
@@ -338,13 +336,13 @@ export default {
     border: 1px solid black;
     border-radius: 2%;
     float: left;
-    width: 20em;
+    width: 320px;
     padding: 10px;
     text-align: initial;
   }
   .button-wrapper {
     border: none;
-    width: 20em;
+    width: 320px;
     padding: 0px 10px 10px 10px;
     text-align: center;
   }
@@ -377,12 +375,12 @@ export default {
     margin: 10px;
   }
   input[type="password"], input[type="email"] {
-    height: 2em;
+    height: 1.5rem;
   }
   .description {
     font-size: 1rem;
     margin: 5px 15px 0px 10px;
-    line-height: 1.4em;
+    line-height: 1.4rem;
     word-break: keep-all;
   }
   .submit-btn {
@@ -396,7 +394,7 @@ export default {
     margin: 3px;
   }
   .error {
-    font-size: 0.8em;
+    font-size: 0.8rem;
     color: #FB121D;
     padding-top: 2px;
     margin: 0 15px 0px 10px;

@@ -1,14 +1,17 @@
 <template>
   <div>
-    <h1>Admin Index</h1>
-    <!-- 나중에 순서 뒤집을 것 -->
-    <component :is="isLoggedIn ? 'admin-detail' : 'admin-login' "></component>
+    <admin-navbar />
+    <div id="admin-index-wrapper">
+      <!-- 나중에 순서 뒤집을 것 -->
+      <component :is="isLoggedIn ? 'admin-detail' : 'admin-login' "></component>
+    </div>
   </div>
 </template>
 
 <script>
 import adminDetail from "./components/adminDetail";
 import adminLogin from "./components/adminLogin";
+import adminNavbar from "./components/adminNavbar";
 import { mapGetters } from 'vuex'
 
 export default {
@@ -16,20 +19,19 @@ export default {
   components: {
     adminDetail,
     adminLogin,
-  },
-  data() {
-    return {
-    }
+    adminNavbar
   },
   computed: {
     ...mapGetters(['isLoggedIn'])
-  },
-  created() {
-    this.$store.dispatch('userInfo')
   }
 }
 </script>
 
-<style>
-
+<style scoped>
+  #admin-index-wrapper {
+    margin-top: 150px;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+  }
 </style>

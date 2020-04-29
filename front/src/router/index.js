@@ -12,13 +12,14 @@ import createFound from "@/views/admin/components/createFound.vue";
 import createdAdmin from "@/views/admin/components/createdAdmin.vue";
 import createdList from "@/views/admin/components/createdList";
 import lostList from "@/views/admin/components/lostList";
+import adminLogin from "@/views/admin/components/adminLogin";
 
 // 로그인 여부
 // import getters from "@/store/modules/auth.js";
 
 Vue.use(VueRouter);
 
-// 로그인 여부
+
 // const requireAuth = () => (to, from, next) => {
 //   if (getters.isLoggedIn) {
 //     return next();
@@ -90,6 +91,11 @@ const routes = [
     name: "lostList",
     component: lostList,
   },
+  {
+    path: "/admin/login",
+    name: "login",
+    component: adminLogin
+  }
 ];
 
 const router = new VueRouter({

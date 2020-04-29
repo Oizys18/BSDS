@@ -34,7 +34,7 @@ const mutations = {
 const actions = {
   getCreatedList: ({ commit }) => {
     commit('setLoading', true)
-    axios.get(`${HOST}found/posting/admin/list/`, {
+    axios.get(`${HOST}found/posting/list/`, {
       headers: {
       'Authorization': `JWT ${sessionStorage.getItem('jwt')}`
     }

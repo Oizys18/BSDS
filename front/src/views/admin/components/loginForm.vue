@@ -75,7 +75,7 @@
   .user-input input {
     width: 100%;
     padding: 10px 0;
-    font-size: 1em;
+    font-size: 1rem;
     color: black;
     margin-bottom: 30px;
     border: none;
@@ -85,7 +85,7 @@
   }
   .user-input label {
     padding: 10px 0;
-    font-size: 1.1em;
+    font-size: 1.1rem;
     color: black;
     pointer-events: none;
   }

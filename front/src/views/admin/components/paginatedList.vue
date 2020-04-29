@@ -116,7 +116,7 @@ export default {
     margin: 15px
   }
   th {
-    height: 3em;
+    height: 50px;
   }
   td {
     height: 200px;

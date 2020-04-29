@@ -31,7 +31,7 @@ const getters = {
   getErrors: state => state.errors,
   isLoading: state => state.loading,
   getUserId: state => state.token ? decoded(state.token).user_id : '',
-  getUserInfo: state => state.user_info,
+  getUserInfo: () => JSON.parse(sessionStorage.getItem(`info`)),
   getToken: state => state.token
 };
 
@@ -45,6 +45,7 @@ const mutations = {
   clearErrors: state => state.errors = [],
   setUserInfo: (state, data) => {
     state.user_info = data
+    sessionStorage.setItem('info', JSON.stringify(data))
     console.log(state.user_info)
   }
 };
@@ -66,7 +67,7 @@ const actions = {
 
   login: ({ commit, getters, dispatch }, credentials) => {
     if (getters.isLoggedIn)  {
-      router.push('/');
+      router.go();
     }
     // 로그인 안했다면
     else {
@@ -90,12 +91,7 @@ const actions = {
             commit('setLoading', false)
             dispatch('userInfo')
             console.log(token)
-          router.replace({name: 'adminIndex'})
-            .catch(error => {
-              if (error.name === "NavigationsDuplicated") {
-                throw error
-              }
-            })
+          router.go()
           })
           .catch(err => {
             if (!err.response) { // no reponse

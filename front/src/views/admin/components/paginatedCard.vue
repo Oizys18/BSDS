@@ -8,8 +8,9 @@
         class="card-list"
       >
         <card-big
-          :image="item.thumbnail.length ? `${baseurl}${item.thumbnail}` : imagesrc"
+          :image="item.thumbnail.length ? `${baseurl}${item.thumbnail}` : `${baseurl}${imagesrc}`"
           :content="item.created"
+          :title="getUserInfo.center_name + getUserInfo.role"
           />
       </div>
     </div>
@@ -52,7 +53,7 @@ export default {
   data() {
     return {
       pageNum: 1,
-      imagesrc: `${this.baseurl}media/no_image.png`,
+      imagesrc: `media/no_image.png`,
       isClicked: false
     }
   },
@@ -102,7 +103,7 @@ export default {
       console.log(this.$store.state.baseURL);
       return this.$store.state.baseURL;
     },
-    ...mapGetters(["getData"])
+    ...mapGetters(["getData", "getUserInfo"])
   }
 }
 </script>
@@ -120,7 +121,7 @@ export default {
   #paginatedList-wrapper {
     width: 100%;
     height: 100%;
-    margin-top: 60px;
+    margin-top: 150px;
     justify-content: center;
     align-items: center;
     flex-direction: column;
@@ -129,7 +130,7 @@ export default {
   }
   .list-page-btn {
     position: absolute;
-    bottom: 5%;
+    bottom: 10%;
     left: 50%;
     transform:translateX(-50%);
   }
