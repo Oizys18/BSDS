@@ -29,7 +29,7 @@ def create_lost_image(request):
                 thumbnail_image = th_serializer.create(th_serializer.validated_data)
                 thumbnail_image.origin_id = image.id
                 thumbnail_image.save()
-                #TODO 확인 1
+                #TODO 확인 1 - color
                 numpy_path = get_numpy_path(image)
                 image.numpy_path = numpy_path
 
@@ -40,6 +40,7 @@ def create_lost_image(request):
                 datasets = {
                     'image_id': thumbnail_image.id,
                     'category': c1,
+                    'color': 3,
                 }
 
                 return Response(status=200, data=datasets, content_type='application.json')
@@ -139,7 +140,7 @@ def update_lost_image(request, lostname):
                 thumbnail_image.posting_id = origin_post_id
                 thumbnail_image.save()
 
-                #TODO 확인 2
+                #TODO 확인 2 - color
                 numpy_path = get_numpy_path(image)
                 image.numpy_path = numpy_path
 
@@ -150,6 +151,7 @@ def update_lost_image(request, lostname):
                 datasets = {
                     'image_id': thumbnail_image.id,
                     'category': c1,
+                    'color': 3,
                 }
                 return Response(status=200, data=datasets, content_type='application.json')
         return Response(status=400, data={'message': 'Invalid images input'})

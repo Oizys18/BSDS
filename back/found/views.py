@@ -116,7 +116,7 @@ def create_found_image(request):
 
                 numpy_path = get_numpy_path(image)
                 image.numpy_path = numpy_path
-                # TODO 확인 4
+                # TODO 확인 4 - color
                 c1, c2, c3 = get_category(request.FILES['image'])
                 image.category_1, image.category_2, image.category_3 = c1, c2, c3
                 image.save()
@@ -124,6 +124,7 @@ def create_found_image(request):
                 datasets = {
                     'image_id': thumbnail_image.id,
                     'category': c1,
+                    'color': 3,
                 }
 
                 return Response(status=200, data=datasets, content_type='application.json')
