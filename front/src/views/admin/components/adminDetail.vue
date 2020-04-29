@@ -1,7 +1,9 @@
 <template>
-  <div>
+  <div id="admin-detail-wrapper">
     <div class="user-info">
-      {{ getUserInfo.username }}
+      <span>{{ getUserInfo.parent_department }}</span>
+      <span>{{ getUserInfo.center_name + getUserInfo.role }}</span>
+
     </div>
     <div class="page-link-button">
     <span @click="go('createFound')">
@@ -13,7 +15,6 @@
     <span @click="go('lostList')">
     <button-default :text="btn3" />
     </span>
-    <p @click="getUserInfo">일단..</p>
     </div>
   </div>
 </template>
@@ -43,3 +44,8 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+
+
+</style>

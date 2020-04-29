@@ -31,7 +31,7 @@ const getters = {
   getErrors: state => state.errors,
   isLoading: state => state.loading,
   getUserId: state => state.token ? decoded(state.token).user_id : '',
-  getUserInfo: state => state.user_info,
+  getUserInfo: () => JSON.parse(sessionStorage.getItem(`info`)),
   getToken: state => state.token
 };
 
@@ -45,6 +45,7 @@ const mutations = {
   clearErrors: state => state.errors = [],
   setUserInfo: (state, data) => {
     state.user_info = data
+    sessionStorage.setItem('info', JSON.stringify(data))
     console.log(state.user_info)
   }
 };

@@ -1,6 +1,5 @@
 <template>
-  <div>
-    <h1>Admin Index</h1>
+  <div id="admin-index-wrapper">
     <!-- 나중에 순서 뒤집을 것 -->
     <component :is="isLoggedIn ? 'admin-detail' : 'admin-login' "></component>
   </div>
@@ -30,6 +29,11 @@ export default {
 }
 </script>
 
-<style>
-
+<style scoped>
+  #admin-index-wrapper {
+    margin-top: 150px;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+  }
 </style>

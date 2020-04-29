@@ -10,6 +10,7 @@
         <card-big
           :image="item.thumbnail.length ? `${baseurl}${item.thumbnail}` : imagesrc"
           :content="item.created"
+          :title="getUserInfo.center_name + getUserInfo.role"
           />
       </div>
     </div>
@@ -102,7 +103,7 @@ export default {
       console.log(this.$store.state.baseURL);
       return this.$store.state.baseURL;
     },
-    ...mapGetters(["getData"])
+    ...mapGetters(["getData", "getUserInfo"])
   }
 }
 </script>
