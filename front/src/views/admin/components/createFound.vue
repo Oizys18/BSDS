@@ -116,7 +116,6 @@ export default {
     },
     go(path) {
       this.$router.push(path)
-      this.$store._mutations.clearState()
     },
     ...mapActions(['postImageAdmin'])
   },
@@ -156,8 +155,8 @@ export default {
     width: 50em;
     border: 1px solid black;
     border-radius: 2%;
-    margin-right: 3em;
-    margin-bottom: 2em;
+    margin-right: 45px;
+    margin-bottom: 30px;
     padding: 1rem;
   }
   .button-wrapper {
@@ -190,7 +189,7 @@ export default {
     width: 300px;
   }
   .error {
-    font-size: 0.8em;
+    font-size: 0.8rem;
     color: #FB121D;
     padding-top: 2px;
     margin: 0 15px 0px 10px;

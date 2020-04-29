@@ -121,7 +121,7 @@ export default {
   #paginatedList-wrapper {
     width: 100%;
     height: 100%;
-    margin-top: 60px;
+    margin-top: 150px;
     justify-content: center;
     align-items: center;
     flex-direction: column;
@@ -130,7 +130,7 @@ export default {
   }
   .list-page-btn {
     position: absolute;
-    bottom: 5%;
+    bottom: 10%;
     left: 50%;
     transform:translateX(-50%);
   }
