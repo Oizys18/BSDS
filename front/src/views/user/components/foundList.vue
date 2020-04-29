@@ -1,8 +1,6 @@
 <template>
   <div id="found-wrapper">
     <navbar />
-    <!-- <breadcrumb/> -->
-    <!-- <selecter/> -->
     <div id="found-card-container">
       <div
         @click="showModal(index)"
@@ -17,21 +15,6 @@
         />
       </div>
     </div>
-
-    <!-- <div class="btn-cover">
-      <button :disabled="pageNum === 0" @click="prevPage" class="page-btn">
-        이전
-      </button>
-      <span class="page-count">{{ pageNum + 1 }} / {{ pageCount }} 페이지</span>
-      <button
-        :disabled="pageNum >= pageCount - 1"
-        @click="nextPage"
-        class="page-btn"
-      >
-        다음
-      </button>
-    </div> -->
-
     <div v-if="isClicked" class="user-index-modal">
       <modalHuge @exit_Clicked="exit_Modal" />
     </div>
@@ -52,9 +35,10 @@ export default {
   },
   data() {
     return {
-      items: {},
+      items: Object,
       isClicked: false,
-      pageSize:8,
+      pageSize: 8,
+      baseurl: process.env.VUE_APP_BASE_URL,
     };
   },
   methods: {
@@ -68,14 +52,17 @@ export default {
   },
   mounted() {
     axios
-      .get(process.env.VUE_APP_BASE_URL + "found/search/")
+      .get(this.baseurl + "found/search/")
       .then((res) => {
-        console.log(res);
-        this.items = res.data.documents.slice(0,8);
+        this.items = res.data.documents.slice(0, 8);
       })
       .catch((err) => {
         console.log(err);
       });
+    if (this.$store.state.documents) {
+      this.items = this.$store.state.documents;
+      this.$store.state.documents = {};
+    }
   },
 };
 </script>
