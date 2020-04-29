@@ -50,7 +50,7 @@
         <div @click="createContent">
           <button-default class="admin-btn" :text="'등록하기'"/>
         </div>
-        <div @click="go('/admin')">
+        <div @click="go({name:'adminIndex'})">
           <button-default class="admin-btn" :text="'취소'"/>
         </div>
       </div>

@@ -8,7 +8,7 @@
         class="card-list"
       >
         <card-big
-          :image="item.thumbnail.length ? `${baseurl}${item.thumbnail}` : imagesrc"
+          :image="item.thumbnail.length ? `${baseurl}${item.thumbnail}` : `${baseurl}${imagesrc}`"
           :content="item.created"
           :title="getUserInfo.center_name + getUserInfo.role"
           />
@@ -53,7 +53,7 @@ export default {
   data() {
     return {
       pageNum: 1,
-      imagesrc: `${this.baseurl}media/no_image.png`,
+      imagesrc: `media/no_image.png`,
       isClicked: false
     }
   },

@@ -1,20 +1,15 @@
 <template>
   <div class="navbar-container">
-    <img @click="go('admin')" src="@/assets/images/mainlogo.png">
+    <img @click="go({name: 'adminIndex'})" src="@/assets/images/mainlogo.png">
   </div>
 </template>
 
 <script>
 export default {
   name: "adminNavbar",
-  data() {
-  },
-  components: {
-
-  },
   methods: {
     go(path) {
-      this.$router.push(path);
+      this.$router.push(path)
     },
   },
 };

@@ -1,10 +1,8 @@
 <template>
   <div>
-    <admin-navbar />
     <div class="user-info">
         <span>{{ getUserInfo.parent_department }}</span>
         <span>{{ getUserInfo.center_name + getUserInfo.role }}</span>
-
       </div>
     <div id="admin-btn-wrapper">
 
@@ -35,12 +33,10 @@
 <script>
 import { mapGetters } from 'vuex'
 import buttonDefault from "../../../components/common/button/buttonDefault";
-import adminNavbar from "./adminNavbar";
 export default {
   name: "adminDetail",
   components: {
     buttonDefault,
-    adminNavbar
   },
   data() {
     return {
@@ -85,8 +81,6 @@ export default {
     border-style: solid;
     border-image: linear-gradient(to right, #0A95FF 0%, #38618C 100%);
     border-image-slice: 1;
-  }
-  .admin-detail-div {
     border-image-width: 2px;
   }
   .page-link-button {

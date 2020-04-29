@@ -67,7 +67,7 @@ const actions = {
 
   login: ({ commit, getters, dispatch }, credentials) => {
     if (getters.isLoggedIn)  {
-      router.push('/');
+      router.go();
     }
     // 로그인 안했다면
     else {
@@ -91,12 +91,7 @@ const actions = {
             commit('setLoading', false)
             dispatch('userInfo')
             console.log(token)
-          router.replace({name: 'adminIndex'})
-            .catch(error => {
-              if (error.name === "NavigationsDuplicated") {
-                throw error
-              }
-            })
+          router.go()
           })
           .catch(err => {
             if (!err.response) { // no reponse
