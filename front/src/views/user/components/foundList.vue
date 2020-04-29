@@ -66,14 +66,9 @@ export default {
       this.isClicked = !flag;
     },
   },
-  computed: {
-    baseurl() {
-      return this.$store.state.baseURL;
-    },
-  },
   mounted() {
     axios
-      .get(this.baseurl + "found/search/")
+      .get(process.env.VUE_APP_BASE_URL + "found/search/")
       .then((res) => {
         console.log(res);
         this.items = res.data.documents.slice(0,8);

@@ -34,8 +34,6 @@ export default {
   methods: {
     updateValue: function(value) {
       this.$emit("input", value);
-      // 선택된 아이템 index
-      console.log(value)
     },
   },
 };
