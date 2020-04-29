@@ -12,7 +12,7 @@ from django.core.mail import send_mail
 from back.settings import EMAIL_HOST_USER as email_from
 from lost.serializers import LostThumbnailSerializer, LostImageSerializer
 from lost.models import LostPosting, LostThumbnail, LostImage
-from ai.views import get_numpy_path, get_category, get_similar_image, get_closer_user, get_hex
+from ai.views import get_numpy_path, get_category, get_similar_image, get_closer_user, get_hex, hex_to_rgb, get_color
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
@@ -77,7 +77,12 @@ def search_by_image(request):
 
                 # TODO 확인 3
                 colorData = request.data['colorData']
-                get_hex(colorData)
+                hexData = get_hex(colorData)
+                r, g, b = hex_to_rgb(hexData)
+                print("RGB값 확인")
+                print(r, g, b)
+                colorValue = get_color(r, g, b)
+                print(colorValue)
 
                 postings = FoundPosting.objects.filter(created__gt=datetime.now() - timedelta(weeks=2))
                 image_set = FoundThumbnail.objects.filter(posting_id__in=postings).values('origin')
