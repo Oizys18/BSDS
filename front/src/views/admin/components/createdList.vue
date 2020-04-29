@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="getItemSize">
-    <paginated-card :pageHead="'작성한 글 목록'" :items="getItems" :itemHeader="itemHeader"/>
+    <paginated-card :pageHead="'작성한 글 목록'" :items="getItems" :page-size="6"/>
     </div>
     <div v-else>로딩중</div>
   </div>
@@ -18,7 +18,6 @@ export default {
   },
   data() {
     return {
-      itemHeader: ["관리번호", "사진", "분류", "등록일", "조회"]
     }
   },
   computed: {
