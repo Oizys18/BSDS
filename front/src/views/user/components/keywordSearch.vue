@@ -14,18 +14,27 @@
         <div class="keyword-search-select-container">
           <span class="keyword-search-select-category">
             분류
-            <selectOne :items="categories" :default="categoryDefault" @input="updateInput"/>
+            <selectOne
+              :items="categories"
+              :default="categoryDefault"
+              @input="updateCategory"
+            />
           </span>
           <span class="keyword-search-select-color">
             색상
-            <selectOne :items="colors" :default="colorDefault" @input="updateInput"/>
+            <selectOne
+              :items="colors"
+              :default="colorDefault"
+              @input="updateColor"
+            />
           </span>
           <span class="keyword-search-select-location">
             예상분실위치
+            <input v-model="addressInput" type="text" />
             <span @click="showModal()">
               <buttonDefault
                 :text="btnText2"
-                :bgColor="white"
+                :bgColor="bgColor"
                 :txtColor="txtColor"
               />
             </span>
@@ -42,7 +51,7 @@
         </div>
       </div>
       <div v-if="isClicked" class="keyword-search-modal">
-        <modalMap @exit_Clicked="exit_Modal" />
+        <modalMap @exit_Clicked="exit_Modal" :input="addressInput" />
       </div>
     </div>
   </div>
@@ -69,10 +78,11 @@ export default {
       colorDefault: "색상을 선택해주세요",
       btnText: "검색",
       btnText2: "클릭하여 지도확인",
-      bgColor: "#0A95FF",
+      bgColor: "white",
       txtColor: "black",
       isClicked: false,
-      inputColor:'',
+      inputColor: "",
+      addressInput: "",
     };
   },
   computed: {
@@ -87,12 +97,17 @@ export default {
     go(path) {
       this.$router.push(path);
     },
-    showModal(index) {
-      console.log(index+'게시글 모달 띄우기')
+    showModal() {
       this.isClicked = true;
     },
     exit_Modal(flag) {
       this.isClicked = !flag;
+    },
+    updateCategory(e) {
+      this.inputCategory = e;
+    },
+    updateColor(e) {
+      this.inputColor = e;
     },
   },
 };
