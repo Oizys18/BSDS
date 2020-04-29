@@ -32,6 +32,17 @@
               />
             </span>
           </span>
+          <span class="selector">
+            <label for="selectdate">날짜</label>
+            <span id="selectdate">
+              <input
+                type="date"
+                name="lostdate"
+                id="lostdate"
+                v-model="inputDate"
+              />
+            </span>
+          </span>
         </div>
         <div class="search-address">
           <label for="addressinput">예상 분실위치</label>
@@ -47,13 +58,15 @@
           </div>
           <div class="search-results">
             <span class="results" v-for="result in results" :key="result.id">
-              <span @click="showModal(result)"> {{ result.address.address_name }}</span>
+              <span @click="showModal(result)">
+                {{ result.address.address_name }}</span
+              >
             </span>
           </div>
         </div>
       </div>
       <div class="keyword-search-button">
-        <span @click="go('test')">
+        <span @click="categorySearch">
           <buttonHuge :text="btnText" :bgColor="bgColor" :txtColor="txtColor" />
         </span>
       </div>
@@ -91,9 +104,12 @@ export default {
       txtColor: "black",
       isClicked: false,
       inputColor: "",
+      inputDate: "",
       addressInput: "",
-      addressMap:"",
       results: "",
+      locX: "",
+      locY: "",
+      baseurl: process.env.VUE_APP_BASE_URL,
     };
   },
   computed: {
@@ -116,16 +132,36 @@ export default {
           },
         })
         .then((res) => {
-          this.results = res.data.documents.slice(0,5);
+          this.results = res.data.documents.slice(0, 5);
+        });
+    },
+    categorySearch() {
+      axios
+        .get(this.baseurl + "found/search/", {
+          params: {
+            category: this.inputCategory,
+            color: this.inputColor,
+            created: this.inputDate,
+            x: this.locX,
+            y: this.locY,
+          },
+        })
+        .then((res) => {
+          this.$store.state.documents = res.data.documents;
+          this.go("/found");
+        })
+        .catch((err) => {
+          console.log(err);
         });
     },
     go(path) {
       this.$router.push(path);
     },
     showModal(e) {
-      console.log(e)
-      this.$store.state.locationX = e.x
-      this.$store.state.locationY = e.y
+      this.$store.state.locationX = e.x;
+      this.$store.state.locationY = e.y;
+      this.locX = e.x;
+      this.locY = e.y;
       this.isClicked = true;
     },
     exit_Modal(flag) {
@@ -175,6 +211,11 @@ export default {
   padding: 1em;
   font-size: 1.3em;
 }
+.selector input {
+  padding: 0.7em;
+  border-radius: 15px;
+  border: 1px solid black;
+}
 .keyword-search-container {
   width: 40%;
   justify-content: center;
@@ -207,11 +248,11 @@ export default {
 }
 .search-results span {
   font-size: 1em;
-  color:rgb(70, 70, 255);
+  color: rgb(70, 70, 255);
 }
-.search-results span:hover{
+.search-results span:hover {
   font-weight: bold;
-  color:blue;
+  color: blue;
 }
 .keyword-search-button {
   position: relative;

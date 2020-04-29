@@ -9,6 +9,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
+    documents: Object,
     locationX: "33.450701",
     locationY: "126.570667",
     items: {},

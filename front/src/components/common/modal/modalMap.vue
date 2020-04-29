@@ -1,13 +1,12 @@
 <template>
   <div class="modal-map-wrapper">
     <div class="modal-map-container">
-      <button class="modal-map-collide" v-on:click="exitModal">
-        <span>✖</span>
-      </button>
+
       <div class="mapapp-container">
         <div id="map" class="kakao-map search-map"></div>
       </div>
     </div>
+    <div class="confirm" v-on:click="exitModal">확인</div>
   </div>
 </template>
 <script
@@ -28,45 +27,11 @@ export default {
       btnText: "여기에요!",
       bgColor: "white",
       addinput: "",
+      Lx: "",
+      Ly: "",
     };
   },
   methods: {
-    // getXY() {
-    //   var componentInstance = this;
-    //   axios
-    //     .get("https://dapi.kakao.com/v2/local/search/address.json", {
-    //       params: {
-    //         query: this.address,
-    //       },
-    //       headers: {
-    //         Authorization: "KakaoAK f8d38a34b065785c71e6beed1528657f",
-    //       },
-    //     })
-    //     .then((res) => {
-    //       this.addressList = res.data.documents;
-    //       var mapContainer = document.getElementById("map"),
-    //         mapOption = {
-    //           center: new kakao.maps.LatLng(
-    //             res.data.documents[0].y,
-    //             res.data.documents[0].x
-    //           ),
-    //           level: 3,
-    //         };
-
-    //       var map = new kakao.maps.Map(mapContainer, mapOption);
-
-    //       var marker = new kakao.maps.Marker({
-    //         position: map.getCenter(),
-    //       });
-    //       marker.setMap(map);
-    //     })
-    //     .catch(() => {
-    //       alert("지역명을 입력해주세요.");
-    //     });
-    // },
-    updateAddress() {
-      // console.log(this.x, this.y);
-    },
     exitModal() {
       this.isClicked = true;
       this.$emit("exit_Clicked", this.isClicked);
@@ -95,21 +60,42 @@ export default {
     });
 
     marker.setMap(map);
-    kakao.maps.event.addListener(map, "click", function(mouseEvent) {
-      var latlng = mouseEvent.latLng;
-      marker.setPosition(latlng);
-      this.x = latlng.getLng();
-      this.y = latlng.getLat();
-    });
   },
 };
 </script>
 <style scoped>
+.confirm {
+  width: 30%;
+  padding: 0.5em;
+  margin: 1em;
+  margin-bottom: 1em;
+  font-size: 1.25em;
+  border: 1px solid #ebebeb;
+  border-radius: 20px;
+  color: black;
+  background-color: white;
+}
+
+.confirm:hover {
+  box-shadow: 2px 2px 10px 0 grey;
+  border: 1px solid #ebebeb;
+  border-radius: 20px;
+  outline: none;
+}
+.confirm:active {
+  box-shadow: inset 0 0 5px grey;
+  border: 1px solid #ebebeb;
+  outline: none;
+}
+
 .mapapp-container {
   top: 0;
   left: 0;
   position: relative;
   text-align: center;
+}
+#map {
+  z-index: 5;
 }
 .search-map {
   position: relative;
@@ -134,6 +120,11 @@ export default {
   background-color: ghostwhite;
   color: black;
   font-size: 1rem;
+
+  justify-content: space-between;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
 }
 
 .modal-map-container {
@@ -148,6 +139,6 @@ export default {
   border: none;
   background: transparent;
   font-size: 40px;
-  z-index: 10;
+  z-index: 6;
 }
 </style>
