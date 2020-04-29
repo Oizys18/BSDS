@@ -52,6 +52,7 @@ export default {
       btnText: "조회",
       lostname: "",
       password: "",
+      document:Object,
     };
   },
   computed: {
@@ -67,6 +68,7 @@ export default {
         .post(url + "lost/", data)
         .then((res) => {
           console.log(res);
+          this.document = res.data.document
         })
         .catch((err) => {
           console.log(err);
