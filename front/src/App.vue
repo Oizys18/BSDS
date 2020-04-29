@@ -3,7 +3,6 @@
     <fade-loader
     class="spinner"
       :loading="this.$store.state.loading"
-      :color="color"
       :height="height"
       :width="width"
     ></fade-loader>
