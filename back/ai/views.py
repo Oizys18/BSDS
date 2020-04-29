@@ -133,7 +133,7 @@ def get_similar_image(lost_image, origin_images):
     similar_order = dists[0].argsort().tolist()
     similar_order.reverse()
     print(similar_order)
-    first, second, third = similar_order[0], similar_order[1], similar_order[2]
+    first, second, third = 5, 5, 5
     print(first, second, third)
 
     # return
@@ -162,3 +162,12 @@ def get_closer_user(x, y, radius):
         flag = True
 
     return flag, users
+
+
+def get_hex(colorData):
+    colorData = colorData.split(',')
+    hex_list, pop_list = colorData[:len(colorData)//2], colorData[len(colorData)//2:]
+    pop_list = [int(i) for i in pop_list]
+    color_hex = hex_list[pop_list.index(max(pop_list))]
+    #TODO hex 라는 변수는 사용하면 안댑니당!! 내장함수가 있기때문에 주의하셔용~
+    return color_hex

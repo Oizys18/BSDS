@@ -8,9 +8,11 @@ from rest_framework.response import Response
 from django.views.decorators.cache import cache_page
 from datetime import timedelta, datetime
 import json
+from django.core.mail import send_mail
+from back.settings import EMAIL_HOST_USER as email_from
 from lost.serializers import LostThumbnailSerializer, LostImageSerializer
-from lost.models import LostPosting, LostThumbnail
-from ai.views import get_numpy_path, get_category, get_similar_image, get_closer_user
+from lost.models import LostPosting, LostThumbnail, LostImage
+from ai.views import get_numpy_path, get_category, get_similar_image, get_closer_user, get_hex
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
@@ -73,10 +75,14 @@ def search_by_image(request):
                 lost_thumbnail_image.origin_id = lost_image.id
                 lost_thumbnail_image.save()
 
+                # TODO 확인 3
+                colorData = request.data['colorData']
+                get_hex(colorData)
+
                 postings = FoundPosting.objects.filter(created__gt=datetime.now() - timedelta(weeks=2))
                 image_set = FoundThumbnail.objects.filter(posting_id__in=postings).values('origin')
                 origin_images = FoundImage.objects.filter(id__in=image_set)
-                # TODO 확인 3
+
                 images_id_result = get_similar_image(lost_image.image, origin_images)
 
                 thumb_set = FoundThumbnail.objects.filter(origin_id__in=images_id_result).values('posting')
@@ -126,9 +132,15 @@ def create_found_image(request):
 
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def create_found(request):
     data = request.data
+    data = {
+        'image_id': 8,
+        'category': 3,
+        'color': 8,
+        'content': 'test'
+    }
     serializer = CreateFoundPostingSerializer(data=data)
     if serializer.is_valid():
         posting = serializer.save(user=request.user, status=False)
@@ -137,8 +149,30 @@ def create_found(request):
             thumbnail = get_object_or_404(FoundThumbnail, id=data['image_id'])
             thumbnail.posting_id = posting.id
             thumbnail.save()
-            # TODO 확인 5 + 가벙 할일 여기부터 셀렉팅 시작할 것
-            lost_postings = LostPosting.objects.filter(category=posting.category, color=posting.color)
+            # TODO 확인 5 + 임시 데이터 + decorator
+            lost_postings = LostPosting.objects.filter(category=posting.category_id,
+                                                       # color=posting.color,
+                                                       lost_time__gt=datetime.now() - timedelta(weeks=2))
+
+            image_set = LostThumbnail.objects.filter(posting_id__in=lost_postings).values('origin')
+            origin_images = LostImage.objects.filter(id__in=image_set)
+
+            images_id_result = get_similar_image(thumbnail.origin.image, origin_images)
+            thumb_set = LostThumbnail.objects.filter(origin_id__in=images_id_result).values('posting')
+            posting_set = LostPosting.objects.filter(id__in=thumb_set)
+            email_list = [e.email for e in posting_set]
+
+            subject = f'[분실둥실] {request.user.center_name}{request.user.role}에서 유사한 분실물을 보관중입니다.'
+            message = f'잃어버린 생각이 뭉게뭉게☁ 날 때,\n 분실물 클라우드 ☁분실둥실☁ 입니다.\n\n ' \
+                      f'{request.user.center_name}{request.user.role}에서 등록하신 분실품과 ' \
+                      f'유사한 물품을 보관중입니다.\n ' \
+                      f'작성하신 분실물 게시글은 ~에서 확인하시기 바랍니다.\n ' \
+                      f'해당 물품을 관할기관에서 수령할 시 본인임을 증명할 수 있는 서류(신분증 등)가 필요할 수 있습니다.' \
+                      f'http://localhost:8000/media/{thumbnail.image}/' \
+                      f'\n\n\n감사합니다.'
+            # TODO email 배포 링크 변경 및 생긴 형태 확인
+            recipient_list = email_list
+            send_mail(subject, message, email_from, recipient_list, html_message=message)
 
         posting_serializer = FoundPostingDetailSerializer(posting)
         return Response(status=200, data=posting_serializer.data)
