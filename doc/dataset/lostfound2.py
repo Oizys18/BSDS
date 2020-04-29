@@ -12,20 +12,24 @@ driver.get('https://www.lost112.go.kr/find/findList.do')
 time.sleep(2)
 
 
-start_m = driver.find_element_by_xpath('/html/body/div[1]/div[2]/div[2]/div[2]/div/form/div[1]/fieldset[2]/button[1]')
-start_m.click()
+a = driver.find_element_by_xpath('/html/body/div[1]/div[2]/div[2]/div[2]/div/form/div[1]/fieldset[2]/button[1]')
+a.click()
 
-prev_b = driver.find_element_by_xpath('/html/body/div[1]/div[2]/div[2]/div[2]/div/form/div[1]/fieldset[2]/div/div/div[1]/div[1]/button[2]')
-prev_b.click()
+b = driver.find_element_by_xpath('/html/body/div[1]/div[2]/div[2]/div[2]/div/form/div[1]/fieldset[2]/div/div/div[1]/div[1]/button[2]')
+b.click()
+c = driver.find_element_by_xpath('/html/body/div[1]/div[2]/div[2]/div[2]/div/form/div[1]/fieldset[2]/div/div/table/tbody/tr[1]/td[4]/a')
+c.click()
 
-select_s = driver.find_element_by_xpath('/html/body/div[1]/div[2]/div[2]/div[2]/div/form/div[1]/fieldset[2]/div/div/table/tbody/tr[1]/td[4]/a')
-select_s.click()
-
-end_m = driver.find_element_by_xpath('/html/body/div[1]/div[2]/div[2]/div[2]/div/form/div[1]/fieldset[2]/button[2]')
-end_m.click()
-
-select_e = driver.find_element_by_xpath('/html/body/div[1]/div[2]/div[2]/div[2]/div/form/div[1]/fieldset[2]/div/div/table/tbody/tr[4]/td[4]/a')
-select_e.click()
+d = driver.find_element_by_xpath('/html/body/div[1]/div[2]/div[2]/div[2]/div/form/div[1]/fieldset[2]/button[2]')
+d.click()
+e = driver.find_element_by_xpath('/html/body/div[1]/div[2]/div[2]/div[2]/div/form/div[1]/fieldset[2]/div/div/div[1]/div[1]/button[2]')
+e.click()
+e = driver.find_element_by_xpath('/html/body/div[1]/div[2]/div[2]/div[2]/div/form/div[1]/fieldset[2]/div/div/div[1]/div[1]/button[2]')
+e.click()
+e = driver.find_element_by_xpath('/html/body/div[1]/div[2]/div[2]/div[2]/div/form/div[1]/fieldset[2]/div/div/div[1]/div[1]/button[2]')
+e.click()
+f = driver.find_element_by_xpath('/html/body/div[1]/div[2]/div[2]/div[2]/div/form/div[1]/fieldset[2]/div/div/table/tbody/tr[3]/td[7]/a')
+f.click()
 
 serch_btn = driver.find_element_by_xpath('/html/body/div[1]/div[2]/div[2]/div[2]/div/form/p/button')
 serch_btn.send_keys(Keys.ENTER)
@@ -33,18 +37,18 @@ serch_btn.send_keys(Keys.ENTER)
 page_cnt = 0
 get_data = []
 get_img = []
-while page_cnt < 120:
+while page_cnt < 23:
     page_cnt += 1
 
     if not page_cnt % 5:
         print(page_cnt)
-        with open('./lost_article_sj.csv', 'a', newline='', encoding="utf-8") as f:
+        with open('../get_image_hd/lost_article_2020_1.csv', 'a', newline='', encoding="utf-8") as f:
             w = csv.writer(f, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
             for dt in get_data:
                 w.writerow(dt)
 
-        with open('./image_color_path_sj.csv', 'a', newline='', encoding="utf-8") as f:
+        with open('../get_image_hd/image_color_path_2020_1.csv', 'a', newline='', encoding="utf-8") as f:
             w = csv.writer(f, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
             for dt in get_img:
@@ -104,13 +108,13 @@ while page_cnt < 120:
         nth.send_keys(Keys.ENTER)
 
 
-with open('./lost_article_sj.csv', 'a', newline='', encoding="utf-8") as f:
+with open('../get_image_hd/lost_article_2020_1.csv', 'a', newline='', encoding="utf-8") as f:
     w = csv.writer(f, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
     for dt in get_data:
         w.writerow(dt)
 
-with open('./image_color_path_sj.csv', 'a', newline='', encoding="utf-8") as f:
+with open('../get_image_hd/image_color_path_2020_1.csv', 'a', newline='', encoding="utf-8") as f:
     w = csv.writer(f, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
     for dt in get_img:
