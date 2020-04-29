@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator
+from django.db.models import Q
 from .models import LostPosting, LostThumbnail
 from .serializers import LostImageSerializer, LostThumbnailSerializer, LostPostingSerializer, \
     LostPostingDetailSerializer, AdminLostDetailSerializer, AdminLostListSerializer
@@ -28,7 +29,7 @@ def create_lost_image(request):
                 thumbnail_image = th_serializer.create(th_serializer.validated_data)
                 thumbnail_image.origin_id = image.id
                 thumbnail_image.save()
-                #TODO 확인 1
+                #TODO 확인 1 - color
                 numpy_path = get_numpy_path(image)
                 image.numpy_path = numpy_path
 
@@ -39,6 +40,7 @@ def create_lost_image(request):
                 datasets = {
                     'image_id': thumbnail_image.id,
                     'category': c1,
+                    'color': 3,
                 }
 
                 return Response(status=200, data=datasets, content_type='application.json')
@@ -138,7 +140,7 @@ def update_lost_image(request, lostname):
                 thumbnail_image.posting_id = origin_post_id
                 thumbnail_image.save()
 
-                #TODO 확인 2
+                #TODO 확인 2 - color
                 numpy_path = get_numpy_path(image)
                 image.numpy_path = numpy_path
 
@@ -149,6 +151,7 @@ def update_lost_image(request, lostname):
                 datasets = {
                     'image_id': thumbnail_image.id,
                     'category': c1,
+                    'color': 3,
                 }
                 return Response(status=200, data=datasets, content_type='application.json')
         return Response(status=400, data={'message': 'Invalid images input'})
@@ -158,12 +161,13 @@ def update_lost_image(request, lostname):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_lost_list_admin(request):
-    paginator = cache.get(f'admin_lost_{request.user.id}')
+    user_id = request.user.id
+    paginator = cache.get(f'admin_lost_{user_id}')
     if not paginator:
-        posting = LostPosting.objects.all()
+        posting = LostPosting.objects.filter(Q(p1=user_id) | Q(p2=user_id))
         paginator = Paginator(posting, 8)
-        cache.set(f'admin_lost_{request.user.id}', paginator, 60*5)
-
+        cache.set(f'admin_lost_{user_id}', paginator, 60*5)
+    # TODO 데이터 적재 이후 정렬 즈린 결과 확인
     page_number = request.query_params.get('page')
     page_obj = paginator.get_page(page_number)
     serializer = AdminLostListSerializer(page_obj, many=True)
@@ -201,7 +205,7 @@ def send_lost_notice(request, lost_id):
                   f'작성하신 분실물 게시글은 ~에서 확인하시기 바랍니다.\n ' \
                   f'해당 물품을 관할기관에서 수령할 시 본인임을 증명할 수 있는 서류(신분증 등)가 필요할 수 있습니다.' \
                   f'\n\n\n감사합니다.'
-        # TODO 배포 링크 및 생긴 형태 확인
+        # TODO email 배포 링크로 변경 및 생긴 형태 확인
         recipient_list = [posting.email]
         send_mail(subject, message, email_from, recipient_list, html_message=message)
 
