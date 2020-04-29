@@ -76,13 +76,18 @@ def search_by_image(request):
                 lost_thumbnail_image.save()
 
                 # TODO 확인 3
+                print('확인')
+                print(request.data)
                 colorData = request.data['colorData']
-                hexData = get_hex(colorData)
+                get_hex(colorData)
+
+                # TODO - hexData 상수 값으로 고정 후 테스트
+                hexData = '#ffffff'
                 r, g, b = hex_to_rgb(hexData)
                 print("RGB값 확인")
                 print(r, g, b)
                 colorValue = get_color(r, g, b)
-                print(colorValue)
+                print(colorValue) # 상수값 나옴 -> datasets 에 포함시킬 것 
 
                 postings = FoundPosting.objects.filter(created__gt=datetime.now() - timedelta(weeks=2))
                 image_set = FoundThumbnail.objects.filter(posting_id__in=postings).values('origin')
