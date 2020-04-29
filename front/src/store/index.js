@@ -9,11 +9,11 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
+    loading: true,
     documents: Object,
     locationX: "33.450701",
     locationY: "126.570667",
     items: {},
-    baseURL: "http://f66b6c33.ngrok.io/",
     categories: {
       1: "가방",
       2: "귀금속",

@@ -92,7 +92,7 @@ export default {
       imgurl: "",
       items: {},
       colorData: [],
-      baseurl:process.env.VUE_APP_BASE_URL,
+      baseurl: process.env.VUE_APP_BASE_URL,
     };
   },
   methods: {
@@ -101,7 +101,7 @@ export default {
     },
     showModal(index) {
       this.isClicked = true;
-      console.log(process.env)
+      console.log(process.env);
       console.log(index + "번 게시글 모달 생성");
     },
     exit_Modal(flag) {
@@ -134,10 +134,11 @@ export default {
         });
     },
     imgSearch() {
+      this.$store.state.loading = true;
       if (this.file) {
         this.message = "";
         let formData = new FormData();
-        let url = process.env.VUE_APP_BASE_URL
+        let url = process.env.VUE_APP_BASE_URL;
         formData.append("image", this.file);
         formData.append("colorData", this.colorData);
         axios
@@ -147,13 +148,16 @@ export default {
             },
           })
           .then((res) => {
+            this.$store.state.loading = false;
             this.items = res.data.documents;
             this.searched = true;
           })
           .catch(function() {
+            this.$store.state.loading = false;
             console.log("FAILURE!!");
           });
       } else {
+        this.$store.state.loading = false;
         this.message = "파일이 없습니다.";
       }
     },
