@@ -1,6 +1,5 @@
 <template>
   <div id="paginatedList-wrapper">
-    <div>{{ pageHead }}</div>
     <div id="card-container">
       <div
         @click="showModal(index)"
@@ -9,7 +8,7 @@
         class="card-list"
       >
         <card-big
-          :image="'@/assets/images/camera.png'"
+          :image="item.thumbnail.length ? `${baseurl}${item.thumbnail}` : imagesrc"
           :content="item.created"
           />
       </div>
@@ -19,7 +18,7 @@
         <button-default :text="'prev'" :bgColor="btnPrev" />
       </span>
       <span v-for="num in numOfPages" :key="num" @click="onClickPage(num)">
-        <button-default :text="num" />
+        <button-default :text="num.toString()" />
       </span>
       <span @click="nextPage" :key="btnNext">
         <button-default :text="'next'" :bgColor="btnNext" />
@@ -44,17 +43,15 @@ export default {
   },
   props: {
     items: Array,
-    itemHeader: Array,
-    pageHead: {
-      type: String,
-      default: ""
+    pageSize: {
+      type: Number,
+      default: 6
     }
   },
   data() {
     return {
       pageNum: 1,
-      pageSize: 6,
-      imagesrc: 'media/no_image.png',
+      imagesrc: `${this.baseurl}media/no_image.png`,
       isClicked: false
     }
   },
@@ -98,7 +95,11 @@ export default {
     },
     btnNext() {
       return (this.pageNum < this.numOfPages) ? "default" : "grey"
-    }
+    },
+    baseurl() {
+      console.log(this.$store.state.baseURL);
+      return this.$store.state.baseURL;
+    },
   }
 }
 </script>
