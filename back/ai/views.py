@@ -14,6 +14,7 @@ import os
 from .apps import AiConfig
 import json
 import io
+import tensorflow as tf
 from PIL import Image
 from django.contrib.auth import get_user_model
 User = get_user_model()
@@ -23,7 +24,7 @@ User = get_user_model()
 def prepare_image(img):
     # convert to handle png file format
     img = Image.open(io.BytesIO(img)).convert(mode='RGB')
-    img = img.resize((224,224))
+    img = img.resize((224, 224))
     img_array = np.array(img) / 255.0
     img_array = np.expand_dims(img_array, axis=0)
     return img_array
@@ -32,7 +33,8 @@ def prepare_image(img):
 def parse_result(pred, cat_code):
     pred_classes = np.argsort(pred[0])[-3:][::-1]
     pred_probs = np.sort(pred[0])[-3:][::-1]
-    result = [(cat_code[str(pred_classes[i])],pred_probs[i]) for i in range(3)]
+    result = [(cat_code[str(pred_classes[i])], pred_probs[i])
+              for i in range(3)]
     return result
 
 
@@ -166,9 +168,58 @@ def get_closer_user(x, y, radius):
 
 
 def get_hex(colorData):
+    print(colorData)
     colorData = colorData.split(',')
     hex_list, pop_list = colorData[:len(colorData)//2], colorData[len(colorData)//2:]
     pop_list = [int(i) for i in pop_list]
     color_hex = hex_list[pop_list.index(max(pop_list))]
-    #TODO hex 라는 변수는 사용하면 안댑니당!! 내장함수가 있기때문에 주의하셔용~
+    # TODO hex 라는 변수는 사용하면 안댑니당!! 내장함수가 있기때문에 주의하셔용~
     return color_hex
+
+
+def hex_to_rgb(value):
+    value = value.lstrip('#')
+    lv = len(value)
+    return tuple(int(value[i:i + lv // 3], 16) for i in range(0, lv, lv // 3))
+
+
+def get_color(r, g, b):
+    labelsValues = [
+        "red-ish",
+        "green-ish",
+        "blue-ish",
+        "orange-ish",
+        "yellow-ish",
+        "pink-ish",
+        "purple-ish",
+        "brown-ish",
+        "grey-ish"
+    ]
+
+    labelsDict = {
+        "red-ish": 1,
+        "green-ish": 5,
+        "blue-ish": 4,
+        "orange-ish": 2,
+        "yellow-ish": 3,
+        "pink-ish": 6,
+        "purple-ish": 7,
+        "brown-ish": 8,
+        "grey-ish": 9,
+    }
+
+    # LOADING MODEL
+    model = AiConfig.color_model
+    path = AiConfig.COLOR_MODEL_WEIGHT_FILE
+    model.load_weights(path)
+    print(model)
+    print(path)
+
+    r = r / 255
+    g = g / 255
+    b = b / 255
+    # 254 0 2 orange-ish
+    # 12 255 2 red-ish
+    t = np.argmax(model.predict(tf.constant([[r, g, b]], dtype=tf.float32)))
+    print(labelsValues[t])
+    return labelsDict[labelsValues[t]]
