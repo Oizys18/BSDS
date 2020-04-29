@@ -92,6 +92,7 @@ export default {
       imgurl: "",
       items: {},
       colorData: [],
+      baseurl: process.env.VUE_APP_BASE_URL,
     };
   },
   methods: {
@@ -100,6 +101,7 @@ export default {
     },
     showModal(index) {
       this.isClicked = true;
+      console.log(process.env);
       console.log(index + "번 게시글 모달 생성");
     },
     exit_Modal(flag) {
@@ -112,28 +114,31 @@ export default {
       this.file = event.target.files[0];
       this.imgurl = URL.createObjectURL(this.file);
       this.colorData = [];
+
       Vibrant.from(this.imgurl)
         .getPalette()
         .then((palette) => {
           this.colorData.push(palette.Vibrant.hex);
-          this.colorData.push(palette.Vibrant.population);
           this.colorData.push(palette.Muted.hex);
-          this.colorData.push(palette.Muted.population);
           this.colorData.push(palette.DarkVibrant.hex);
-          this.colorData.push(palette.DarkVibrant.population);
           this.colorData.push(palette.DarkMuted.hex);
-          this.colorData.push(palette.DarkMuted.population);
           this.colorData.push(palette.LightVibrant.hex);
-          this.colorData.push(palette.LightVibrant.population);
           this.colorData.push(palette.LightMuted.hex);
+          this.colorData.push(palette.Vibrant.population);
+          this.colorData.push(palette.Muted.population);
+          this.colorData.push(palette.DarkVibrant.population);
+          this.colorData.push(palette.DarkMuted.population);
+          this.colorData.push(palette.LightVibrant.population);
           this.colorData.push(palette.LightMuted.population);
+          console.log(this.colorData);
         });
     },
     imgSearch() {
+      this.$store.state.loading = true;
       if (this.file) {
         this.message = "";
         let formData = new FormData();
-        let url = this.baseurl;
+        let url = process.env.VUE_APP_BASE_URL;
         formData.append("image", this.file);
         formData.append("colorData", this.colorData);
         axios
@@ -143,20 +148,18 @@ export default {
             },
           })
           .then((res) => {
+            this.$store.state.loading = false;
             this.items = res.data.documents;
             this.searched = true;
           })
           .catch(function() {
+            this.$store.state.loading = false;
             console.log("FAILURE!!");
           });
       } else {
+        this.$store.state.loading = false;
         this.message = "파일이 없습니다.";
       }
-    },
-  },
-  computed: {
-    baseurl() {
-      return this.$store.state.baseURL;
     },
   },
 };

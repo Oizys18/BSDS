@@ -25,17 +25,15 @@ export default {
       default: "선택해주세요",
     },
     items: {
-      type: Array,
+      type: Object,
       default: function() {
-        return { 1: "선택1", 2: "선택2", 3: "선택3" };
+        return {};
       },
     },
   },
   methods: {
     updateValue: function(value) {
       this.$emit("input", value);
-      // 선택된 아이템 index
-      console.log(value)
     },
   },
 };
