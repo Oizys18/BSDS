@@ -2,8 +2,8 @@
   <div>
     <div class="user-info">
       <span>메롱시티 웅앵</span>
-<!--        <span>{{ getUserInfo.parent_department }}</span>-->
-<!--        <span>{{ getUserInfo.center_name + getUserInfo.role }}</span>-->
+        <span>{{ getUserInfo.parent_department }}</span>
+        <span>{{ getUserInfo.center_name + getUserInfo.role }}</span>
       </div>
     <div id="admin-btn-wrapper">
 

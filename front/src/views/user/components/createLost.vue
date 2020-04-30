@@ -45,26 +45,11 @@
         </div>
         <div class="date-wrapper">
           <span class="select">분실 추정 일자</span>
-          <span class="error" v-if="!checkForm(this.time)">* 필수 입력란입니다.</span>
-        </div>
-        <div class="date-select-wrapper">
-          <select-one
+          <input
             class="select-year"
-            :default="'연'"
-            :items="yItems"
-            @input="onDateSelectY"
-          />
-          <select-one
-            class="select-month"
-            :default="'월'"
-            :items="mItems"
-            @input="onDateSelectM"
-          />
-          <select-one
-            class="select-day"
-            :default="'일'"
-            :items="dItems"
-            @input="onDateSelectD"
+            type="date"
+            min="2019-01-01"
+            v-model="date"
           />
           <select-one
             class="select-time"
@@ -72,6 +57,7 @@
             :items="timeList"
             @input="onTimeSelect"
           />
+          <span class="error" v-if="!checkForm(this.time)">* 필수 입력란입니다.</span>
         </div>
         <div class="category-wrapper">
           <span class="select-location">
@@ -163,10 +149,7 @@ export default {
       content: '',
       category: this.getCategory,
       color: this.getColor,
-      yItems: [],
-      mItems: ['1 월', '2 월', '3 월', '4 월', '5 월', '6 월', '7 월', '8 월', '9 월', '10 월', '11 월', '12 월'],
-      dItems: [],
-      date: ['2020', '-', '01', '-', '01'],
+      date: null,
       timeList: [],
       time: '',
       password: '',
@@ -183,12 +166,6 @@ export default {
         this.timeList.push(i.toString() + ':00')
       }
     }
-    for (let y = 2020; y > 2018; y--) {
-      this.yItems.push(y.toString() + ' 년')
-    }
-    for (let d = 1; d < 32; d++) {
-      this.dItems.push(d.toString() + ' 일')
-    }
   },
   methods: {
     createContent() {
@@ -197,10 +174,7 @@ export default {
         "category": this.getCategory,
         "color": this.getColor,
         "content": this.content,
-        "lost_time":
-          `${this.date.reduce(function (accumulator, currentValue) {
-          return accumulator + currentValue;
-          })} ${this.time}:00`,
+        "lost_time": this.date + ' ' + this.time,
         "email": this.email,
         "password": this.password,
         "do_notice": this.do_notice,
@@ -304,10 +278,11 @@ export default {
     display: none;
   }
   .select-year {
-    width: 20%;
+    width: 25%;
     margin-right: 10px;
+    padding-left: 8px;
   }
-  .select-month, .select-day, .select-time {
+  .select-time {
     width: 15%;
     margin-right: 10px;
   }
@@ -316,9 +291,6 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-  }
-  .create-form {
-    overflow: hidden;
   }
   .left-wrapper {
     float: left;
@@ -355,18 +327,12 @@ export default {
     display: flex;
     margin-bottom: 15px;
   }
-  .date-select-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: space-evenly;
-    margin-bottom: 15px;
-  }
   .date-select-wrapper select {
     height: 1.5rem;
   }
   .image-preview {
     max-width: 200px;
-    /*height: 150px;*/
+    height: 150px;
   }
   .image-upload {
     margin-right: 20px;
@@ -436,6 +402,18 @@ export default {
     background:#0A95FF;
     color:#fff;
   }
-
+  .file-input-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+  input[type=date] {
+    border-radius: 10px;
+    border: 1px solid black;
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 
 </style>
