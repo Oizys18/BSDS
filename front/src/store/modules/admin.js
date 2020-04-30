@@ -34,7 +34,7 @@ const mutations = {
 const actions = {
   getCreatedList: ({ commit }) => {
     commit('setLoading', true)
-    axios.get(`${HOST}found/posting/list/`, {
+    axios.get(`${HOST}found/posting/admin/list/`, {
       headers: {
       'Authorization': `JWT ${sessionStorage.getItem('jwt')}`
     }
@@ -47,6 +47,24 @@ const actions = {
         commit('setDoc', data.documents)
         commit('setLoading', false)
 
+      })
+      .catch(err => console.log(err))
+  },
+
+  getLostList: ({ commit }) => {
+    commit('setLoading', true)
+    axios.get(`${HOST}lost/admin/`, {
+      headers: {
+        'Authorization': `JWT ${sessionStorage.getItem('jwt')}`
+      }
+    })
+      .then(res => {
+        console.log(res)
+        const data = res.data
+        console.log(data)
+        commit('setMeta', data.meta)
+        commit('setDoc', data.documents)
+        commit('setLoading', false)
       })
       .catch(err => console.log(err))
   }

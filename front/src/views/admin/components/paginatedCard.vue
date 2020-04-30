@@ -9,8 +9,8 @@
       >
         <card-big
           :image="item.thumbnail.length ? `${baseurl}${item.thumbnail}` : `${baseurl}${imagesrc}`"
-          :content="item.created"
-          :title="getUserInfo.center_name + getUserInfo.role"
+          :content="item.created.slice(0, 10)"
+          :title="getUserInfo.parent_department + ' ' + getUserInfo.center_name + getUserInfo.role"
           />
       </div>
     </div>
@@ -112,7 +112,7 @@ export default {
   #card-container {
     display: grid;
     width: 40%;
-    grid-template-rows: repeat(4, 210px);
+    grid-template-rows: repeat(3, 210px);
     grid-template-columns: repeat(2, 360px);
     justify-content: space-around;
     align-items: center;
@@ -129,10 +129,10 @@ export default {
     flex-wrap: wrap;
   }
   .list-page-btn {
-    position: absolute;
-    bottom: 10%;
-    left: 50%;
-    transform:translateX(-50%);
+    /*position: absolute;*/
+    /*bottom: 5%;*/
+    /*left: 50%;*/
+    /*transform:translateX(-50%);*/
   }
   .list-page-btn > span {
     /*pointer-events: none;*/

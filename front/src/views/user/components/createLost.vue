@@ -5,16 +5,21 @@
     <form>
       <div class=left-wrapper>
         <div class="img-wrapper">
+          <div class="file-input-btn">
           <label for="file-input" class="image-label">
             <img class="image-upload" src="@/assets/images/camera.png">
           </label>
+          <span @click="postImageUser" >
+            <button-default :text="'이미지 확인'"/>
+          </span>
+          </div>
           <input
             class="file-input"
             id="file-input"
             ref="imageInput"
             type="file"
-            accept="image/*"
-            @change="postImageUser"
+            accept="image/jpg, image/jpeg"
+            @change="getColorData"
           >
           <img class="image-preview" v-if="getImgUrl" :src="getImgUrl"/>
         </div>
@@ -23,7 +28,7 @@
           <select-one
             class="select-category"
             :items="Object.values($store.state.categories)"
-            :default="this.getCategory === null ? '분류' : this.getCategoryName"
+            :default="getCategory === null ? '분류' : getCategoryName"
             @input="onSelectCategory"
           />
           <span class="error" v-if="!checkForm(this.category)">* 필수 입력란입니다.</span>
@@ -33,33 +38,18 @@
           <select-one
             class="select-category"
             :items="Object.values($store.state.colors)"
-            :default="this.getColor  === null ? '색상' : this.getColor"
+            :default="getColor  === null ? '색상' : getColorName"
             @input="onSelectColor"
           />
           <span class="error" v-if="!checkForm(this.color)">* 필수 입력란입니다.</span>
         </div>
         <div class="date-wrapper">
           <span class="select">분실 추정 일자</span>
-          <span class="error" v-if="!checkForm(this.time)">* 필수 입력란입니다.</span>
-        </div>
-        <div class="date-select-wrapper">
-          <select-one
+          <input
             class="select-year"
-            :default="'연'"
-            :items="yItems"
-            @input="onDateSelectY"
-          />
-          <select-one
-            class="select-month"
-            :default="'월'"
-            :items="mItems"
-            @input="onDateSelectM"
-          />
-          <select-one
-            class="select-day"
-            :default="'일'"
-            :items="dItems"
-            @input="onDateSelectD"
+            type="date"
+            min="2019-01-01"
+            v-model="date"
           />
           <select-one
             class="select-time"
@@ -67,6 +57,7 @@
             :items="timeList"
             @input="onTimeSelect"
           />
+          <span class="error" v-if="!checkForm(this.time)">* 필수 입력란입니다.</span>
         </div>
         <div class="category-wrapper">
           <span class="select-location">
@@ -158,10 +149,7 @@ export default {
       content: '',
       category: this.getCategory,
       color: this.getColor,
-      yItems: [],
-      mItems: ['1 월', '2 월', '3 월', '4 월', '5 월', '6 월', '7 월', '8 월', '9 월', '10 월', '11 월', '12 월'],
-      dItems: [],
-      date: ['2020', '-', '01', '-', '01'],
+      date: null,
       timeList: [],
       time: '',
       password: '',
@@ -178,12 +166,6 @@ export default {
         this.timeList.push(i.toString() + ':00')
       }
     }
-    for (let y = 2020; y > 2018; y--) {
-      this.yItems.push(y.toString() + ' 년')
-    }
-    for (let d = 1; d < 32; d++) {
-      this.dItems.push(d.toString() + ' 일')
-    }
   },
   methods: {
     createContent() {
@@ -192,10 +174,7 @@ export default {
         "category": this.getCategory,
         "color": this.getColor,
         "content": this.content,
-        "lost_time":
-          `${this.date.reduce(function (accumulator, currentValue) {
-          return accumulator + currentValue;
-          })} ${this.time}:00`,
+        "lost_time": this.date + ' ' + this.time,
         "email": this.email,
         "password": this.password,
         "do_notice": this.do_notice,
@@ -228,28 +207,6 @@ export default {
       this.time = this.timeList[value]
       console.log(this.time)
     },
-    onDateSelectY(value) {
-      this.date[0] = this.yItems[value].slice(0, -2)
-      console.log(this.date)
-    },
-    onDateSelectM(value) {
-      const temp = this.mItems[value].slice(0, -2)
-      if (temp < 10) {
-        this.date[2] = '0' + temp
-      } else {
-        this.date[2] = temp
-      }
-      console.log(this.date)
-    },
-    onDateSelectD(value) {
-      const temp = this.dItems[value].slice(0, -2)
-      if (temp < 10) {
-        this.date[4] = '0' + temp
-      } else {
-        this.date[4] = temp
-      }
-      console.log(this.date)
-    },
     showModal(index) {
       this.isClicked = true;
       console.log(index + "번 게시글 모달 생성");
@@ -274,14 +231,13 @@ export default {
         return true
       }
     },
-    changeDonotice(value) {
-      this.do_notice = value
-    }
-  ,
-    ...mapActions(['postImageUser']),
+    go(path) {
+      this.$router.push(path)
+    },
+    ...mapActions(['postImageUser', 'getColorData']),
   },
   computed: {
-    ...mapGetters(['getId', 'getCategory', 'getColor', 'getImgUrl', 'getCategoryName']),
+    ...mapGetters(['getId', 'getCategory', 'getColor', 'getImgUrl', 'getCategoryName', 'getColorName']),
     ...mapState(['image_id'])
   }
 }
@@ -303,10 +259,11 @@ export default {
     display: none;
   }
   .select-year {
-    width: 20%;
+    width: 25%;
     margin-right: 10px;
+    padding-left: 8px;
   }
-  .select-month, .select-day, .select-time {
+  .select-time {
     width: 15%;
     margin-right: 10px;
   }
@@ -315,9 +272,6 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-  }
-  .create-form {
-    overflow: hidden;
   }
   .left-wrapper {
     float: left;
@@ -354,18 +308,12 @@ export default {
     display: flex;
     margin-bottom: 15px;
   }
-  .date-select-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: space-evenly;
-    margin-bottom: 15px;
-  }
   .date-select-wrapper select {
     height: 1.5rem;
   }
   .image-preview {
     max-width: 200px;
-    /*height: 150px;*/
+    height: 150px;
   }
   .image-upload {
     margin-right: 20px;
@@ -435,6 +383,18 @@ export default {
     background:#0A95FF;
     color:#fff;
   }
-
+  .file-input-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+  input[type=date] {
+    border-radius: 10px;
+    border: 1px solid black;
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 
 </style>

@@ -5,16 +5,21 @@
     <form>
       <div class=left-wrapper>
         <div class="img-wrapper">
+          <div class="file-input-btn">
           <label for="file-input" class="image-label">
             <img class="image-upload" src="@/assets/images/camera.png">
           </label>
+          <span @click="postImageAdmin" >
+            <button-default :text="'이미지 확인'"/>
+          </span>
+          </div>
           <input
             class="file-input"
             id="file-input"
             ref="imageInput"
             type="file"
-            accept="image/*"
-            @change="postImageAdmin"
+            accept="image/jpg, image/jpeg"
+            @change="getColorData"
           >
           <img class="image-preview" v-if="getImgUrl" :src="getImgUrl"/>
         </div>
@@ -22,7 +27,7 @@
           <span class="select">물품 분류</span>
           <select-one
             class="select-category"
-            :default="this.getCategory === null ? '분류' : this.getCategoryName"
+            :default="getCategory === null ? '분류' : getCategoryName"
             :items="Object.values($store.state.categories)"
             @input="onSelectCategory"
           />
@@ -32,7 +37,7 @@
           <span class="select">색상</span>
           <select-one
             class="select-category"
-            :default="this.getColor  === null ? '색상' : this.getColor"
+            :default="getColor  === null ? '색상' : getColorName"
             :items="Object.values($store.state.colors)"
             @input="onSelectColor"
           />
@@ -70,7 +75,7 @@ import buttonDefault from '@/components/common/button/buttonDefault'
 const axios = require('axios')
 
 export default {
-  name: 'create-lost',
+  name: 'create-found',
   components: {
     selectOne,
     buttonDefault,
@@ -88,8 +93,8 @@ export default {
       const data = {
         "image_id": this.getId,
         "content": this.content,
-        "category": this.category,
-        "color": this.color,
+        "category": this.getCategory,
+        "color": this.getColor,
       }
       axios.post(`${this.$store.state.baseURL}found/posting/`, data, {
         headers: {
@@ -122,10 +127,10 @@ export default {
     go(path) {
       this.$router.push(path)
     },
-    ...mapActions(['postImageAdmin'])
+    ...mapActions(['postImageAdmin', 'getColorData'])
   },
   computed: {
-    ...mapGetters(['getId', 'getCategory', 'getColor', 'getImgUrl', 'getCategoryName']),
+    ...mapGetters(['getId', 'getCategory', 'getColor', 'getImgUrl', 'getCategoryName', 'getColorName']),
     ...mapState(['image_id'])
   }
 }
@@ -202,5 +207,11 @@ export default {
     color: #FB121D;
     padding-top: 2px;
     margin: 0 15px 0px 10px;
+  }
+  .file-input-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
   }
 </style>

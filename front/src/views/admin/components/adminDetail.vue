@@ -2,8 +2,8 @@
   <div>
     <div class="user-info">
       <span>메롱시티 웅앵</span>
-<!--        <span>{{ getUserInfo.parent_department }}</span>-->
-<!--        <span>{{ getUserInfo.center_name + getUserInfo.role }}</span>-->
+        <span>{{ getUserInfo.parent_department }}</span>
+        <span>{{ getUserInfo.center_name + getUserInfo.role }}</span>
       </div>
     <div id="admin-btn-wrapper">
 
@@ -80,7 +80,7 @@ export default {
     width: 280px;
     box-sizing: border-box;
     border-style: solid;
-    border-image: linear-gradient(to right, #0A95FF 0%, #38618C 100%);
+    border-image: linear-gradient(to right, #0A95FF 80%, #38618C 100%);
     border-image-slice: 1;
     border-image-width: 2px;
   }

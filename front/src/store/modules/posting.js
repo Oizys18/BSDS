@@ -8,7 +8,7 @@ const state = {
     category: null,
     postTime: null,
     content: null,
-    status: true,
+    status: null,
     thumbnail: [
       null
     ],
@@ -33,6 +33,7 @@ const state = {
 
 const getters = {
   getData: state => state.data,
+  getStatus: state => state.status,
   getPostingId: state => state.id,
   getPostingColor: state => state.color,
   getPostingCategory: state => state.category,
@@ -71,12 +72,29 @@ const actions = {
         commit('setPostTime', data.created)
         commit('setThumbnail', data.thumbnail[0])
         commit('setUser', data.user)
+        console.log(data)
+        console.log(state.user)
+      })
+      .catch(err => console.log(err))
+  },
+  getDetailLost:  ({commit}, id) => {
+    commit('setPostingId', id)
+    axios.get(`${HOST}found/posting/list/${id}/`)
+      .then(res => {
+        const data = res.data
+        commit('setData', data)
+        commit('setPostingCategory', data.category)
+        commit('setPostingColor', data.color)
+        commit('setPostContent', data.content)
+        commit('setPostTime', data.created)
+        commit('setThumbnail', data.thumbnail[0])
+        commit('setUser', data.user)
         console.log(res)
         console.log(state.user)
         console.log(state.content)
       })
       .catch(err => console.log(err))
-  }
+  },
 }
 
 export default {
