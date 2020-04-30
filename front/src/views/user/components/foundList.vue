@@ -53,6 +53,7 @@ export default {
   mounted() {
     this.$store.state.loading = true;
     if (this.$store.state.documents[0]) {
+      this.$store.state.loading = false;
       this.items = this.$store.state.documents;
       this.$store.state.documents = {};
     } else {
@@ -63,6 +64,7 @@ export default {
           this.items = res.data.documents.slice(0, 9);
         })
         .catch(err => {
+          this.$store.state.loading = false;
           console.log(err);
         });
     }
