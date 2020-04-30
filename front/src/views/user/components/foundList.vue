@@ -45,6 +45,11 @@ export default {
       this.item = item;
     },
   },
+  watch: {
+    $route() {
+      this.$store.state.showModal = false;
+    },
+  },
   mounted() {
     this.$store.state.loading = true;
     axios

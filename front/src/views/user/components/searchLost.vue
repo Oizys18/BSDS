@@ -56,6 +56,11 @@ export default {
       baseurl: process.env.VUE_APP_BASE_URL,
     };
   },
+  watch: {
+    $route() {
+      this.$store.state.showModal = false;
+    },
+  },
   methods: {
     search() {
       this.$store.state.loading = true;
