@@ -61,10 +61,10 @@ export default {
   padding: 20px;
 }
 
-/*.navbtn-wrapper {*/
-/*  position: absolute;*/
-/*  right: 20%;*/
-/*}*/
+.navbtn-wrapper {
+  position: absolute;
+  top: 90%;
+}
 
 .logo {
   margin-bottom: 15px;

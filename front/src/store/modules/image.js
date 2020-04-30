@@ -1,4 +1,5 @@
 import store from '../index'
+import * as Vibrant from 'node-vibrant'
 const HOST = process.env.VUE_APP_BASE_URL
 
 const axios = require('axios');
@@ -8,6 +9,8 @@ const state = {
   color: null,
   category: null,
   imageUrl: null,
+  colorData: [],
+  file: null
 };
 
 const getters = {
@@ -15,6 +18,7 @@ const getters = {
   getCategory: state => state.category,
   getCategoryName: state => store.state.categories[state.category],
   getColor: state => state.color,
+  getColorName: state => store.state.colors[state.color],
   getImgUrl: state => state.imageUrl,
 };
 
@@ -26,7 +30,9 @@ const mutations = {
     console.log(state.category)
   },
   setColor: (state, clr) => {
-    state.color = store.state.colors[clr].name
+    state.color = clr
+    console.log(store.state.colors)
+    console.log(state.color)
   },
   setImgUrl: (state, imageUrl) => {
     state.imageUrl = imageUrl
@@ -36,17 +42,47 @@ const mutations = {
     state.category = null,
     state.color = null
     state.imageUrl = null
+  },
+  setColorData: (state, colordata) => {
+    state.colorData = colordata
+  },
+  setFile: (state, file) => {
+    state.file = file
   }
 };
 
 const actions= {
-  postImageUser: ({ commit }, e) => {
-    console.log(e)
-    console.log(e.target.files)
+  getColorData: ({ commit }, e) => {
+    const colorDataArray = [];
     const file = e.target.files[0]
+    const imgUrl = URL.createObjectURL(file)
+    commit('setFile', file)
+    commit('setImgUrl', imgUrl)
+    Vibrant.from(state.imageUrl)
+        .getPalette()
+        .then((palette) => {
+          colorDataArray.push(palette.Vibrant.hex);
+          colorDataArray.push(palette.Muted.hex);
+          colorDataArray.push(palette.DarkVibrant.hex);
+          colorDataArray.push(palette.DarkMuted.hex);
+          colorDataArray.push(palette.LightVibrant.hex);
+          colorDataArray.push(palette.LightMuted.hex);
+          colorDataArray.push(palette.Vibrant.population);
+          colorDataArray.push(palette.Muted.population);
+          colorDataArray.push(palette.DarkVibrant.population);
+          colorDataArray.push(palette.DarkMuted.population);
+          colorDataArray.push(palette.LightVibrant.population);
+          colorDataArray.push(palette.LightMuted.population);
+          console.log(colorDataArray);
+        });
+    commit('setColorData', colorDataArray);
+  },
+
+  postImageUser: ({ commit }) => {
     const formdata = new FormData();
-    commit('setImgUrl', URL.createObjectURL(file))
-    formdata.append('image', file)
+    formdata.append('image', state.file)
+    formdata.append('colorData', state.colorData)
+    console.log(formdata)
     axios.post(`${HOST}lost/posting/image/`, formdata, {
         headers: {
             "Content-Type": "multipart/form-data",
@@ -55,18 +91,17 @@ const actions= {
       .then(res => {
         commit('setId', res.data.image_id)
         commit('setCategory', res.data.category)
+        commit('setColor', res.data.color)
         console.log(res)
         console.log(state)
       })
       .catch(err => console.log(err))
   },
-  postImageAdmin: ({ commit }, e) => {
-    console.log(e)
-    console.log(e.target.files)
-    const file = e.target.files[0]
+
+  postImageAdmin: ({ commit }) => {
     const formdata = new FormData();
-    commit('setImgUrl', URL.createObjectURL(file))
-    formdata.append('image', file)
+    formdata.append('image', state.file)
+    formdata.append('colorData', state.colorData)
     axios.post(`${HOST}found/posting/image/`, formdata, {
         headers: {
             "Content-Type": "multipart/form-data",
@@ -76,6 +111,7 @@ const actions= {
       .then(res => {
         commit('setId', res.data.image_id)
         commit('setCategory', res.data.category)
+        commit('setColor', res.data.color)
         console.log(res)
         console.log(state)
       })

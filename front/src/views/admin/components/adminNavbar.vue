@@ -1,6 +1,8 @@
 <template>
   <div class="navbar-container">
+    <div class="logo-shadow">
     <img @click="go({name: 'adminIndex'})" src="@/assets/images/mainlogo.png">
+    </div>
   </div>
 </template>
 
@@ -35,5 +37,15 @@ export default {
   }
   img {
     max-height: 80%;
+  }
+  .logo-shadow {
+    height: 90%;
+    width: 40%;
+    /*border-bottom: 1px solid #3AB795;*/
+    border-style: solid;
+    border-image: linear-gradient(to right, #FF5F7A 0%, #3AB795 100%);
+    border-image-slice: 1;
+    border-image-width: 0 0 0.3 0px;
+    margin-bottom: 5px;
   }
 </style>

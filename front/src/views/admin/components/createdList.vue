@@ -1,5 +1,6 @@
 <template>
   <div>
+    <admin-navbar />
     <div v-if="getItemSize">
     <paginated-card :pageHead="'작성한 글 목록'" :items="getItems" :page-size="6"/>
     </div>
@@ -9,12 +10,13 @@
 
 <script>
 import  { mapState, mapGetters } from 'vuex'
-// import paginatedList from "@/views/admin/components/paginatedList";
+import adminNavbar from "./adminNavbar";
 import paginatedCard from "./paginatedCard";
 export default {
   name: "createdList",
   components: {
-    paginatedCard
+    paginatedCard,
+    adminNavbar
   },
   data() {
     return {

@@ -5,16 +5,21 @@
     <form>
       <div class=left-wrapper>
         <div class="img-wrapper">
+          <div class="file-input-btn">
           <label for="file-input" class="image-label">
             <img class="image-upload" src="@/assets/images/camera.png">
           </label>
+          <span @click="postImageUser" >
+            <button-default :text="'이미지 확인'"/>
+          </span>
+          </div>
           <input
             class="file-input"
             id="file-input"
             ref="imageInput"
             type="file"
-            accept="image/*"
-            @change="postImageUser"
+            accept="image/jpg, image/jpeg"
+            @change="getColorData"
           >
           <img class="image-preview" v-if="getImgUrl" :src="getImgUrl"/>
         </div>
@@ -23,7 +28,7 @@
           <select-one
             class="select-category"
             :items="Object.values($store.state.categories)"
-            :default="this.getCategory === null ? '분류' : this.getCategoryName"
+            :default="getCategory === null ? '분류' : getCategoryName"
             @input="onSelectCategory"
           />
           <span class="error" v-if="!checkForm(this.category)">* 필수 입력란입니다.</span>
@@ -33,7 +38,7 @@
           <select-one
             class="select-category"
             :items="Object.values($store.state.colors)"
-            :default="this.getColor  === null ? '색상' : this.getColor"
+            :default="getColor  === null ? '색상' : getColorName"
             @input="onSelectColor"
           />
           <span class="error" v-if="!checkForm(this.color)">* 필수 입력란입니다.</span>
@@ -274,14 +279,10 @@ export default {
         return true
       }
     },
-    changeDonotice(value) {
-      this.do_notice = value
-    }
-  ,
-    ...mapActions(['postImageUser']),
+    ...mapActions(['postImageUser', 'getColorData']),
   },
   computed: {
-    ...mapGetters(['getId', 'getCategory', 'getColor', 'getImgUrl', 'getCategoryName']),
+    ...mapGetters(['getId', 'getCategory', 'getColor', 'getImgUrl', 'getCategoryName', 'getColorName']),
     ...mapState(['image_id'])
   }
 }

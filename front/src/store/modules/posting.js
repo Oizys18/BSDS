@@ -76,7 +76,25 @@ const actions = {
         console.log(state.content)
       })
       .catch(err => console.log(err))
-  }
+  },
+  getDetailLost:  ({commit}, id) => {
+    commit('setPostingId', id)
+    axios.get(`${HOST}found/posting/list/${id}/`)
+      .then(res => {
+        const data = res.data
+        commit('setData', data)
+        commit('setPostingCategory', data.category)
+        commit('setPostingColor', data.color)
+        commit('setPostContent', data.content)
+        commit('setPostTime', data.created)
+        commit('setThumbnail', data.thumbnail[0])
+        commit('setUser', data.user)
+        console.log(res)
+        console.log(state.user)
+        console.log(state.content)
+      })
+      .catch(err => console.log(err))
+  },
 }
 
 export default {
