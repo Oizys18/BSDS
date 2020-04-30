@@ -35,7 +35,5 @@ export default {
   }
   img {
     max-height: 80%;
-    position: absolute;
-    left: 15%;
   }
 </style>

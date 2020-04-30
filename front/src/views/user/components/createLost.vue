@@ -40,6 +40,9 @@
         </div>
         <div class="date-wrapper">
           <span class="select">분실 추정 일자</span>
+          <span class="error" v-if="!checkForm(this.time)">* 필수 입력란입니다.</span>
+        </div>
+        <div class="date-select-wrapper">
           <select-one
             class="select-year"
             :default="'연'"
@@ -64,7 +67,6 @@
             :items="timeList"
             @input="onTimeSelect"
           />
-          <span class="error" v-if="!checkForm(this.time)">* 필수 입력란입니다.</span>
         </div>
         <div class="category-wrapper">
           <span class="select-location">
@@ -301,15 +303,15 @@ export default {
     display: none;
   }
   .select-year {
-    width: 100px;
+    width: 20%;
     margin-right: 10px;
   }
   .select-month, .select-day, .select-time {
-    width: 80px;
+    width: 15%;
     margin-right: 10px;
   }
   .container {
-    margin-top: 150px;
+    margin-top: 200px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -319,7 +321,7 @@ export default {
   }
   .left-wrapper {
     float: left;
-    width: 50em;
+    width: 60%;
     border: 1px solid black;
     border-radius: 2%;
     margin-right: 45px;
@@ -328,21 +330,20 @@ export default {
   }
   .right-wrapper {
     float: left;
-    width: 320px;
-
+    width: 30%;
     text-align: initial;
   }
   .description-wrapper {
     border: 1px solid black;
     border-radius: 2%;
     float: left;
-    width: 320px;
+    width: 100%;
     padding: 10px;
     text-align: initial;
   }
   .button-wrapper {
     border: none;
-    width: 320px;
+    width: 100%;
     padding: 0px 10px 10px 10px;
     text-align: center;
   }
@@ -353,9 +354,18 @@ export default {
     display: flex;
     margin-bottom: 15px;
   }
+  .date-select-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    margin-bottom: 15px;
+  }
+  .date-select-wrapper select {
+    height: 1.5rem;
+  }
   .image-preview {
-    width: 200px;
-    height: 150px;
+    max-width: 200px;
+    /*height: 150px;*/
   }
   .image-upload {
     margin-right: 20px;

@@ -1,5 +1,6 @@
 <template>
 <div class="container">
+  <admin-navbar />
   <div class="create-lost">
     <form>
       <div class=left-wrapper>
@@ -46,12 +47,14 @@
             />
         </div>
       </div>
-      <div class="button-wrapper">
-        <div @click="createContent">
-          <button-default class="admin-btn" :text="'등록하기'"/>
-        </div>
-        <div @click="go({name:'adminIndex'})">
-          <button-default class="admin-btn" :text="'취소'"/>
+      <div class="right-wrapper">
+        <div class="button-wrapper">
+          <div @click="createContent">
+            <button-default class="admin-btn" :text="'등록하기'"/>
+          </div>
+          <div @click="go({name:'adminIndex'})">
+            <button-default class="admin-btn" :text="'취소'"/>
+          </div>
         </div>
       </div>
     </form>
@@ -60,7 +63,8 @@
 </template>
 
 <script>
-  import {mapGetters, mapActions, mapState} from 'vuex'
+import {mapGetters, mapActions, mapState} from 'vuex'
+import adminNavbar from "./adminNavbar";
 import selectOne from '@/components/common/dropdown/selectOne'
 import buttonDefault from '@/components/common/button/buttonDefault'
 const axios = require('axios')
@@ -69,7 +73,8 @@ export default {
   name: 'create-lost',
   components: {
     selectOne,
-    buttonDefault
+    buttonDefault,
+    adminNavbar
   },
   data () {
     return {
@@ -142,7 +147,7 @@ export default {
     display: none;
   }
   .container {
-    margin-top: 150px;
+    margin-top: 200px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -152,17 +157,21 @@ export default {
   }
   .left-wrapper {
     float: left;
-    width: 50em;
+    width: 60%;
     border: 1px solid black;
     border-radius: 2%;
     margin-right: 45px;
     margin-bottom: 30px;
     padding: 1rem;
   }
+  .right-wrapper {
+    float: left;
+    width: 30%;
+    text-align: initial;
+  }
   .button-wrapper {
     border: none;
-    float: left;
-    width: 20em;
+    width: 100%;
     padding: 0px 10px 10px 10px;
     text-align: center;
   }

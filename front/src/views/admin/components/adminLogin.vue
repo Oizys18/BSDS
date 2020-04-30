@@ -2,18 +2,7 @@
   <div>
   <admin-navbar />
   <div class="login-form">
-    <div v-if="isLoading" class="spinner-border" role="status">
-      <span class="sr-only">Loading</span>
-    </div>
-    <form v-else class="login-input" >
-      <div v-if="getErrors.length" class="error-list alert alert-danger">
-        <p>아래의 오류를 해결해 주세요</p>
-        <ul>
-          <li v-for="(error, idx) in getErrors" :key="idx">
-            {{ error }}
-          </li>
-        </ul>
-      </div>
+    <form class="login-input" >
       <div class="login-box">
         <div class="user-input">
           <span class="login-header">로그인</span>
@@ -31,6 +20,13 @@
             id="password"
             placeholder="비밀번호를 입력하세요."
           >
+        </div>
+        <div v-if="getErrors.length" class="error-list">
+        <ul class="login-error" >
+          <li v-for="(error, idx) in getErrors" :key="idx">
+            {{ error }}
+          </li>
+        </ul>
         </div>
         <div @click="login(credentials) + go({name: 'adminIndex'})" >
           <button-default class="login-btn" :text="'로그인'" />
@@ -116,8 +112,11 @@
   .login-input::placeholder {
     color: #38618C;
   }
-  #password {
-    margin-bottom: 50px;
+  .login-error {
+    list-style-type: none;
+    padding: 0;
+    font-size: 0.8rem;
+    color: #FB121D;
+    margin-bottom: 30px;
   }
-
 </style>
