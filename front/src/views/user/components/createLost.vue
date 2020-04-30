@@ -31,7 +31,7 @@
               :default="getCategory === null ? '분류' : getCategoryName"
               @input="onSelectCategory"
             />
-            <span class="error" v-if="!checkForm(this.category)"
+            <span class="error" v-if="getCategory === null"
               >* 필수 입력란입니다.</span
             >
           </div>
@@ -43,7 +43,7 @@
               :default="getColor === null ? '색상' : getColorName"
               @input="onSelectColor"
             />
-            <span class="error" v-if="!checkForm(this.color)"
+            <span class="error" v-if="getColor === null"
               >* 필수 입력란입니다.</span
             >
           </div>
@@ -306,6 +306,7 @@ export default {
         .post(`${this.$store.state.baseURL}lost/posting/`, data)
         .then((res) => {
           console.log(res);
+          this.$store.state.lostname = res.data.lostname
           this.$router.push("created");
           console.log(this.image_id);
         })

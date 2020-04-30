@@ -2,7 +2,14 @@
 <div>
   <navbar />
   <div class="container">
-    완료 웅앵
+    <div class="created_message">
+      <span class="message">
+        분실신고 번호
+      </span>
+    <span>
+    {{ this.$store.state.lostname }}
+    </span>
+    </div>
     <div class="go-index-button">
       <span @click="go('/')">
         <button-huge :text="'첫 페이지로'" />
@@ -39,5 +46,20 @@ export default {
   .container {
     margin-top: 150px;
     display: flex;
+    justify-content: center;
+    align-items: center;
+
+  }
+  .created_message {
+    margin-top: 150px;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+  }
+  .message {
+    margin: 20px;
+    font-size: 1.1rem;
+    font-weight: bold;
   }
 </style>
