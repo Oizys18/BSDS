@@ -1,12 +1,14 @@
 <template>
-  <div class="modal-huge-wrapper">
-    <div class="modal-huge-container">
-      <button class="modal-huge-collide" v-on:click="exitModal">
-        <span>✖</span>
-      </button>
-      <div class="modal-huge-image">image</div>
-      <div class="modal-huge-title">title</div>
-      <div class="modal-huge-content">text</div>
+  <div class="modal-background" v-on:click="exitModal">
+    <div class="modal-huge-wrapper">
+      <div class="modal-huge-container">
+        <button class="modal-huge-collide" v-on:click="exitModal">
+          <span>✖</span>
+        </button>
+        <div class="modal-huge-image">image</div>
+        <div class="modal-huge-title">title</div>
+        <div class="modal-huge-content">text</div>
+      </div>
     </div>
   </div>
 </template>
@@ -40,12 +42,20 @@ export default {
 </script>
 
 <style scoped>
+.modal-background {
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  z-index: 9;
+}
 .modal-huge-wrapper {
+  z-index: 10;
   /* position */
   position: fixed;
   top: 15%;
   left: 20%;
-
   /* modal shape */
   height: 70%;
   width: 60%;

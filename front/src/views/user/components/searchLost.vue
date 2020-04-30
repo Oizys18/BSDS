@@ -26,7 +26,7 @@
       </div>
     </div>
     <modal v-if="isClicked" class="user-index-modal">
-      <modalHuge @exit_Clicked="exit_Modal" />
+      <modalHuge @exit_Clicked="exit_Modal" :item="item" />
     </modal>
   </div>
 </template>
@@ -52,25 +52,23 @@ export default {
       btnText: "조회",
       lostname: "",
       password: "",
-      document:Object,
+      item: Object,
+      baseurl: process.env.VUE_APP_BASE_URL,
     };
-  },
-  computed: {
-    baseurl() {
-      return this.$store.state.baseURL;
-    },
   },
   methods: {
     search() {
-      let url = this.baseurl;
       let data = { lostname: this.lostname, password: this.password };
+      this.$store.state.loading = true;
       axios
-        .post(url + "lost/", data)
+        .post(this.baseurl + "lost/", data)
         .then((res) => {
-          console.log(res);
-          this.document = res.data.document
+          this.$store.state.loading = false;
+          console.log(res.data.document);
+          this.item = res.data.document;
         })
         .catch((err) => {
+          this.$store.state.loading = false;
           console.log(err);
         });
     },

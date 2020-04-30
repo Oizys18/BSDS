@@ -41,11 +41,7 @@
             :key="index.id"
             @click="showModal(index)"
           >
-            <cardBig
-              :image="baseurl + item['thumbnail'][0]"
-              :title="item['user']"
-              :content="item['created']"
-            />
+            <cardSmall :item="item" />
           </div>
         </div>
         <div class="keyword-button">
@@ -64,16 +60,15 @@
 
 <script>
 import axios from "axios";
-import * as Vibrant from "node-vibrant";
 import navbar from "@/views/user/components/navbar.vue";
-import cardBig from "@/components/common/card/cardBig.vue";
+import cardSmall from "@/components/common/card/cardSmall.vue";
 import modalHuge from "@/components/common/modal/modalHuge.vue";
 import buttonHuge from "@/components/common/button/buttonHuge.vue";
 export default {
   name: "userIndex",
   components: {
     navbar,
-    cardBig,
+    cardSmall,
     modalHuge,
     buttonHuge,
   },
@@ -89,9 +84,7 @@ export default {
       searched: false,
       message: "",
       file: "",
-      imgurl: "",
       items: {},
-      colorData: [],
       baseurl: process.env.VUE_APP_BASE_URL,
     };
   },
@@ -110,39 +103,17 @@ export default {
     checkTitle() {
       this.searched = false;
       this.message = "";
-      this.imgTitle = event.target.files[0].name;
       this.file = event.target.files[0];
-      this.imgurl = URL.createObjectURL(this.file);
-      this.colorData = [];
 
-      Vibrant.from(this.imgurl)
-        .getPalette()
-        .then((palette) => {
-          this.colorData.push(palette.Vibrant.hex);
-          this.colorData.push(palette.Muted.hex);
-          this.colorData.push(palette.DarkVibrant.hex);
-          this.colorData.push(palette.DarkMuted.hex);
-          this.colorData.push(palette.LightVibrant.hex);
-          this.colorData.push(palette.LightMuted.hex);
-          this.colorData.push(palette.Vibrant.population);
-          this.colorData.push(palette.Muted.population);
-          this.colorData.push(palette.DarkVibrant.population);
-          this.colorData.push(palette.DarkMuted.population);
-          this.colorData.push(palette.LightVibrant.population);
-          this.colorData.push(palette.LightMuted.population);
-          console.log(this.colorData);
-        });
     },
     imgSearch() {
       this.$store.state.loading = true;
       if (this.file) {
         this.message = "";
         let formData = new FormData();
-        let url = process.env.VUE_APP_BASE_URL;
         formData.append("image", this.file);
-        formData.append("colorData", this.colorData);
         axios
-          .post(url + "found/search/image/", formData, {
+          .post(this.baseurl + "found/search/image/", formData, {
             headers: {
               "Content-Type": "multipart/form-data",
             },

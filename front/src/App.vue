@@ -1,20 +1,20 @@
 <template>
   <div id="app">
-    <fade-loader
+    <!-- <fade-loader
     class="spinner"
       :loading="this.$store.state.loading"
       :height="height"
       :width="width"
-    ></fade-loader>
+    ></fade-loader> -->
     <router-view />
   </div>
 </template>
 <script>
-import FadeLoader from "vue-spinner/src/FadeLoader.vue";
+// import FadeLoader from "vue-spinner/src/FadeLoader.vue";
 export default {
   name: "app",
   components: {
-    FadeLoader,
+    // FadeLoader,
   },
   data(){
     return{
@@ -31,6 +31,7 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  overflow: hidden;
 }
 
 #nav {
@@ -46,6 +47,8 @@ export default {
   color: #42b983;
 }
 .spinner {
+  width:100%;
+  height:100%;
   top: 40vh;
   left: 50vw;
 }
