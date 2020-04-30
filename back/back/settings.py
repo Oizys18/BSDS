@@ -11,7 +11,7 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
 TEMPLATE_DEBUG = DEBUG
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '141f9f8b.ngrok.io', '[::1]']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '22bce5a9.ngrok.io', '[::1]']
 
 CORS_ALLOW_CREDENTIALS = True
 
@@ -19,10 +19,8 @@ CORS_ORIGIN_ALLOW_ALL = False
 
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:8080',
+    'http://149cf7cc.ngrok.io',
 ]
-
-
-MODELS = os.path.join(BASE_DIR, 'images/models')
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
