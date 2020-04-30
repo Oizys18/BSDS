@@ -14,7 +14,7 @@
     <div v-if="this.$store.state.showModal" class="user-index-modal">
       <modalProps :data="this.item" />
     </div>
-  </div> 
+  </div>
 </template>
 
 <script>
@@ -52,18 +52,19 @@ export default {
   },
   mounted() {
     this.$store.state.loading = true;
-    axios
-      .get(this.baseurl + "found/search/")
-      .then((res) => {
-        this.$store.state.loading = false;
-        this.items = res.data.documents.slice(0, 9);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
     if (this.$store.state.documents) {
       this.items = this.$store.state.documents;
       this.$store.state.documents = {};
+    } else {
+      axios
+        .get(this.baseurl + "found/search/")
+        .then((res) => {
+          this.$store.state.loading = false;
+          this.items = res.data.documents.slice(0, 9);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   },
 };
