@@ -25,8 +25,8 @@
         <buttonHuge :text="btnText" />
       </div>
     </div>
-    <modal v-if="isClicked" class="user-index-modal">
-      <modalHuge @exit_Clicked="exit_Modal" :item="item" />
+    <modal v-if="this.$store.state.showModal" class="user-index-modal">
+      <modalHuge :item="item" />
     </modal>
   </div>
 </template>

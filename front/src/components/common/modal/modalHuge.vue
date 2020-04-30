@@ -1,9 +1,10 @@
 <template>
-  <div class="modal-background" v-on:click="exitModal">
+  <div>
+    <div class="collider" v-on:click="exitModal"></div>
     <div class="modal-huge-wrapper">
       <div class="modal-huge-container">
-        <button class="modal-huge-collide" v-on:click="exitModal">
-          <span>✖</span>
+        <button class="modal-huge-collide">
+          <span v-on:click="exitModal">✖</span>
         </button>
         <div class="modal-huge-image">image</div>
         <div class="modal-huge-title">title</div>
@@ -17,41 +18,33 @@
 export default {
   name: "modalHuge",
   data() {
-    return {
-      isClicked: false,
-    };
+    return {};
   },
   props: {
-    category: {},
-    color: {},
-    content: {},
-    created: {},
-    id: {},
-    modified: {},
-    status: {},
-    thumbnail: {},
-    user: {},
+    item: {
+      type: Object,
+      required: true,
+    },
   },
   methods: {
     exitModal() {
-      this.isClicked = true;
-      this.$emit("exit_Clicked", this.isClicked);
+      this.$store.state.showModal = false;
     },
   },
 };
 </script>
 
 <style scoped>
-.modal-background {
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  position: fixed;
-  z-index: 9;
+.collider {
+  position:absolute;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  top:0;
+  left:0;
+  background:transparent;
 }
 .modal-huge-wrapper {
-  z-index: 10;
   /* position */
   position: fixed;
   top: 15%;
@@ -69,6 +62,7 @@ export default {
 }
 
 .modal-huge-container {
+  z-index: 10;
   width: 100%;
   height: 100%;
   display: grid;
@@ -80,7 +74,6 @@ export default {
   right: 0;
   border: none;
   background: transparent;
-  z-index: 10;
   font-size: 25px;
 }
 .modal-huge-image {

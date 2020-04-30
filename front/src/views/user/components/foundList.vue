@@ -3,7 +3,7 @@
     <navbar />
     <div id="found-card-container">
       <div
-        @click="showModal(index)"
+        @click="showModal(item)"
         v-for="(item, index) in items"
         :key="index.id"
         class="found-card"
@@ -11,8 +11,8 @@
         <cardSmall :item="item" />
       </div>
     </div>
-    <div v-if="isClicked" class="user-index-modal">
-      <modalHuge @exit_Clicked="exit_Modal" />
+    <div v-if="this.$store.state.showModal" class="user-index-modal">
+      <modalHuge :item="this.item" />
     </div>
   </div>
 </template>
@@ -31,6 +31,7 @@ export default {
   },
   data() {
     return {
+      item: Object,
       items: Object,
       isClicked: false,
       pageSize: 8,
@@ -39,12 +40,9 @@ export default {
     };
   },
   methods: {
-    showModal(index) {
-      this.isClicked = true;
-      console.log(index + "번 게시글 모달 생성");
-    },
-    exit_Modal() {
-      this.store.state.showModal = false
+    showModal(item) {
+      this.$store.state.showModal = true;
+      this.item = item;
     },
   },
   mounted() {
