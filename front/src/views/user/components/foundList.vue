@@ -57,14 +57,13 @@ export default {
       this.items = this.$store.state.documents;
       this.$store.state.documents = {};
     } else {
+      this.$store.state.loading = false;
       axios
         .get(this.baseurl + "found/search/")
         .then(res => {
-          this.$store.state.loading = false;
           this.items = res.data.documents.slice(0, 9);
         })
         .catch(err => {
-          this.$store.state.loading = false;
           console.log(err);
         });
     }

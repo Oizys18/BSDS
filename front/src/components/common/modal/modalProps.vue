@@ -220,6 +220,7 @@ export default {
 .grid-content {
   font-size: 1rem;
   margin: 5px 0px 0px 12px;
+  overflow: hidden;
 }
 .modal-huge-status {
   grid-area: status;
