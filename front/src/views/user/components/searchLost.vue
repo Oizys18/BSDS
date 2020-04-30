@@ -127,7 +127,8 @@ input.search-input {
   border: none;
   width: 100%;
   height: 70%;
-  font-size: 1.3em;
+  align-items: center;
+  font-size: 0.8em;
   margin-right: 10%;
   outline: none;
 }
