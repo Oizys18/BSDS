@@ -101,7 +101,6 @@ export default {
       this.file = event.target.files[0];
     },
     imgSearch() {
-      this.$store.state.loading = true;
       if (this.file) {
         this.message = "";
         let formData = new FormData();
