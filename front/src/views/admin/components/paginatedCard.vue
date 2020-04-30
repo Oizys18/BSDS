@@ -7,11 +7,9 @@
         :key="index.id"
         class="card-list"
       >
-        <card-big
-          :image="item.thumbnail.length ? `${baseurl}${item.thumbnail}` : `${baseurl}${imagesrc}`"
-          :content="item.created.slice(0, 10)"
-          :title="getUserInfo.parent_department + ' ' + getUserInfo.center_name + getUserInfo.role"
-          />
+        <card-small
+          :item="item"
+        />
       </div>
     </div>
     <div class="list-page-btn">
@@ -34,13 +32,13 @@
 <script>
 import { mapActions, mapGetters } from "vuex"
 import buttonDefault from "@/components/common/button/buttonDefault"
-import cardBig from "@/components/common/card/cardBig";
+import cardSmall from "@/components/common/card/cardSmall";
 import modalProps from "@/components/common/modal/modalProps";
 export default {
   name: "paginatedCard",
   components: {
     buttonDefault,
-    cardBig,
+    cardSmall,
     modalProps
   },
   props: {
@@ -91,7 +89,11 @@ export default {
       return Math.ceil(this.items.length / this.pageSize)
     },
     calData() {
-      return this.items.slice(this.startPage, this.endPage)
+      if (this.items.length > this.pageSize) {
+        return this.items.slice(this.startPage, this.endPage)
+      } else {
+        return this.items
+      }
     },
     btnPrev() {
       return (this.pageNum > 1) ? "default" : "grey"
@@ -111,9 +113,9 @@ export default {
 <style scoped>
   #card-container {
     display: grid;
-    width: 40%;
-    grid-template-rows: repeat(3, 210px);
-    grid-template-columns: repeat(2, 360px);
+
+    grid-template-rows: repeat(3, 230px);
+    grid-template-columns: repeat(3, 230px);
     justify-content: space-around;
     align-items: center;
     margin: 10px;

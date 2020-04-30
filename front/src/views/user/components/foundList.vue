@@ -69,7 +69,7 @@ export default {
 <style scoped>
 #found-wrapper {
   height: 100%;
-  margin-top: 15vh;
+  margin-top: 18vh;
   justify-content: center;
   align-items: center;
   flex-direction: column;

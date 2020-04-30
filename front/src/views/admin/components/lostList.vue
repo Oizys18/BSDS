@@ -1,7 +1,7 @@
 <template>
   <div>
     <admin-navbar />
-    <div v-if="getItemSize">
+    <div v-if="getItemSize > 0">
       <paginated-card :pageHead="'분실신고 목록'" :items="getItems" :page-size="6"/>
     </div>
     <div v-else>로딩중</div>
@@ -13,7 +13,7 @@
   import adminNavbar from "./adminNavbar";
   import paginatedCard from "./paginatedCard";
   export default {
-    name: "listList",
+    name: "lostList",
     components: {
       paginatedCard,
       adminNavbar

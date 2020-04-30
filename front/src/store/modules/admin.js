@@ -65,6 +65,9 @@ const actions = {
         commit('setMeta', data.meta)
         commit('setDoc', data.documents)
         commit('setLoading', false)
+        console.log(data.documents)
+        console.log(data.meta)
+
       })
       .catch(err => console.log(err))
   }
