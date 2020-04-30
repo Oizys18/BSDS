@@ -32,10 +32,9 @@ export default {
         })
         .then((res) => {
           this.items = res.data.documents;
-          console.log(res.data.documents);
         })
-        .catch(function() {
-          console.log("FAILURE!!");
+        .catch((err) => {
+          console.log(err);
         });
     },
   },

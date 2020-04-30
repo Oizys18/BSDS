@@ -301,14 +301,11 @@ export default {
         x: this.$store.state.locationX,
         y: this.$store.state.locationY,
       };
-      console.log(data);
       axios
         .post(`${this.$store.state.baseURL}lost/posting/`, data)
         .then((res) => {
-          console.log(res);
           this.$store.state.lostname = res.data.lostname
           this.$router.push("created");
-          console.log(this.image_id);
         })
         .catch((err) => {
           console.log(err);
@@ -318,7 +315,6 @@ export default {
       this.$refs.imageInput.click();
     },
     onSelectCategory(value) {
-      console.log(value);
       this.category = value;
     },
     onSelectColor(value) {
@@ -326,7 +322,6 @@ export default {
     },
     onTimeSelect(value) {
       this.time = this.timeList[value];
-      console.log(this.time);
     },
     validEmail(email) {
       if (/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(email)) {

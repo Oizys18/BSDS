@@ -116,9 +116,9 @@ export default {
             this.items = res.data.documents;
             this.searched = true;
           })
-          .catch(function() {
+          .catch(err => {
             this.$store.state.loading = false;
-            console.log("FAILURE!!");
+            console.log(err);
           });
       } else {
         this.$store.state.loading = false;

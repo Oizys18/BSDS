@@ -72,8 +72,6 @@ const actions = {
         commit('setPostTime', data.created)
         commit('setThumbnail', data.thumbnail[0])
         commit('setUser', data.user)
-        console.log(data)
-        console.log(state.user)
       })
       .catch(err => console.log(err))
   },
@@ -93,9 +91,6 @@ const actions = {
         commit('setPostTime', data.created)
         commit('setThumbnail', data.thumbnail[0])
         commit('setUser', data.user)
-        console.log(res)
-        console.log(state.user)
-        console.log(state.content)
       })
       .catch(err => console.log(err))
   },

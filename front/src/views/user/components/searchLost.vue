@@ -65,7 +65,6 @@ export default {
         .post(this.baseurl + "lost/", data)
         .then((res) => {
           this.$store.state.loading = false;
-          console.log(res.data.document);
           this.item = res.data.document;
         })
         .catch((err) => {

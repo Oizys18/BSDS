@@ -102,7 +102,6 @@ export default {
       return (this.pageNum < this.numOfPages) ? "default" : "grey"
     },
     baseurl() {
-      console.log(this.$store.state.baseURL);
       return this.$store.state.baseURL;
     },
     ...mapGetters(["getData", "getUserInfo"])

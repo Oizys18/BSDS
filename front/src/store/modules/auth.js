@@ -49,7 +49,6 @@ const mutations = {
   setUserInfo: (state, data) => {
     state.user_info = data
     sessionStorage.setItem('info', JSON.stringify(data))
-    console.log(state.user_info)
   }
 };
 
@@ -84,9 +83,7 @@ const actions = {
           dispatch('userInfo')
           commit('setLoading', false)
           .then(
-            console.log(token),
             state.detail_key = 1,
-            // router.go()
         )
         })
         .catch(err => {
@@ -110,8 +107,6 @@ const actions = {
     axios.get(`${HOST}user/${admin_id}/`)
       .then(res => {
         commit('setUserInfo', res.data)
-        console.log(res)
-        console.log(state.user_info),
         state.detail_key = 3
         router.go()
       })

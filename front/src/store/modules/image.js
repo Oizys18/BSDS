@@ -26,13 +26,9 @@ const mutations = {
   setId: (state, img_id) => state.image_id = img_id,
   setCategory: (state, ctgr) => {
     state.category = ctgr
-    console.log(store.state.categories)
-    console.log(state.category)
   },
   setColor: (state, clr) => {
     state.color = clr
-    console.log(store.state.colors)
-    console.log(state.color)
   },
   setImgUrl: (state, imageUrl) => {
     state.imageUrl = imageUrl
@@ -73,7 +69,6 @@ const actions= {
           colorDataArray.push(palette.DarkMuted.population);
           colorDataArray.push(palette.LightVibrant.population);
           colorDataArray.push(palette.LightMuted.population);
-          console.log(colorDataArray);
         });
     commit('setColorData', colorDataArray);
   },
@@ -82,7 +77,6 @@ const actions= {
     const formdata = new FormData();
     formdata.append('image', state.file)
     formdata.append('colorData', state.colorData)
-    console.log(formdata)
     axios.post(`${HOST}lost/posting/image/`, formdata, {
         headers: {
             "Content-Type": "multipart/form-data",
@@ -92,8 +86,6 @@ const actions= {
         commit('setId', res.data.image_id)
         commit('setCategory', res.data.category)
         commit('setColor', res.data.color)
-        console.log(res)
-        console.log(state)
       })
       .catch(err => console.log(err))
   },
@@ -112,8 +104,6 @@ const actions= {
         commit('setId', res.data.image_id)
         commit('setCategory', res.data.category)
         commit('setColor', res.data.color)
-        console.log(res)
-        console.log(state)
       })
       .catch(err => console.log(err))
   }

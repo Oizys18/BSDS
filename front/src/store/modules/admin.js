@@ -40,9 +40,7 @@ const actions = {
     }
     })
       .then(res => {
-        console.log(res)
         const data = res.data
-        console.log(data)
         commit('setMeta', data.meta)
         commit('setDoc', data.documents)
         commit('setLoading', false)
@@ -59,14 +57,10 @@ const actions = {
       }
     })
       .then(res => {
-        console.log(res)
         const data = res.data
-        console.log(data)
         commit('setMeta', data.meta)
         commit('setDoc', data.documents)
         commit('setLoading', false)
-        console.log(data.documents)
-        console.log(data.meta)
 
       })
       .catch(err => console.log(err))
