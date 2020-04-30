@@ -118,7 +118,7 @@ http://i02a405.p.ssafy.io/admin
 
 - 아래 링크에서 자세한 내용을 확인하세요.
 
-  [AI Model Summary](./AI_model_summary)
+  [AI Model Summary](./doc/AI_모델_summary.md)
 
 
 
