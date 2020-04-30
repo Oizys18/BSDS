@@ -1,139 +1,139 @@
 <template>
-<div class="container">
-  <admin-navbar />
-  <div class="create-lost">
-    <form>
-      <div class=left-wrapper>
-        <div class="img-wrapper">
-          <div class="file-input-btn">
-          <label for="file-input" class="image-label">
-            <img class="image-upload" src="@/assets/images/camera.png">
-          </label>
-          <span @click="postImageAdmin" >
+  <div class="container">
+    <admin-navbar />
+    <div class="create-lost">
+      <form>
+        <div class=left-wrapper>
+          <div class="img-wrapper">
+            <div class="file-input-btn">
+              <label for="file-input" class="image-label">
+                <img class="image-upload" src="@/assets/images/camera.png">
+              </label>
+              <span @click="postImageAdmin" >
             <button-default :text="'이미지 확인'"/>
           </span>
+            </div>
+            <input
+                    class="file-input"
+                    id="file-input"
+                    ref="imageInput"
+                    type="file"
+                    accept="image/jpg, image/jpeg"
+                    @change="getColorData"
+            >
+            <img class="image-preview" v-if="getImgUrl" :src="getImgUrl"/>
           </div>
-          <input
-            class="file-input"
-            id="file-input"
-            ref="imageInput"
-            type="file"
-            accept="image/jpg, image/jpeg"
-            @change="getColorData"
-          >
-          <img class="image-preview" v-if="getImgUrl" :src="getImgUrl"/>
-        </div>
-        <div class="category-wrapper">
-          <span class="select">물품 분류</span>
-          <select-one
-            class="select-category"
-            :default="getCategory === null ? '분류' : getCategoryName"
-            :items="Object.values($store.state.categories)"
-            @input="onSelectCategory"
-          />
-          <span class="error" v-if="!checkForm(this.category)">* 필수 입력란입니다.</span>
-        </div>
-        <div class="category-wrapper">
-          <span class="select">색상</span>
-          <select-one
-            class="select-category"
-            :default="getColor  === null ? '색상' : getColorName"
-            :items="Object.values($store.state.colors)"
-            @input="onSelectColor"
-          />
-          <span class="error" v-if="!checkForm(this.color)">* 필수 입력란입니다.</span>
-        </div>
-        <div class="input-wrapper">
-            <textarea
-              class="content-area"
-              v-model="content"
-              type="textarea"
-              placeholder="필요한 내용이 있다면 입력해주세요."
+          <div class="category-wrapper">
+            <span class="select">물품 분류</span>
+            <select-one
+                    class="select-category"
+                    :default="getCategory === null ? '분류' : getCategoryName"
+                    :items="Object.values($store.state.categories)"
+                    @input="onSelectCategory"
             />
-        </div>
-      </div>
-      <div class="right-wrapper">
-        <div class="button-wrapper">
-          <div @click="createContent">
-            <button-default class="admin-btn" :text="'등록하기'"/>
+            <span class="error" v-if="!checkForm(this.category)">* 필수 입력란입니다.</span>
           </div>
-          <div @click="go({name:'adminIndex'})">
-            <button-default class="admin-btn" :text="'취소'"/>
+          <div class="category-wrapper">
+            <span class="select">색상</span>
+            <select-one
+                    class="select-category"
+                    :default="getColor  === null ? '색상' : getColorName"
+                    :items="Object.values($store.state.colors)"
+                    @input="onSelectColor"
+            />
+            <span class="error" v-if="!checkForm(this.color)">* 필수 입력란입니다.</span>
+          </div>
+          <div class="input-wrapper">
+            <textarea
+                    class="content-area"
+                    v-model="content"
+                    type="textarea"
+                    placeholder="필요한 내용이 있다면 입력해주세요."
+            />
           </div>
         </div>
-      </div>
-    </form>
+        <div class="right-wrapper">
+          <div class="button-wrapper">
+            <div @click="createContent">
+              <button-default class="admin-btn" :text="'등록하기'"/>
+            </div>
+            <div @click="go({name:'adminIndex'})">
+              <button-default class="admin-btn" :text="'취소'"/>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
   </div>
-</div>
 </template>
 
 <script>
-import {mapGetters, mapActions, mapState} from 'vuex'
-import adminNavbar from "./adminNavbar";
-import selectOne from '@/components/common/dropdown/selectOne'
-import buttonDefault from '@/components/common/button/buttonDefault'
-const axios = require('axios')
+  import {mapGetters, mapActions, mapState} from 'vuex'
+  import adminNavbar from "./adminNavbar";
+  import selectOne from '@/components/common/dropdown/selectOne'
+  import buttonDefault from '@/components/common/button/buttonDefault'
+  const axios = require('axios')
 
-export default {
-  name: 'create-found',
-  components: {
-    selectOne,
-    buttonDefault,
-    adminNavbar
-  },
-  data () {
-    return {
-      content: '',
-      category: this.getCategory,
-      color: this.getColor
-    }
-  },
-  methods: {
-    createContent () {
-      const data = {
-        "image_id": this.getId,
-        "content": this.content,
-        "category": this.getCategory,
-        "color": this.getColor,
+  export default {
+    name: 'create-found',
+    components: {
+      selectOne,
+      buttonDefault,
+      adminNavbar
+    },
+    data () {
+      return {
+        content: '',
+        category: this.getCategory,
+        color: this.getColor
       }
-      axios.post(`${this.$store.state.baseURL}found/posting/`, data, {
-        headers: {
-          "Authorization": `JWT ${sessionStorage.getItem('jwt')}`
+    },
+    methods: {
+      createContent () {
+        const data = {
+          "image_id": this.getId,
+          "content": this.content,
+          "category": this.getCategory,
+          "color": this.getColor,
         }
-      })
-      .then(res => {
-        console.log(res)
-        console.log(data)
-        this.$router.push('created')
-      })
-      .catch(err => {
-        console.log(err)
-      })
+        axios.post(`${this.$store.state.baseURL}found/posting/`, data, {
+          headers: {
+            "Authorization": `JWT ${sessionStorage.getItem('jwt')}`
+          }
+        })
+                .then(res => {
+                  console.log(res)
+                  console.log(data)
+                  this.$router.push('created')
+                })
+                .catch(err => {
+                  console.log(err)
+                })
+      },
+      onClickImageUpload() {
+        this.$refs.imageInput.click();
+      },
+      onSelectCategory(value) {
+        this.category = value
+      },
+      onSelectColor(value) {
+        this.color = value
+      },
+      checkForm(value) {
+        if (value) {
+          return true
+        }
+      },
+      go(path) {
+        this.$router.push(path)
+      },
+      ...mapActions(['postImageAdmin', 'getColorData'])
     },
-    onClickImageUpload() {
-      this.$refs.imageInput.click();
-    },
-    onSelectCategory(value) {
-      this.category = value
-    },
-    onSelectColor(value) {
-      this.color = value
-    },
-    checkForm(value) {
-      if (value) {
-        return true
-      }
-    },
-    go(path) {
-      this.$router.push(path)
-    },
-    ...mapActions(['postImageAdmin', 'getColorData'])
-  },
-  computed: {
-    ...mapGetters(['getId', 'getCategory', 'getColor', 'getImgUrl', 'getCategoryName', 'getColorName']),
-    ...mapState(['image_id'])
+    computed: {
+      ...mapGetters(['getId', 'getCategory', 'getColor', 'getImgUrl', 'getCategoryName', 'getColorName']),
+      ...mapState(['image_id'])
+    }
   }
-}
 </script>
 
 <style scoped>
@@ -181,7 +181,7 @@ export default {
     text-align: center;
   }
   .img-wrapper {
-    margin: 5px; 
+    margin: 5px;
   }
   .category-wrapper, .img-wrapper, .input-wrapper {
     display: flex;
