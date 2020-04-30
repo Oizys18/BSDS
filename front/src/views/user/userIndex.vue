@@ -178,14 +178,12 @@ export default {
   margin-bottom: 1em;
   font-size: 1.25em;
   border: 1px solid #ebebeb;
-  /* border-bottom-color: #e2e2e2; */
   border-radius: 20px;
   color: black;
   background-color: white;
 }
-
 .unselected:hover {
-  box-shadow: 2px 2px 10px 0 grey;
+  box-shadow: 2px 2px 4px 0 grey;
   border: 1px solid #ebebeb;
   border-radius: 20px;
   outline: none;
@@ -195,11 +193,10 @@ export default {
   border: 1px solid #ebebeb;
   outline: none;
 }
-
 .user-index-select-container {
+  display: flex;
   margin-top: 10px;
   justify-content: center;
-  display: flex;
 }
 .user-index-select {
   margin-left: 30px;
@@ -207,15 +204,15 @@ export default {
   font-weight: bold;
 }
 .user-index-card-container {
+  display: flex;
   margin-top: 30px;
   justify-content: center;
-  display: flex;
 }
 .keyword-button {
+  display: flex;
   margin-top: 30px;
   align-items: center;
   justify-content: center;
-  display: flex;
 }
 .file-bar {
   display: flex;
@@ -227,15 +224,15 @@ export default {
   width: 85%;
 }
 .file-box label {
-  padding-left:10px;
   height: 2em;
   display: flex;
-  color: rgb(100, 100, 100);
-  font-size: 1.3em;
-  justify-content: flex-start;
-  align-items: center;
-  background-color: #fdfdfd;
   cursor: pointer;
+  font-size: 1.3em;
+  padding-left: 10px;
+  align-items: center;
+  justify-content: flex-start;
+  color: rgb(100, 100, 100);
+  background-color: #fdfdfd;
   border: 1px solid #ebebeb;
   border-bottom-color: #e2e2e2;
   border-radius: 20px;
@@ -252,8 +249,7 @@ export default {
   border: 0;
 }
 .file-send {
-  margin:0;
-  background-color: #fdfdfd;
+  margin: 0;
   cursor: pointer;
   border: 1px solid #ebebeb;
   border-bottom-color: #e2e2e2;
@@ -265,24 +261,24 @@ export default {
 }
 /* file */
 file-send :hover {
-  box-shadow: none;
+  box-shadow: 2px 2px 4px 0 grey;
   border: none;
   outline: none;
 }
 .file-send :active {
-  box-shadow: none;
+  box-shadow: inset 0 0 5px 0 grey;
   border: none;
   outline: none;
 }
 
 /* file */
 .file-box :hover {
-  box-shadow: 2px 2px 10px 0 grey;
+  box-shadow: 2px 2px 4px 0 grey;
   border: 1px solid #ebebeb;
   outline: none;
 }
 .file-box :active {
-  box-shadow: inset 0 0 5px grey;
+  box-shadow: inset 0 0 5px 0 grey;
   border: 1px solid #ebebeb;
   outline: none;
 }
