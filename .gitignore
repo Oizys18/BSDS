@@ -1,3 +1,5 @@
+database/get_image/chromedriver.exe
+
 ### SSL ###
 .pem
 *.pem
@@ -258,3 +260,16 @@ npm-debug.log
 yarn-error.log
 
 # End of https://www.gitignore.io/api/venv,vuejs,django,python,pycharm,jupyternotebooks,visualstudiocode
+
+.env.development
+### model 
+back/ai/logs/
+back/ai/model.png
+back/ai/model_shapes.png
+back/ai/test.h5
+back/ai/test/
+back/ai/testdata.png
+back/ai/dataset/test/**
+back/ai/dataset/test/*
+back/ai/dataset/train/**
+back/ai/dataset/train/*
