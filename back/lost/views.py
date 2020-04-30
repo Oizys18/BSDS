@@ -172,7 +172,7 @@ def get_lost_list_admin(request):
     user_id = request.user.id
     posting = cache.get(f'admin_lost_{user_id}')
     if not posting:
-        posting = LostPosting.objects.filter(Q(p1=user_id) | Q(p2=user_id))
+        posting = LostPosting.objects.filter(Q(p1=user_id) | Q(p2=user_id), status=0)
         cache.set(f'admin_lost_{user_id}', posting, 60*5)
 
     serializer = AdminLostListSerializer(posting, many=True)

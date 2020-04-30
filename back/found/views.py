@@ -27,7 +27,7 @@ def search_found(request):
     y = request.query_params.get('y')
     radius = request.query_params.get('radius')
 
-    posting_set = FoundPosting.objects.all()
+    posting_set = FoundPosting.objects.filter(status=0)
 
     if category:
         posting_set = posting_set.filter(category=category)
@@ -75,14 +75,14 @@ def search_by_image(request):
                 lost_thumbnail_image.origin_id = lost_image.id
                 lost_thumbnail_image.save()
 
-                postings = FoundPosting.objects.filter(created__gt=datetime.now() - timedelta(weeks=2))
+                postings = FoundPosting.objects.filter(created__gt=datetime.now() - timedelta(weeks=2), status=0)
                 image_set = FoundThumbnail.objects.filter(posting_id__in=postings).values('origin')
                 origin_images = FoundImage.objects.filter(id__in=image_set)
 
                 images_id_result = get_similar_image(lost_image.image, origin_images)
 
                 thumb_set = FoundThumbnail.objects.filter(origin_id__in=images_id_result).values('posting')
-                posting_set = FoundPosting.objects.filter(id__in=thumb_set)
+                posting_set = FoundPosting.objects.filter(id__in=thumb_set, status=0)
 
                 serializer = FoundPostingDetailSerializer(posting_set, many=True)
 
@@ -137,12 +137,6 @@ def create_found_image(request):
 @permission_classes([IsAuthenticated])
 def create_found(request):
     data = request.data
-    data = {
-        'image_id': 8,
-        'category': 3,
-        'color': 8,
-        'content': 'test'
-    }
     serializer = CreateFoundPostingSerializer(data=data)
     if serializer.is_valid():
         posting = serializer.save(user=request.user, status=False)
@@ -152,22 +146,24 @@ def create_found(request):
             thumbnail.posting_id = posting.id
             thumbnail.save()
 
+
             lost_postings = LostPosting.objects.filter(category=posting.category_id,
                                                        color=posting.color,
-                                                       lost_time__gt=datetime.now() - timedelta(weeks=2))
+                                                       lost_time__gt=datetime.now() - timedelta(weeks=2),
+                                                       status=0)
 
             image_set = LostThumbnail.objects.filter(posting_id__in=lost_postings).values('origin')
             origin_images = LostImage.objects.filter(id__in=image_set)
 
             images_id_result = get_similar_image(thumbnail.origin.image, origin_images)
             thumb_set = LostThumbnail.objects.filter(origin_id__in=images_id_result).values('posting')
-            posting_set = LostPosting.objects.filter(id__in=thumb_set)
+            posting_set = LostPosting.objects.filter(id__in=thumb_set, status=0)
             email_list = [e.email for e in posting_set]
 
             subject = f'[분실둥실] {request.user.center_name}{request.user.role}에서 유사한 분실물을 보관중입니다.'
             message = f'잃어버린 생각이 뭉게뭉게☁ 날 때, 분실물 클라우드 ☁분실둥실☁ 입니다.' \
-                      f'{request.user.center_name}{request.user.role}에서 등록하신 분실품({posting.lostname})과 ' \
-                      f'유사한 물품을 보관중입니다.' \
+                      f'{request.user.center_name}{request.user.role}에서 등록하신 분실품과 ' \
+                      f'유사한 물품을 보관중입니다. (http://13.125.33.242:8080/)' \
                       f'해당 물품을 관할기관에서 수령할 시 본인임을 증명할 수 있는 서류(신분증 등)가 필요할 수 있습니다.' \
                       f'감사합니다.'
 
