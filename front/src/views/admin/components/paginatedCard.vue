@@ -45,7 +45,7 @@ export default {
     items: Array,
     pageSize: {
       type: Number,
-      default: 6
+      default: 9
     }
   },
   data() {

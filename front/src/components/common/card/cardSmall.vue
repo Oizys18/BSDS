@@ -76,8 +76,8 @@ export default {
   align-items: center;
 }
 .card-small-text:hover {
-  opacity: 80%;
+  opacity: 0.8;
   color: white;
-  background-color: #707070;
+  background-color: #472222;
 }
 </style>

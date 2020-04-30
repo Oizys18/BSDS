@@ -2,9 +2,9 @@
   <div>
     <admin-navbar />
     <div v-if="getItemSize">
-    <paginated-card :pageHead="'작성한 글 목록'" :items="getItems" :page-size="6"/>
+    <paginated-card :pageHead="'작성한 글 목록'" :items="getItems" :page-size="9"/>
     </div>
-    <div v-else>로딩중</div>
+    <div v-else></div>
   </div>
 </template>
 
