@@ -56,7 +56,7 @@
                 v-model="data.status"
               />
               <span class="check">V</span>
-              <span class="description">찾음</span>
+              <span class="description">수령</span>
             </label>
             <label class="box-radio-input">
               <input
@@ -66,7 +66,7 @@
                 v-model="data.status"
               />
               <span class="check">V</span>
-              <span class="description">못찾음</span>
+              <span class="description">보관</span>
             </label>
           </div>
           <span @click="onChangeStatus">
