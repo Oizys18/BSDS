@@ -9,7 +9,7 @@ from django.views.decorators.cache import cache_page
 from datetime import timedelta, datetime
 import json
 from django.core.mail import send_mail
-from back.settings import EMAIL_HOST_USER as email_from
+from back.settings import EMAIL_HOST_USER
 from lost.serializers import LostThumbnailSerializer, LostImageSerializer
 from lost.models import LostPosting, LostThumbnail, LostImage
 from ai.views import get_numpy_path, get_category, get_similar_image, get_closer_user, get_hex, hex_to_rgb, get_color
@@ -75,20 +75,6 @@ def search_by_image(request):
                 lost_thumbnail_image.origin_id = lost_image.id
                 lost_thumbnail_image.save()
 
-                # TODO 확인 3
-                print('확인')
-                print(request.data)
-                colorData = request.data['colorData']
-                get_hex(colorData)
-
-                # TODO - hexData 상수 값으로 고정 후 테스트
-                hexData = '#ffffff'
-                r, g, b = hex_to_rgb(hexData)
-                print("RGB값 확인")
-                print(r, g, b)
-                colorValue = get_color(r, g, b)
-                print(colorValue) # 상수값 나옴 -> datasets 에 포함시킬 것 
-
                 postings = FoundPosting.objects.filter(created__gt=datetime.now() - timedelta(weeks=2))
                 image_set = FoundThumbnail.objects.filter(posting_id__in=postings).values('origin')
                 origin_images = FoundImage.objects.filter(id__in=image_set)
@@ -126,7 +112,12 @@ def create_found_image(request):
 
                 numpy_path = get_numpy_path(image)
                 image.numpy_path = numpy_path
-                # TODO 확인 4 - color
+
+                colorData = request.data['colorData']
+                hexData = get_hex(colorData)
+                r, g, b = hex_to_rgb(hexData)
+                colorValue = get_color(r, g, b)
+
                 c1, c2, c3 = get_category(request.FILES['image'])
                 image.category_1, image.category_2, image.category_3 = c1, c2, c3
                 image.save()
@@ -134,7 +125,7 @@ def create_found_image(request):
                 datasets = {
                     'image_id': thumbnail_image.id,
                     'category': c1,
-                    'color': 3,
+                    'color': colorValue,
                 }
 
                 return Response(status=200, data=datasets, content_type='application.json')
@@ -143,7 +134,7 @@ def create_found_image(request):
 
 
 @api_view(['POST'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def create_found(request):
     data = request.data
     data = {
@@ -160,9 +151,9 @@ def create_found(request):
             thumbnail = get_object_or_404(FoundThumbnail, id=data['image_id'])
             thumbnail.posting_id = posting.id
             thumbnail.save()
-            # TODO 확인 5 + 임시 데이터 + decorator
+
             lost_postings = LostPosting.objects.filter(category=posting.category_id,
-                                                       # color=posting.color,
+                                                       color=posting.color,
                                                        lost_time__gt=datetime.now() - timedelta(weeks=2))
 
             image_set = LostThumbnail.objects.filter(posting_id__in=lost_postings).values('origin')
@@ -174,16 +165,14 @@ def create_found(request):
             email_list = [e.email for e in posting_set]
 
             subject = f'[분실둥실] {request.user.center_name}{request.user.role}에서 유사한 분실물을 보관중입니다.'
-            message = f'잃어버린 생각이 뭉게뭉게☁ 날 때,\n 분실물 클라우드 ☁분실둥실☁ 입니다.\n\n ' \
-                      f'{request.user.center_name}{request.user.role}에서 등록하신 분실품과 ' \
-                      f'유사한 물품을 보관중입니다.\n ' \
-                      f'작성하신 분실물 게시글은 ~에서 확인하시기 바랍니다.\n ' \
+            message = f'잃어버린 생각이 뭉게뭉게☁ 날 때, 분실물 클라우드 ☁분실둥실☁ 입니다.' \
+                      f'{request.user.center_name}{request.user.role}에서 등록하신 분실품({posting.lostname})과 ' \
+                      f'유사한 물품을 보관중입니다.' \
                       f'해당 물품을 관할기관에서 수령할 시 본인임을 증명할 수 있는 서류(신분증 등)가 필요할 수 있습니다.' \
-                      f'http://localhost:8000/media/{thumbnail.image}/' \
-                      f'\n\n\n감사합니다.'
-            # TODO email 배포 링크 변경 및 생긴 형태 확인
+                      f'감사합니다.'
+
             recipient_list = email_list
-            send_mail(subject, message, email_from, recipient_list, html_message=message)
+            send_mail(subject, message, EMAIL_HOST_USER, recipient_list, html_message=message)
 
         posting_serializer = FoundPostingDetailSerializer(posting)
         return Response(status=200, data=posting_serializer.data)
