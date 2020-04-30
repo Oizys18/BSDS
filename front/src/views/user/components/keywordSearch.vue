@@ -72,7 +72,7 @@
       </div>
 
       <div v-if="this.$store.state.showModal" class="keyword-search-modal">
-        <modalMap @exit_Clicked="exit_Modal" />
+        <modalMap @exit_Clicked="exit_Modal" /> 
       </div>
     </div>
   </div>
@@ -102,7 +102,6 @@ export default {
       btnText2: "주소검색",
       bgColor: "white",
       txtColor: "black",
-      isClicked: false,
       inputColor: "",
       inputDate: "",
       addressInput: "",

@@ -26,7 +26,7 @@
       </div>
     </div>
     <modal v-if="this.$store.state.showModal" class="user-index-modal">
-      <modalHuge :item="item" />
+      <modalProps :data="item" />
     </modal>
   </div>
 </template>
@@ -34,14 +34,14 @@
 <script>
 import axios from "axios";
 import navbar from "@/views/user/components/navbar.vue";
-import modalHuge from "@/components/common/modal/modalHuge.vue";
+import modalProps from "@/components/common/modal/modalHuge.vue";
 import buttonHuge from "@/components/common/button/buttonHuge.vue";
 export default {
   name: "searchLost",
   components: {
     navbar,
     buttonHuge,
-    modalHuge,
+    modalProps,
   },
   data() {
     return {
