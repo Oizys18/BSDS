@@ -13,8 +13,8 @@ export default new Vuex.Store({
     baseURL: process.env.VUE_APP_BASE_URL,
     loading: false,
     documents: Object,
-    locationX: "33.450701",
-    locationY: "126.570667",
+    locationX: "",
+    locationY: "",
     items: {},
     categories: {
       1: "가방",
