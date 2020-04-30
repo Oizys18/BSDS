@@ -3,44 +3,27 @@
     <navbar />
     <div class="keyword-search-container">
       <div class="title-container">
-        <span class="unselected" @click="go('/')">
-          이미지 검색
-        </span>
-        <span class="selected">
-          상세검색
-        </span>
+        <span class="unselected" @click="go('/')">이미지 검색</span>
+        <span class="selected">상세검색</span>
       </div>
       <div class="search-card">
         <div class="selectors">
           <span class="selector">
             <label for="selectcategory">분류</label>
             <span id="selectcategory">
-              <selectOne
-                :items="categories"
-                :default="categoryDefault"
-                @input="updateCategory"
-              />
+              <selectOne :items="categories" :default="categoryDefault" @input="updateCategory" />
             </span>
           </span>
           <span class="selector">
             <label for="selectcolor">색상</label>
             <span id="selectcolor">
-              <selectOne
-                :items="colors"
-                :default="colorDefault"
-                @input="updateColor"
-              />
+              <selectOne :items="colors" :default="colorDefault" @input="updateColor" />
             </span>
           </span>
           <span class="selector">
             <label for="selectdate">날짜</label>
             <span id="selectdate">
-              <input
-                type="date"
-                name="lostdate"
-                id="lostdate"
-                v-model="inputDate"
-              />
+              <input type="date" name="lostdate" id="lostdate" v-model="inputDate" />
             </span>
           </span>
         </div>
@@ -49,18 +32,12 @@
           <div>
             <input id="addressinput" type="text" v-model="addressInput" />
             <span @click="searchAddress">
-              <buttonDefault
-                :text="btnText2"
-                :bgColor="bgColor"
-                :txtColor="txtColor"
-              />
+              <buttonDefault :text="btnText2" :bgColor="bgColor" :txtColor="txtColor" />
             </span>
           </div>
           <div class="search-results">
             <span class="results" v-for="result in results" :key="result.id">
-              <span @click="showModal(result)">
-                {{ result.address.address_name }}</span
-              >
+              <span @click="showModal(result)">{{ result.address.address_name }}</span>
             </span>
           </div>
         </div>
@@ -69,10 +46,12 @@
         <span @click="categorySearch">
           <buttonHuge :text="btnText" :bgColor="bgColor" :txtColor="txtColor" />
         </span>
+        <br>
+        <span class="errorMsg" v-if="errorMSG">결과물이 없습니다! <br>더 자세한 정보를 입력하거나 분류를 확인해주세요.</span>
       </div>
 
       <div v-if="this.$store.state.showModal" class="keyword-search-modal">
-        <modalMap @exit_Clicked="exit_Modal" /> 
+        <modalMap @exit_Clicked="exit_Modal" />
       </div>
     </div>
   </div>
@@ -92,7 +71,7 @@ export default {
     selectOne,
     buttonHuge,
     modalMap,
-    buttonDefault,
+    buttonDefault
   },
   data() {
     return {
@@ -107,7 +86,8 @@ export default {
       addressInput: "",
       results: "",
       showing: "",
-      baseurl: process.env.VUE_APP_BASE_URL,
+      errorMSG: false,
+      baseurl: process.env.VUE_APP_BASE_URL
     };
   },
   computed: {
@@ -116,7 +96,7 @@ export default {
     },
     colors() {
       return this.$store.state.colors;
-    },
+    }
   },
   mounted() {
     this.$store.state.showModal = false;
@@ -126,13 +106,13 @@ export default {
       axios
         .get("https://dapi.kakao.com/v2/local/search/address.json", {
           params: {
-            query: this.addressInput,
+            query: this.addressInput
           },
           headers: {
-            Authorization: "KakaoAK f8d38a34b065785c71e6beed1528657f",
-          },
+            Authorization: "KakaoAK f8d38a34b065785c71e6beed1528657f"
+          }
         })
-        .then((res) => {
+        .then(res => {
           this.results = res.data.documents.slice(0, 5);
         });
     },
@@ -145,17 +125,17 @@ export default {
             color: this.inputColor,
             created: this.inputDate,
             x: this.$store.state.locationX,
-            y: this.$store.state.locationY,
-          },
+            y: this.$store.state.locationY
+          }
         })
-        .then((res) => {
+        .then(res => {
           this.$store.state.loading = false;
-          this.$store.state.documents = res.data.documents;
-          this.go('/found')
-        })
-        .catch((err) => {
-          this.$store.state.loading = false;
-          console.log(err);
+          if (res.data.documents[0]) {
+            this.$store.state.documents = res.data.documents;
+            this.go("/found");
+          } else {
+            this.errorMSG = true;
+          }
         });
     },
     go(path) {
@@ -184,17 +164,20 @@ export default {
     },
     updateColor(e) {
       this.inputColor = e;
-    },
+    }
   },
   watch: {
     $route() {
       this.$store.state.showModal = false;
-    },
-  },
+    }
+  }
 };
 </script>
 
 <style scoped>
+.errorMsg {
+  color:red;
+}
 .keyword-search-wrapper {
   margin-top: 250px;
   justify-content: center;

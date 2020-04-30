@@ -52,7 +52,7 @@ export default {
   },
   mounted() {
     this.$store.state.loading = true;
-    if (this.$store.state.documents) {
+    if (this.$store.state.documents[0]) {
       this.items = this.$store.state.documents;
       this.$store.state.documents = {};
     } else {
