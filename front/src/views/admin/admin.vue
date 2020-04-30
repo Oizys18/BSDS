@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <div :key="getDetailKey">
     <admin-navbar />
     <div id="admin-index-wrapper">
       <!-- 나중에 순서 뒤집을 것 -->
-      <component :is="isLoggedIn ? 'admin-detail' : 'admin-login' "></component>
+      <component :is="isLoggedIn ? 'admin-detail' : 'admin-login'" />
     </div>
   </div>
 </template>
@@ -22,7 +22,7 @@ export default {
     adminNavbar
   },
   computed: {
-    ...mapGetters(['isLoggedIn'])
+    ...mapGetters(['isLoggedIn', 'getDetailKey'])
   }
 }
 </script>

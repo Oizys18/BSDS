@@ -31,7 +31,7 @@
                     :items="Object.values($store.state.categories)"
                     @input="onSelectCategory"
             />
-            <span class="error" v-if="!checkForm(this.category)">* 필수 입력란입니다.</span>
+            <span class="error" v-if="getCategory === null">* 필수 입력란입니다.</span>
           </div>
           <div class="category-wrapper">
             <span class="select">색상</span>
@@ -41,7 +41,7 @@
                     :items="Object.values($store.state.colors)"
                     @input="onSelectColor"
             />
-            <span class="error" v-if="!checkForm(this.color)">* 필수 입력란입니다.</span>
+            <span class="error" v-if="getColor === null">* 필수 입력란입니다.</span>
           </div>
           <div class="input-wrapper">
             <textarea

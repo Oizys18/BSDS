@@ -51,7 +51,7 @@ export default {
     return {
       btn1: "습득물 등록",
       btn2: "작성한 글 목록",
-      btn3: "분실 신고 목록"
+      btn3: "분실 신고 목록",
     }
   },
   methods: {
@@ -60,7 +60,10 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['getUserInfo'])
+    ...mapGetters(['getUserInfo', 'getInfo'])
+  },
+  mounted() {
+    this.$store.dispatch('getUserInfo')
   }
 }
 </script>
