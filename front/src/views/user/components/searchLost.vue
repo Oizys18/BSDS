@@ -5,19 +5,11 @@
       <div class="search-lost-title">신고 번호를 입력해주세요</div>
       <div class="search-container">
         <span class="search-header">아이디</span>
-        <input
-          v-model="lostname"
-          class="search-input"
-          :type="idType"
-        />
+        <input v-model="lostname" class="search-input" :type="idType" />
       </div>
       <div class="search-container">
         <span class="search-header">비밀번호</span>
-        <input
-          v-model="password"
-          class="search-input"
-          :type="pwType"
-        />
+        <input v-model="password" class="search-input" :type="pwType" />
       </div>
       <div class="search-button" @click="search">
         <buttonHuge :text="btnText" />
@@ -39,7 +31,7 @@ export default {
   components: {
     navbar,
     buttonHuge,
-    modalProps,
+    modalProps
   },
   data() {
     return {
@@ -49,13 +41,13 @@ export default {
       lostname: "",
       password: "",
       item: Object,
-      baseurl: process.env.VUE_APP_BASE_URL,
+      baseurl: process.env.VUE_APP_BASE_URL
     };
   },
   watch: {
     $route() {
       this.$store.state.showModal = false;
-    },
+    }
   },
   methods: {
     search() {
@@ -63,16 +55,17 @@ export default {
       let data = { lostname: this.lostname, password: this.password };
       axios
         .post(this.baseurl + "lost/", data)
-        .then((res) => {
+        .then(res => {
           this.$store.state.loading = false;
-          this.item = res.data.document;
+          this.item = res.data;
+          this.$store.state.showModal = true;
         })
-        .catch((err) => {
+        .catch(err => {
           this.$store.state.loading = false;
           console.log(err);
         });
-    },
-  },
+    }
+  }
 };
 </script>
 
