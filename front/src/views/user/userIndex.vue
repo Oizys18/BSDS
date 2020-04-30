@@ -39,7 +39,7 @@
             class="user-index-card"
             v-for="(item, index) in items"
             :key="index.id"
-            @click="showModal(index)"
+            @click="showModal(item)"
           >
             <cardSmall :item="item" />
           </div>
@@ -51,9 +51,9 @@
           </span>
         </div>
       </div>
-      <modal v-if="isClicked" class="user-index-modal">
-        <modalHuge @exit_Clicked="exit_Modal" />
-      </modal>
+      <div v-if="this.$store.state.showModal" class="user-index-modal">
+        <modalProps :data="item" />
+      </div>
     </div>
   </div>
 </template>
@@ -62,14 +62,14 @@
 import axios from "axios";
 import navbar from "@/views/user/components/navbar.vue";
 import cardSmall from "@/components/common/card/cardSmall.vue";
-import modalHuge from "@/components/common/modal/modalHuge.vue";
+import modalProps from "@/components/common/modal/modalProps.vue";
 import buttonHuge from "@/components/common/button/buttonHuge.vue";
 export default {
   name: "userIndex",
   components: {
     navbar,
     cardSmall,
-    modalHuge,
+    modalProps,
     buttonHuge,
   },
   data() {
@@ -80,7 +80,6 @@ export default {
       bgColor: "#0A95FF",
       bgColor2: "white",
       txtColor: "black",
-      isClicked: false,
       searched: false,
       message: "",
       file: "",
@@ -92,19 +91,14 @@ export default {
     go(path) {
       this.$router.push(path);
     },
-    showModal(index) {
-      this.isClicked = true;
-      console.log(process.env);
-      console.log(index + "번 게시글 모달 생성");
-    },
-    exit_Modal(flag) {
-      this.isClicked = !flag;
+    showModal(item) {
+      this.$store.state.showModal = true;
+      this.item = item;
     },
     checkTitle() {
       this.searched = false;
       this.message = "";
       this.file = event.target.files[0];
-
     },
     imgSearch() {
       this.$store.state.loading = true;
@@ -131,6 +125,11 @@ export default {
         this.$store.state.loading = false;
         this.message = "파일이 없습니다.";
       }
+    },
+  },
+  watch: {
+    $route() {
+      this.$store.state.showModal = false;
     },
   },
 };

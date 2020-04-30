@@ -25,16 +25,16 @@
         <buttonHuge :text="btnText" />
       </div>
     </div>
-    <modal v-if="this.$store.state.showModal" class="user-index-modal">
+    <div v-if="this.$store.state.showModal" class="user-index-modal">
       <modalProps :data="item" />
-    </modal>
+    </div>
   </div>
 </template>
 
 <script>
 import axios from "axios";
 import navbar from "@/views/user/components/navbar.vue";
-import modalProps from "@/components/common/modal/modalHuge.vue";
+import modalProps from "@/components/common/modal/modalProps.vue";
 import buttonHuge from "@/components/common/button/buttonHuge.vue";
 export default {
   name: "searchLost",
@@ -58,8 +58,8 @@ export default {
   },
   methods: {
     search() {
-      let data = { lostname: this.lostname, password: this.password };
       this.$store.state.loading = true;
+      let data = { lostname: this.lostname, password: this.password };
       axios
         .post(this.baseurl + "lost/", data)
         .then((res) => {
