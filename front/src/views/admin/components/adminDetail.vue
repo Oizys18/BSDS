@@ -1,10 +1,18 @@
 <template>
   <div>
-    <div class="user-info">
-      <span>메롱시티 웅앵</span>
-        <span>{{ getUserInfo.parent_department }}</span>
-        <span>{{ getUserInfo.center_name + getUserInfo.role }}</span>
+    <div class="admin-info">
+      <span class="admin">
+        {{ getUserInfo.parent_department + ' '+  getUserInfo.center_name + getUserInfo.role }}
+      </span>
+      <div class="admin-detail-info-div">
+      <span class="admin-detail-info">
+        Tel. {{ getUserInfo.phone_number}}
+      </span>
+      <span class="admin-detail-info">
+        주소. {{ getUserInfo.address[0].address_name }}
+      </span>
       </div>
+    </div>
     <div id="admin-btn-wrapper">
 
       <div class="page-link-button">
@@ -96,7 +104,7 @@ export default {
   #admin-btn-wrapper {
     width: 100%;
     height: 100%;
-    margin-top: 100px;
+    margin-top: 20px;
     justify-content: center;
     align-items: center;
     flex-direction: column;
@@ -126,6 +134,27 @@ export default {
     box-shadow: 5px 5px 10px 0 #0A95FF;
     border: 1px solid white;
     outline: none;
+  }
+  .admin-info {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+  }
+  .admin {
+    margin: 50px 10px 20px 0;
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  .admin-detail-info-div {
+    width: 30%;
+    text-align: initial;
+    padding-left: 50px;
+  }
+  .admin-detail-info {
+    display: block;
+    font-size: 1rem;
+    margin: 3px;
   }
 
 </style>

@@ -17,7 +17,8 @@
       <div class="itemColor">
         색상: {{ this.$store.state.colors[item.color] }}
       </div>
-      <div class="itemDate">습득일: {{ item.created.slice(2, 10) }}</div>
+      <div v-if="item.created" class="itemDate">습득일: {{ item.created.slice(2, 10) }}</div>
+      <div v-else class="itemDate">분실일: {{ item.lost_time.slice(2, 10) }}</div>
     </div>
   </div>
 </template>
