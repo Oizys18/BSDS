@@ -77,6 +77,7 @@ export default {
     box-shadow: none;
     border: none;
     outline: none;
+
   }
   .admin-detail-div {
     margin: auto;

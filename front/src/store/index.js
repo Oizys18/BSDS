@@ -50,6 +50,7 @@ export default new Vuex.Store({
       10: "흰색",
       11: "검정",
     },
+    lostname: ''
   },
   mutations: {},
   actions: {},

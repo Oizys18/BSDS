@@ -79,7 +79,11 @@ const actions = {
   },
   getDetailLost:  ({commit}, id) => {
     commit('setPostingId', id)
-    axios.get(`${HOST}found/posting/list/${id}/`)
+    axios.get(`${HOST}lost/admin/${id}/`, {
+      headers: {
+        'Authorization': `JWT ${sessionStorage.getItem('jwt')}`
+      }
+    })
       .then(res => {
         const data = res.data
         commit('setData', data)

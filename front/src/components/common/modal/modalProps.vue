@@ -30,10 +30,10 @@
             <span class="grid-title">보관 장소</span>
             <span>{{ data.user.center_name + data.user.role }}</span>
           </div>
-          <div class="info" v-else>
-            <span class="grid-title">분실 추정 위치</span>
-            <span>{{ data.x }}</span>
-          </div>
+<!--          <div class="info" v-else>-->
+<!--            <span class="grid-title">분실 추정 위치</span>-->
+<!--            <span>{{ data.x }}</span>-->
+<!--          </div>-->
         </div>
         <div class="modal-huge-content">
           <span class="grid-title">내용</span>
