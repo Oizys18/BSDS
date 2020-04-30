@@ -1,7 +1,6 @@
 <template>
   <div class="modal-map-wrapper">
     <div class="modal-map-container">
-
       <div class="mapapp-container">
         <div id="map" class="kakao-map search-map"></div>
       </div>
@@ -23,7 +22,6 @@ export default {
   data() {
     return {
       address: "",
-      isClicked: false,
       btnText: "여기에요!",
       bgColor: "white",
       addinput: "",
@@ -33,8 +31,7 @@ export default {
   },
   methods: {
     exitModal() {
-      this.isClicked = true;
-      this.$emit("exit_Clicked", this.isClicked);
+      this.$store.state.showModal = false
     },
   },
   computed: {
@@ -70,7 +67,7 @@ export default {
   margin: 1em;
   margin-bottom: 1em;
   font-size: 1.25em;
-  border: 1px solid #ebebeb;
+  border: 1px solid #5d5d5d;
   border-radius: 20px;
   color: black;
   background-color: white;

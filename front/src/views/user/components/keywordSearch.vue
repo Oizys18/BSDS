@@ -71,7 +71,7 @@
         </span>
       </div>
 
-      <div v-if="isClicked" class="keyword-search-modal">
+      <div v-if="this.$store.state.showModal" class="keyword-search-modal">
         <modalMap @exit_Clicked="exit_Modal" />
       </div>
     </div>
@@ -107,8 +107,7 @@ export default {
       inputDate: "",
       addressInput: "",
       results: "",
-      locX: "",
-      locY: "",
+      showing: "",
       baseurl: process.env.VUE_APP_BASE_URL,
     };
   },
@@ -119,6 +118,9 @@ export default {
     colors() {
       return this.$store.state.colors;
     },
+  },
+  mounted() {
+    this.$store.state.showModal = false;
   },
   methods: {
     searchAddress() {
@@ -143,8 +145,8 @@ export default {
             category: this.inputCategory,
             color: this.inputColor,
             created: this.inputDate,
-            x: this.locX,
-            y: this.locY,
+            x: this.$store.state.locationX,
+            y: this.$store.state.locationY,
           },
         })
         .then((res) => {
@@ -160,15 +162,23 @@ export default {
     go(path) {
       this.$router.push(path);
     },
-    showModal(e) {
-      this.$store.state.locationX = e.x;
-      this.$store.state.locationY = e.y;
-      this.locX = e.x;
-      this.locY = e.y;
-      this.isClicked = true;
+    checkModal() {
+      if (this.$store.state.showModal) {
+        this.$store.state.showModal = false;
+      } else {
+        this.$store.state.showModal = true;
+      }
     },
-    exit_Modal(flag) {
-      this.isClicked = !flag;
+    showModal(e) {
+      if (this.showing != e) {
+        this.$store.state.locationX = e.x;
+        this.$store.state.locationY = e.y;
+      }
+      this.showing = e;
+      this.checkModal().then((this.$store.state.showModal = true));
+    },
+    exit_Modal() {
+      this.$store.state.showModal = false;
     },
     updateCategory(e) {
       this.inputCategory = e;

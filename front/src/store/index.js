@@ -9,6 +9,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
+    showModal:false,
     baseURL: process.env.VUE_APP_BASE_URL,
     loading: false,
     documents: Object,

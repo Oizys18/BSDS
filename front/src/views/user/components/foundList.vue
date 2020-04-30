@@ -3,20 +3,16 @@
     <navbar />
     <div id="found-card-container">
       <div
-        @click="showModal(index)"
+        @click="showModal(item)"
         v-for="(item, index) in items"
         :key="index.id"
         class="found-card"
       >
-        <cardBig
-          :image="baseurl + item['thumbnail']"
-          :title="item['user']['center_name']"
-          :content="item['created']"
-        />
+        <cardSmall :item="item" />
       </div>
     </div>
-    <div v-if="isClicked" class="user-index-modal">
-      <modalHuge @exit_Clicked="exit_Modal" />
+    <div v-if="this.$store.state.showModal" class="user-index-modal">
+      <modalHuge :item="this.item" />
     </div>
   </div>
 </template>
@@ -24,40 +20,40 @@
 <script>
 import axios from "axios";
 import navbar from "@/views/user/components/navbar";
-import cardBig from "@/components/common/card/cardBig.vue";
+import cardSmall from "@/components/common/card/cardSmall.vue";
 import modalHuge from "@/components/common/modal/modalHuge.vue";
 export default {
   name: "foundList",
   components: {
-    cardBig,
     navbar,
     modalHuge,
+    cardSmall,
   },
   data() {
     return {
+      item: Object,
       items: Object,
       isClicked: false,
       pageSize: 8,
+      imagesrc: `media/no_image.png`,
       baseurl: process.env.VUE_APP_BASE_URL,
     };
   },
   methods: {
-    showModal(index) {
-      this.isClicked = true;
-      console.log(index + "번 게시글 모달 생성");
-    },
-    exit_Modal(flag) {
-      this.isClicked = !flag;
+    showModal(item) {
+      this.$store.state.showModal = true;
+      this.item = item;
     },
   },
   mounted() {
     this.$store.state.loading = true;
+    console.log(this.baseurl + "found/search/");
     axios
       .get(this.baseurl + "found/search/")
       .then((res) => {
-        this.$store.state.loading = false
-        this.items = res.data.documents.slice(0, 8);
-        
+        this.$store.state.loading = false;
+        this.items = res.data.documents.slice(0, 9);
+        console.log(this.items[0]);
       })
       .catch((err) => {
         console.log(err);
@@ -72,9 +68,8 @@ export default {
 
 <style scoped>
 #found-wrapper {
-  width: 100%;
   height: 100%;
-  margin-top: 60px;
+  margin-top: 15vh;
   justify-content: center;
   align-items: center;
   flex-direction: column;
@@ -83,15 +78,15 @@ export default {
 }
 #found-card-container {
   display: grid;
-  width: 40%;
-  grid-template-rows: repeat(4, 210px);
-  grid-template-columns: repeat(2, 360px);
+
+  grid-template-rows: repeat(3, 230px);
+  grid-template-columns: repeat(3, 230px);
   justify-content: space-around;
   align-items: center;
   margin: 10px;
 }
 .found-card {
-  margin: auto;
+  /* margin: auto; */
   display: flex;
   box-sizing: border-box;
 }
