@@ -1,5 +1,6 @@
 <template>
 <div>
+  <admin-navbar />
   <div class="container">
     <p class="created-message">
       {{ createdMessage }}
@@ -14,11 +15,13 @@
 </template>
 
 <script>
+import adminNavbar from '@/views/admin/components/adminNavbar'
 import buttonHuge from '@/components/common/button/buttonHuge'
 export default {
   name: 'created-page',
   components: {
     buttonHuge,
+    adminNavbar
   },
   data() {
     return {
