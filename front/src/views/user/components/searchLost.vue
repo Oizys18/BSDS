@@ -9,7 +9,6 @@
           v-model="lostname"
           class="search-input"
           :type="idType"
-          :placeholder="idHelper"
         />
       </div>
       <div class="search-container">
@@ -18,7 +17,6 @@
           v-model="password"
           class="search-input"
           :type="pwType"
-          :placeholder="pwHelper"
         />
       </div>
       <div class="search-button" @click="search">
@@ -45,8 +43,6 @@ export default {
   },
   data() {
     return {
-      pwHelper: "비밀번호를 입력해주세요",
-      idHelper: "아이디를 입력해주세요",
       idType: "id",
       pwType: "password",
       btnText: "조회",
