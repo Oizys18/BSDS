@@ -14,7 +14,7 @@
     <div v-if="this.$store.state.showModal" class="user-index-modal">
       <modalProps :data="this.item" />
     </div>
-  </div> 
+  </div>
 </template>
 
 <script>
@@ -27,7 +27,7 @@ export default {
   components: {
     navbar,
     modalProps,
-    cardSmall,
+    cardSmall
   },
   data() {
     return {
@@ -36,36 +36,37 @@ export default {
       isClicked: false,
       pageSize: 8,
       imagesrc: `media/no_image.png`,
-      baseurl: process.env.VUE_APP_BASE_URL,
+      baseurl: process.env.VUE_APP_BASE_URL
     };
   },
   methods: {
     showModal(item) {
       this.$store.state.showModal = true;
       this.item = item;
-    },
+    }
   },
   watch: {
     $route() {
       this.$store.state.showModal = false;
-    },
+    }
   },
   mounted() {
     this.$store.state.loading = true;
-    axios
-      .get(this.baseurl + "found/search/")
-      .then((res) => {
-        this.$store.state.loading = false;
-        this.items = res.data.documents.slice(0, 9);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
     if (this.$store.state.documents) {
       this.items = this.$store.state.documents;
       this.$store.state.documents = {};
+    } else {
+      axios
+        .get(this.baseurl + "found/search/")
+        .then(res => {
+          this.$store.state.loading = false;
+          this.items = res.data.documents.slice(0, 9);
+        })
+        .catch(err => {
+          console.log(err);
+        });
     }
-  },
+  }
 };
 </script>
 
