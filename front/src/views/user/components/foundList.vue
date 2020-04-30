@@ -12,21 +12,21 @@
       </div>
     </div>
     <div v-if="this.$store.state.showModal" class="user-index-modal">
-      <modalHuge :item="this.item" />
+      <modalProps :data="this.item" />
     </div>
-  </div>
+  </div> 
 </template>
 
 <script>
 import axios from "axios";
 import navbar from "@/views/user/components/navbar";
 import cardSmall from "@/components/common/card/cardSmall.vue";
-import modalHuge from "@/components/common/modal/modalHuge.vue";
+import modalProps from "@/components/common/modal/modalProps.vue";
 export default {
   name: "foundList",
   components: {
     navbar,
-    modalHuge,
+    modalProps,
     cardSmall,
   },
   data() {
