@@ -186,6 +186,11 @@ export default {
       this.inputColor = e;
     },
   },
+  watch: {
+    $route() {
+      this.$store.state.showModal = false;
+    },
+  },
 };
 </script>
 

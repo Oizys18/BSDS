@@ -47,13 +47,11 @@ export default {
   },
   mounted() {
     this.$store.state.loading = true;
-    console.log(this.baseurl + "found/search/");
     axios
       .get(this.baseurl + "found/search/")
       .then((res) => {
         this.$store.state.loading = false;
         this.items = res.data.documents.slice(0, 9);
-        console.log(this.items[0]);
       })
       .catch((err) => {
         console.log(err);
