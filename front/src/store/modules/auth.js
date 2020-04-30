@@ -72,40 +72,28 @@ const actions = {
     // 로그인 안했다면
     else {
       commit('clearErrors');
-      commit('setLoading', true);
       // username 없음
-      if (!credentials.username) {
-        commit('pushError', 'username can not be empty');
-        commit('setLoading', false);
-      }
-      // password < 8
-      if (credentials.password < 8) {
-        commit('pushError', 'password too short');
-        commit('setLoading', false);
-      }
       // 요청 start
-      else {
-        axios.post(`${HOST}api-token/`, credentials)
-          .then(token => {
-            commit('setToken', token.data.token);
-            commit('setLoading', false)
-            dispatch('userInfo')
-            console.log(token)
-          router.go()
-          })
-          .catch(err => {
-            if (!err.response) { // no reponse
-              commit('pushError', 'Network Error..')
-            } else if (err.response.status === 400) {
-              commit('pushError', 'Invalid username or password');
-            } else if (err.response.status === 500) {
-              commit('pushError', 'Internal Server error. Please try again later');
-            } else {
-              commit('pushError', 'Some error occured');
-            }
-            commit('setLoading', false);
-          })
-      }
+      axios.post(`${HOST}api-token/`, credentials)
+        .then(token => {
+          commit('setToken', token.data.token);
+          commit('setLoading', false)
+          dispatch('userInfo')
+          console.log(token)
+        router.go()
+        })
+        .catch(err => {
+          if (!err.response) { // no reponse
+            commit('pushError', '* 서버 상태가 좋지 않네요.')
+          } else if (err.response.status === 400) {
+            commit('pushError', '* 아이디와 비밀번호를 확인하세요.');
+          } else if (err.response.status === 500) {
+            commit('pushError', '* 잠시 후에 다시 시도해주세요.');
+          } else {
+            commit('pushError', '* Some error occured');
+          }
+        })
+
     }
   },
 
