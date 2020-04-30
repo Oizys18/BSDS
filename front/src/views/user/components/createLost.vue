@@ -207,28 +207,6 @@ export default {
       this.time = this.timeList[value]
       console.log(this.time)
     },
-    onDateSelectY(value) {
-      this.date[0] = this.yItems[value].slice(0, -2)
-      console.log(this.date)
-    },
-    onDateSelectM(value) {
-      const temp = this.mItems[value].slice(0, -2)
-      if (temp < 10) {
-        this.date[2] = '0' + temp
-      } else {
-        this.date[2] = temp
-      }
-      console.log(this.date)
-    },
-    onDateSelectD(value) {
-      const temp = this.dItems[value].slice(0, -2)
-      if (temp < 10) {
-        this.date[4] = '0' + temp
-      } else {
-        this.date[4] = temp
-      }
-      console.log(this.date)
-    },
     showModal(index) {
       this.isClicked = true;
       console.log(index + "번 게시글 모달 생성");
@@ -252,6 +230,9 @@ export default {
       if (password.length > 3) {
         return true
       }
+    },
+    go(path) {
+      this.$router.push(path)
     },
     ...mapActions(['postImageUser', 'getColorData']),
   },

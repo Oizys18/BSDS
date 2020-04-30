@@ -47,9 +47,9 @@
         <span>물품이 주인을 찾았다면 체크해주세요.</span>
         <div class="modal-huge-radio" data-toggle="buttons">
           <label class="box-radio-input">
-            <input type="radio" name="cp_item" value="true"  v-model="data.status">
+            <input type="radio" name="cp_item" value="true" v-model="data.status">
             <span class="check">V</span>
-            <span class="description">찾음</span>
+            <span class="description" >찾음</span>
           </label>
           <label class="box-radio-input">
             <input type="radio" name="cp_item" value="false" v-model="data.status">
@@ -57,18 +57,25 @@
             <span class="description">못찾음</span>
           </label>
         </div>
+        <span @click="onChangeStatus">
+        <button-default :text="'저장'"/>
+          </span>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-// import  from 'vuex'
+import {mapGetters} from 'vuex'
+import axios from 'axios'
+import ButtonDefault from "../button/buttonDefault";
 export default {
-  name: "modalHuge",
+  name: "modalProps",
+  components: {ButtonDefault},
   data() {
     return {
-      isClicked: false
+      isClicked: false,
+      status: null
     };
   },
   props: {
@@ -82,6 +89,18 @@ export default {
       this.isClicked = true;
       this.$emit("exit_Clicked", this.isClicked);
     },
+    onChangeStatus() {
+      this.status ? this.status = false : this.status = true
+      console.log(this.status)
+      axios.patch(`${this.baseurl}found/posting/${this.data.id}/status/`, {}, {
+        headers: {
+          'Authorization': `JWT ${sessionStorage.getItem('jwt')}`
+        }
+        }
+      )
+      .then(res => console.log(res))
+      .catch(err => console.log(err))
+    }
   },
   computed: {
     baseurl() {
@@ -93,6 +112,7 @@ export default {
     colors() {
       return this.$store.state.colors;
     },
+    ...mapGetters(['getStatus'])
   }
 };
 </script>
@@ -143,6 +163,7 @@ export default {
     border:none;
     z-index:10;
     font-size:25px;
+    background-color: transparent;
   }
   .modal-huge-image {
     width: 100%;
