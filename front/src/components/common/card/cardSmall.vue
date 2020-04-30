@@ -78,5 +78,6 @@ export default {
 .card-small-text:hover {
   opacity: 80%;
   color: white;
+  background-color: #707070;
 }
 </style>
