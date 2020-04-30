@@ -2,7 +2,7 @@
   <div id="paginatedList-wrapper">
     <div id="card-container">
       <div
-        @click="showModal(index) + getDetailFound(item.id)"
+        @click="showModal(item) + getDetailFound(item.id)"
         v-for="(item, index) in calData"
         :key="index.id"
         class="card-list"
@@ -23,8 +23,8 @@
         <button-default :text="'next'" :bgColor="btnNext" />
       </span>
     </div>
-    <div v-if="isClicked" class="index-modal">
-      <modal-props @exit_Clicked="exit_Modal" :data="getData"/>
+    <div v-if="this.$store.state.showModal" class="index-modal">
+      <modal-props :data="getData"/>
     </div>
   </div>
 </template>
@@ -69,9 +69,9 @@ export default {
     onClickPage(num) {
       this.pageNum = num
     },
-    showModal(index) {
-      this.isClicked = true;
-      console.log(index + "번 게시글 모달 생성");
+    showModal(item) {
+      this.$store.state.showModal = true;
+      this.item = item;
     },
     exit_Modal(flag) {
       this.isClicked = !flag;
