@@ -101,7 +101,6 @@ export default {
       this.file = event.target.files[0];
     },
     imgSearch() {
-      this.$store.state.loading = true;
       if (this.file) {
         this.message = "";
         let formData = new FormData();
@@ -221,19 +220,18 @@ export default {
 .file-bar {
   display: flex;
   align-items: center;
-  justify-content: stretch;
+  justify-content: space-between;
 }
 /* img upload */
 .file-box {
   width: 85%;
-  /* overflow-x: hidden; */
 }
 .file-box label {
+  padding-left:10px;
   height: 2em;
   display: flex;
   color: rgb(100, 100, 100);
   font-size: 1.3em;
-  padding-left: 10px;
   justify-content: flex-start;
   align-items: center;
   background-color: #fdfdfd;
@@ -254,6 +252,7 @@ export default {
   border: 0;
 }
 .file-send {
+  margin:0;
   background-color: #fdfdfd;
   cursor: pointer;
   border: 1px solid #ebebeb;

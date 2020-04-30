@@ -9,7 +9,6 @@
           v-model="lostname"
           class="search-input"
           :type="idType"
-          :placeholder="idHelper"
         />
       </div>
       <div class="search-container">
@@ -18,7 +17,6 @@
           v-model="password"
           class="search-input"
           :type="pwType"
-          :placeholder="pwHelper"
         />
       </div>
       <div class="search-button" @click="search">
@@ -45,8 +43,6 @@ export default {
   },
   data() {
     return {
-      pwHelper: "비밀번호를 입력해주세요",
-      idHelper: "아이디를 입력해주세요",
       idType: "id",
       pwType: "password",
       btnText: "조회",
@@ -96,7 +92,6 @@ export default {
   width: 35%;
   color: rgb(37, 37, 37);
   font-size: 1em;
-  /* padding-left: 10px; */
   background-color: #fdfdfd;
   border: 1px solid #ebebeb;
   border-bottom-color: #e2e2e2;
@@ -108,7 +103,9 @@ export default {
   flex-direction: column;
 }
 .search-header {
-  width: 40%;
+  justify-content: flex-start;
+  display: flex;
+  width: 50%;
 }
 .search-container {
   margin: 15px;
@@ -130,7 +127,7 @@ export default {
 
 input.search-input {
   border: none;
-  width: 100%;
+  width: 60%;
   height: 70%;
   align-items: center;
   font-size: 0.8em;
