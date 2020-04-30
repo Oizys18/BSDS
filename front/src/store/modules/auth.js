@@ -23,16 +23,19 @@ const state = {
       }
     ]
   },
+  detail_key: 0
 };
 
 // Vuex 에서는 Arrow Function
 const getters = {
-  isLoggedIn: () => !!sessionStorage.jwt, // 특정 값을 true/false 로 바꾸는 구문
+  isLoggedIn: () => sessionStorage.jwt ? true : false, // 특정 값을 true/false 로 바꾸는 구문
   getErrors: state => state.errors,
   isLoading: state => state.loading,
   getUserId: state => state.token ? decoded(state.token).user_id : '',
   getUserInfo: () => JSON.parse(sessionStorage.getItem(`info`)),
-  getToken: state => state.token
+  getInfo: state => state.user_info,
+  getToken: state => state.token,
+  getDetailKey: state => state.detail_key
 };
 
 const mutations = {
@@ -67,7 +70,8 @@ const actions = {
 
   login: ({ commit, getters, dispatch }, credentials) => {
     if (getters.isLoggedIn)  {
-      router.go();
+      state.detail_key = 0
+      // router.go()
     }
     // 로그인 안했다면
     else {
@@ -77,14 +81,17 @@ const actions = {
       axios.post(`${HOST}api-token/`, credentials)
         .then(token => {
           commit('setToken', token.data.token);
-          commit('setLoading', false)
           dispatch('userInfo')
-          console.log(token)
-        router.go()
+          commit('setLoading', false)
+          .then(
+            console.log(token),
+            state.detail_key = 1,
+            // router.go()
+        )
         })
         .catch(err => {
           if (!err.response) { // no reponse
-            commit('pushError', '* 서버 상태가 좋지 않네요.')
+            // commit('pushError', '* 서버 상태가 좋지 않네요.')
           } else if (err.response.status === 400) {
             commit('pushError', '* 아이디와 비밀번호를 확인하세요.');
           } else if (err.response.status === 500) {
@@ -97,14 +104,16 @@ const actions = {
     }
   },
 
-  userInfo: ({commit}) => {
+  async userInfo ({commit}) {
     const token = sessionStorage.getItem('jwt')
     const admin_id = decoded(token).user_id
     axios.get(`${HOST}user/${admin_id}/`)
       .then(res => {
         commit('setUserInfo', res.data)
         console.log(res)
-        console.log(state.user_info)
+        console.log(state.user_info),
+        state.detail_key = 3
+        router.go()
       })
       .catch(err => console.log(err))
   },
