@@ -151,7 +151,6 @@ export default {
         .then((res) => {
           this.$store.state.loading = false;
           this.$store.state.documents = res.data.documents;
-          this.go("/found");
         })
         .catch((err) => {
           this.$store.state.loading = false;

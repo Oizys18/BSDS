@@ -1,6 +1,6 @@
 # CNN (Convolutional Neural Networks)
 
-![cnn구조](../images/cnn.png)
+![cnn구조](./images/cnn.png)
 
 - 일반 신경망은 이미지 데이터를 하나의 데이터로 처리하기 때문에 위치가 달라지거나 왜곡된 경우 성능이 좋지않다.
 - 이를 보완하기 위해 이미지에서 Convolution 연산을 이용해 Feature 값을 얻는다.
