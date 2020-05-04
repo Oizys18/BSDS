@@ -52,14 +52,15 @@ export default {
   },
   mounted() {
     this.$store.state.loading = true;
-    if (this.$store.state.documents) {
+    if (this.$store.state.documents[0]) {
+      this.$store.state.loading = false;
       this.items = this.$store.state.documents;
       this.$store.state.documents = {};
     } else {
+      this.$store.state.loading = false;
       axios
         .get(this.baseurl + "found/search/")
         .then((res) => {
-          this.$store.state.loading = false;
           this.items = res.data.documents.slice(0, 9);
         })
         .catch((err) => {

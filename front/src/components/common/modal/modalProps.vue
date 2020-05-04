@@ -7,7 +7,11 @@
           <span>✖</span>
         </button>
         <div class="modal-huge-image">
-          <img :src="this.baseurl + data.thumbnail[0]" />
+          <img :src="
+          data.thumbnail.length
+            ? `${baseurl}${data.thumbnail}`
+            : `${baseurl}${imagesrc}`
+        " />
         </div>
         <div class="modal-huge-info">
           <div class="info">
@@ -88,6 +92,7 @@ export default {
   data() {
     return {
       status: null,
+      imagesrc: `media/no_image.png`,
     };
   },
   props: {
@@ -220,6 +225,7 @@ export default {
 .grid-content {
   font-size: 1rem;
   margin: 5px 0px 0px 12px;
+  overflow: hidden;
 }
 .modal-huge-status {
   grid-area: status;
