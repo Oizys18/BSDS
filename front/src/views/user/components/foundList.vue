@@ -8,7 +8,7 @@
         :key="index.id"
         class="found-card"
       >
-        <cardSmall :item="item" />
+        <cardSmall :item="item" class="animated delay-0.1s zoomIn faster" />
       </div>
     </div>
     <div v-if="this.$store.state.showModal" class="user-index-modal">
