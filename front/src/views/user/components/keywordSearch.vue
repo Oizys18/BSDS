@@ -140,6 +140,8 @@ export default {
     },
     categorySearch() {
       this.$store.state.loading = true;
+      console.log(this.inputCategory)
+      console.log(this.inputColor)
       axios
         .get(this.baseurl + "found/search/", {
           params: {
@@ -197,12 +199,13 @@ export default {
 </script>
 
 <style scoped>
-#addressinput{
-  border:1px solid black;
+#addressinput {
+  border: 1px solid black;
   border-radius: 15px;
-  padding:0.25em;
-  width:60%;
-  outline:none;
+  padding: 0.25em;
+  padding-left:10px;
+  width: 60%;
+  outline: none;
 }
 .navbar-container {
   /* position */
@@ -266,8 +269,8 @@ export default {
   flex-direction: column;
   width: 50%;
 }
-.selector #selectdate input{
-  width:150px;
+.selector #selectdate input {
+  width: 150px;
 }
 .search-address label {
   padding: 0.1em;
@@ -296,7 +299,7 @@ export default {
   color: blue;
 }
 .keyword-search-button {
-  position: relative;
+  margin-top: 15px;
 }
 
 /* searchbar */
