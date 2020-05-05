@@ -122,7 +122,7 @@ export default {
       if (this.data.status != this.nxtStatus) {
         axios
           .patch(
-            `${this.baseurl}lost/posting/${this.$store.state.lostname}/status/`,
+            `${this.baseurl}lost/posting/${this.data.lostname}/status/`,
             {}
           )
           .then((res) => console.log(res))
