@@ -62,9 +62,9 @@ export default {
   computed: {
     ...mapGetters(['getUserInfo', 'getInfo'])
   },
-  mounted() {
-    this.$store.dispatch('getUserInfo')
-  }
+  // mounted() {
+  //   this.$store.dispatch('getUserInfo')
+  // }
 }
 </script>
 

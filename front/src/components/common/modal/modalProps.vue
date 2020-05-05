@@ -2,13 +2,10 @@
   <div>
     <div class="collider" v-on:click="exitModal"></div>
     <div class="modal-huge-wrapper">
-      <div class="modal-huge-container">
-        <button class="modal-huge-collide" v-on:click="exitModal">
-          <span>✖</span>
-        </button>
+      <div class="modal-huge-left">
         <div class="modal-huge-image">
           <img :src="
-          data.thumbnail.length
+            data.thumbnail.length
             ? `${baseurl}${data.thumbnail}`
             : `${baseurl}${imagesrc}`
         " />
@@ -32,12 +29,8 @@
           </div>
           <div class="info" v-if="data.user">
             <span class="grid-title">보관 장소</span>
-            <span>{{ data.user.center_name + data.user.role }}</span>
+            <span>{{ data.user.parent_department + ' ' + data.user.center_name + data.user.role }}</span>
           </div>
-          <!--          <div class="info" v-else>-->
-          <!--            <span class="grid-title">분실 추정 위치</span>-->
-          <!--            <span>{{ data.x }}</span>-->
-          <!--          </div>-->
         </div>
         <div class="modal-huge-content">
           <span class="grid-title">내용</span>
@@ -48,6 +41,8 @@
             내용없음
           </span>
         </div>
+      </div>
+      <div class="modal-huge-right">
         <div class="modal-huge-status">
           <span class="grid-title">물품 상태</span>
           <span class="description" v-if="isLoggedIn">물품이 주인을 찾았다면 체크해주세요.</span>
@@ -55,20 +50,20 @@
           <div class="modal-huge-radio" data-toggle="buttons">
             <label class="box-radio-input">
               <input
-                type="radio"
-                name="cp_item"
-                value="true"
-                v-model="data.status"
+                      type="radio"
+                      name="cp_item"
+                      value="true"
+                      v-model="data.status"
               />
               <span class="check"><i class="fas fa-check"></i></span>
               <span class="description">수령</span>
             </label>
             <label class="box-radio-input">
               <input
-                type="radio"
-                name="cp_item"
-                value="false"
-                v-model="data.status"
+                      type="radio"
+                      name="cp_item"
+                      value="false"
+                      v-model="data.status"
               />
               <span class="check"><i class="fas fa-check"></i></span>
               <span class="description">보관</span>
@@ -78,6 +73,9 @@
             <button-default :text="'저장'" />
           </span>
         </div>
+        <span class="modal-huge-collide" v-on:click="exitModal">
+          <button-default :text="'닫기'"/>
+        </span>
       </div>
     </div>
   </div>
@@ -118,7 +116,7 @@ export default {
             },
           }
         )
-        .then((res) => console.log(res))
+        .then()
         .catch((err) => console.log(err));
     },
     onChangeStatusUser() {
@@ -151,11 +149,12 @@ export default {
 .collider {
   position: absolute;
   width: 100vw;
-  height: 100vh;
+  height: 105vh;
   z-index: 0;
   top: 0;
   left: 0;
-  background: transparent;
+  background: #2c3e50;
+  opacity: 20%;
 }
 .modal-huge-wrapper {
   /* position */
@@ -164,13 +163,13 @@ export default {
   left: 25%;
 
   /* modal shape */
-  height: 60%;
+  /*height: 50%;*/
   width: 50%;
-  border: 1px solid black;
-  border-radius: 15px;
+  /*border: 1px solid black;*/
+  /*border-radius: 15px;*/
 
   /* content */
-  background-color: white;
+  /*background-color: white;*/
   color: black;
   font-size: 1rem;
 
@@ -182,38 +181,54 @@ export default {
   width: 100%;
   height: 100%;
   /* contents align */
-  display: grid;
-  grid-template-rows: repeat(7, 14.5%);
-  grid-template-columns: repeat(4, 25%);
-  grid-template-areas:
-    "image image status status"
-    "image image status status"
-    "image image status status"
-    "image image status status"
-    "info info content content"
-    "info info content content"
-    "info info content content";
+  /*display: grid;*/
+  /*grid-template-rows: repeat(7, 14.5%);*/
+  /*grid-template-columns: repeat(4, 25%);*/
+  /*grid-template-areas:*/
+  /*  "image image status status"*/
+  /*  "image image status status"*/
+  /*  "image image status status"*/
+  /*  "image image status status"*/
+  /*  "info info content content"*/
+  /*  "info info content content"*/
+  /*  "info info content content";*/
+  display: flex;
+
+}
+
+.modal-huge-left {
+  float: left;
+  width: 60%;
+  border-radius: 15px;
+  border: 1px solid black;
+  background-color: #ffffff;
+}
+
+.modal-huge-right {
+  width: 30%;
+  float: left;
+  margin-left: 30px;
 }
 
 .modal-huge-collide {
-  position: absolute;
-  right: 0;
-  border: none;
+  /*position: absolute;*/
+  /*right: 0;*/
+  /*border: none;*/
   z-index: 10;
-  font-size: 25px;
-  background-color: transparent;
+  margin-top: 15px;
 }
 .modal-huge-image {
-  width: 100%;
-  height: 100%;
-  border-radius: 15px;
-  grid-area: image;
+  /*width: 100%;*/
+  /*height: 100%;*/
+  /*border-radius: 15px;*/
+  /*grid-area: image;*/
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 25px;
 }
 .modal-huge-info {
-  grid-area: info;
+  /*grid-area: info;*/
   border-radius: 15px;
   display: flex;
   flex-direction: column;
@@ -221,7 +236,7 @@ export default {
   padding: 25px 15px 10px 15px;
 }
 .modal-huge-content {
-  grid-area: content;
+  /*grid-area: content;*/
   border-radius: 15px;
   display: flex;
   flex-direction: column;
@@ -239,16 +254,19 @@ export default {
   overflow: hidden;
 }
 .modal-huge-status {
-  grid-area: status;
+  /*grid-area: status;*/
   display: flex;
   padding: 10px 15px 10px 15px;
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
   word-break: keep-all;
+  border-radius: 15px;
+  border: 1px solid black;
+  background-color: #ffffff;
 }
 .modal-huge-radio {
-  grid-area: radio;
+  /*grid-area: radio;*/
   display: flex;
   padding: 10px;
   align-items: center;

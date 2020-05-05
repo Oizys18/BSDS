@@ -1,67 +1,58 @@
 <template>
-  <div>
-    <div>{{ pageHead }}</div>
-    <div id="table-wrapper">
-    <table class="table">
-      <thead>
-        <tr>
-          <th
-            v-for="(header, idx) in itemHeader"
-            :key="idx">
-            {{ header }}
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="item in calData" :key="item.id">
-          <td>{{item.id}}</td>
-          <td class="img-cell" >
-            <img
-              :src="item.thumbnail.length > 0
-              ? `http://8c6a607d.ngrok.io/${item.thumbnail}`
-              : 'http://8c6a607d.ngrok.io/media/no_image.png'">
-          </td>
-          <td>{{ item.category }}</td>
-          <td>{{ item.created }}</td>
-          <td><button-default :text="'조회'" /></td>
-        </tr>
-      </tbody>
-    </table>
-    </div>
+  <div id="paginatedList-wrapper">
     <div class="list-page-btn">
       <span @click="prevPage" :key="btnPrev">
-        <button-default :text="'prev'" :bgColor="btnPrev" />
+        <button-default :text="'이전'" :bgColor="btnPrev" />
       </span>
       <span v-for="num in numOfPages" :key="num" @click="onClickPage(num)">
-        <button-default :text="num" />
+        <button-default :text="num.toString()" />
       </span>
       <span @click="nextPage" :key="btnNext">
-        <button-default :text="'next'" :bgColor="btnNext" />
+        <button-default :text="'다음'" :bgColor="btnNext" />
       </span>
+    </div>
+    <div id="card-container">
+      <div
+        @click="showModal() + getPresentUrl(item.id)"
+        v-for="(item, index) in calData"
+        :key="index.id"
+        class="card-list"
+      >
+        <card-small
+          :item="item"
+        />
+      </div>
+    </div>
+    <div v-if="this.$store.state.showModal" class="index-modal">
+      <modal-props :data="getData"/>
     </div>
   </div>
 </template>
 
 <script>
+import { mapActions, mapGetters } from "vuex"
 import buttonDefault from "@/components/common/button/buttonDefault"
+import cardSmall from "@/components/common/card/cardSmall";
+import modalProps from "@/components/common/modal/modalProps";
 export default {
   name: "paginatedList",
   components: {
-    buttonDefault
+    buttonDefault,
+    cardSmall,
+    modalProps
   },
   props: {
     items: Array,
-    itemHeader: Array,
-    pageHead: {
-      type: String,
-      default: ""
+    pageSize: {
+      type: Number,
+      default: 9
     }
   },
   data() {
     return {
       pageNum: 1,
-      pageSize: 3,
-      imagesrc: 'media/no_image.png',
+      imagesrc: `media/no_image.png`,
+      isClicked: false
     }
   },
   methods: {
@@ -77,7 +68,21 @@ export default {
     },
     onClickPage(num) {
       this.pageNum = num
-    }
+    },
+    showModal() {
+      this.$store.state.showModal = true;
+    },
+    exit_Modal(flag) {
+      this.isClicked = !flag;
+    },
+    getPresentUrl(id) {
+      if (window.location.href.includes('created')) {
+        this.$store.dispatch('getDetailFound', id)
+      } else {
+        this.$store.dispatch('getDetailLost', id)
+      }
+    },
+    ...mapActions(["getDetailFound", "getDetailLost"])
   },
   computed: {
     startPage() {
@@ -90,47 +95,60 @@ export default {
       return Math.ceil(this.items.length / this.pageSize)
     },
     calData() {
-      return this.items.slice(this.startPage, this.endPage)
+      if (this.items.length > this.pageSize) {
+        return this.items.slice(this.startPage, this.endPage)
+      } else {
+        return this.items
+      }
     },
     btnPrev() {
       return (this.pageNum > 1) ? "default" : "grey"
     },
     btnNext() {
       return (this.pageNum < this.numOfPages) ? "default" : "grey"
-    }
+    },
+    baseurl() {
+      return this.$store.state.baseURL;
+    },
+    ...mapGetters(["getData", "getUserInfo"])
   }
 }
 </script>
 
 <style scoped>
-  #table-wrapper {
+  #card-container {
+    display: grid;
+
+    grid-template-rows: repeat(3, 230px);
+    grid-template-columns: repeat(3, 230px);
+    justify-content: space-around;
+    align-items: center;
+    margin: 10px;
+  }
+  #paginatedList-wrapper {
     width: 100%;
     height: 100%;
     margin-top: 150px;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
     display: flex;
-  }
-  .table {
-    width: 60%;
-    margin: 15px
-  }
-  th {
-    height: 50px;
-  }
-  td {
-    height: 200px;
-  }
-  td.img-cell {
-    width: 200px;
+    flex-wrap: wrap;
   }
   .list-page-btn {
-    position: absolute;
-    bottom: 5%;
-    left: 50%;
-    transform:translateX(-50%);
+    position: fixed;
+    top: 20%;
+    left: 350px;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
   }
   .list-page-btn > span {
     /*pointer-events: none;*/
+  }
+  .card-list {
+    margin: auto;
+    display: flex;
+    box-sizing: border-box;
   }
 </style>

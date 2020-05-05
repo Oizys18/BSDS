@@ -9,7 +9,6 @@ import createLost from "@/views/user/components/createLost.vue";
 import searchLost from "@/views/user/components/searchLost.vue";
 import createdUser from "@/views/user/components/createdUser.vue";
 import createFound from "@/views/admin/components/createFound.vue";
-import createdAdmin from "@/views/admin/components/createdAdmin.vue";
 import createdList from "@/views/admin/components/createdList";
 import lostList from "@/views/admin/components/lostList";
 import adminLogin from "@/views/admin/components/adminLogin";
@@ -57,11 +56,6 @@ const routes = [
     path: "/admin/create",
     name: "createFound",
     component: createFound,
-  },
-  {
-    path: "/admin/created",
-    name: "createdAdmin",
-    component: createdAdmin,
   },
   {
     path: "/admin/createdList",
