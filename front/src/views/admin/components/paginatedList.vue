@@ -133,7 +133,6 @@ export default {
 <style scoped>
 #card-container {
   display: grid;
-
   grid-template-rows: repeat(3, 230px);
   grid-template-columns: repeat(3, 230px);
   justify-content: space-around;
@@ -143,7 +142,7 @@ export default {
 #paginatedList-wrapper {
   width: 100%;
   height: 100%;
-  margin-top: 150px;
+  margin-top: 18vh;
   justify-content: center;
   align-items: center;
   flex-direction: column;

@@ -189,7 +189,6 @@
 </template>
 
 <script>
-// import router from '../router'
 import selectOne from "@/components/common/dropdown/selectOne";
 import navbar from "@/views/user/components/navbar";
 import buttonDefault from "@/components/common/button/buttonDefault";
@@ -338,11 +337,11 @@ export default {
       this.$refs.imageInput.click();
     },
     onSelectCategory(value) {
-      this.category = value;
+      this.category = parseInt(value) + 1;
       this.errors.splice(0, 1, 0)
     },
     onSelectColor(value) {
-      this.color = value;
+      this.color = parseInt(value) + 1;
       this.errors.splice(1, 1, 0)
     },
     onTimeSelect(value) {
@@ -519,7 +518,7 @@ export default {
 }
 .right-wrapper {
   float: left;
-  width: 350px;
+  width: 300px;
   text-align: initial;
 }
 .description-wrapper {

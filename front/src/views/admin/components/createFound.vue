@@ -129,11 +129,11 @@ export default {
       this.$refs.imageInput.click();
     },
     onSelectCategory(value) {
-      this.category = value;
+      this.category = parseInt(value) + 1;
       this.errors.splice(0, 1, 0)
     },
     onSelectColor(value) {
-      this.color = value;
+      this.color = parseInt(value) + 1;
       this.errors.splice(1, 1, 0)
     },
     checkForm(value) {
