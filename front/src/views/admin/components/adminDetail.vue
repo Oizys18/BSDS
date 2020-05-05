@@ -15,7 +15,7 @@
     </div>
     <div id="admin-btn-wrapper" class="animated zoomIn faster">
       <div class="page-link-button">
-        <div class="admin-detail-div" @click="go('createFound')">
+        <div class="admin-detail-div" @click="go('createFound')" id="createFound">
           <div class="admin-icon">
             <i class="far fa-edit fa-5x icon"></i>
           </div>
