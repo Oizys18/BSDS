@@ -136,9 +136,9 @@ export default {
     flex-wrap: wrap;
   }
   .list-page-btn {
-    position: absolute;
+    position: fixed;
     top: 20%;
-    left: 20%;
+    left: 350px;
     display: flex;
     flex-direction: column;
     cursor: pointer;
