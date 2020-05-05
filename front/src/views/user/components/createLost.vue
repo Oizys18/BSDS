@@ -158,7 +158,7 @@
                     value="true"
                     v-model="do_notice"
                   />
-                  <span class="check">V</span>
+                  <span class="check"><i class="fas fa-check"></i></span>
                   <span class="description">동의</span>
                 </label>
                 <label class="box-radio-input">
@@ -168,7 +168,7 @@
                     value="false"
                     v-model="do_notice"
                   />
-                  <span class="check">V</span>
+                  <span class="check"><i class="fas fa-check"></i></span>
                   <span class="description">비동의</span>
                 </label>
               </div>
@@ -235,6 +235,7 @@ export default {
         this.timeList.push(i.toString() + ":00");
       }
     }
+    this.$store.dispatch('clearImage')
   },
   methods: {
     searchAddress() {
@@ -379,7 +380,7 @@ export default {
       "getColorName",
     ]),
     ...mapState(["image_id"]),
-  },
+  }
 };
 </script>
 

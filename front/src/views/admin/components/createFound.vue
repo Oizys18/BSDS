@@ -157,6 +157,9 @@ export default {
     ]),
     ...mapState(["image_id"]),
   },
+  mounted() {
+    this.$store.dispatch("clearImage")
+  }
 };
 </script>
 
@@ -181,12 +184,9 @@ export default {
   align-items: center;
   justify-content: center;
 }
-.create-form {
-  overflow: hidden;
-}
 .left-wrapper {
   float: left;
-  width: 500px;
+  width: 550px;
   border: 1px solid black;
   border-radius: 2%;
   margin-right: 45px;
