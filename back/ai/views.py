@@ -97,9 +97,8 @@ def get_similar_image(lost_image, origin_images):
     dists = distance.squareform(distance.pdist(features, "cosine"))
 
     similar_order = dists[0].argsort().tolist()
-    similar_order.reverse()
 
-    first, second, third = origin_ids[similar_order[0]], origin_ids[similar_order[1]], origin_ids[similar_order[2]]
+    first, second, third = origin_ids[similar_order[1]], origin_ids[similar_order[2]], origin_ids[similar_order[3]]
     images_id_result = [int(first), int(second), int(third)]
 
     return images_id_result
