@@ -32,7 +32,7 @@
               :default="getCategory === null ? '분류' : getCategoryName"
               @input="onSelectCategory"
             />
-            <span class="error" v-if="getCategory === null"
+            <span class="error" v-if="this.errors[0]"
               >* 필수 입력란입니다.</span
             >
           </div>
@@ -44,7 +44,7 @@
               :default="getColor === null ? '색상' : getColorName"
               @input="onSelectColor"
             />
-            <span class="error" v-if="getColor === null"
+            <span class="error" v-if="this.errors[1]"
               >* 필수 입력란입니다.</span
             >
           </div>
@@ -62,7 +62,7 @@
               :items="timeList"
               @input="onTimeSelect"
             />
-            <span class="error" v-if="!checkForm(this.time)"
+            <span class="error" v-if="this.errors[2]"
               >* 필수 입력란입니다.</span
             >
           </div>
@@ -127,8 +127,9 @@
                 class="input-password-email"
                 type="password"
                 v-model="password"
+                @input="checkPassword"
               />
-              <span class="error" v-if="!checkPassword(this.password)"
+              <span class="error" v-if="this.errors[3]"
                 >* 비밀번호는 네 글자 이상 입력해주세요.</span
               >
             </div>
@@ -223,6 +224,7 @@ export default {
       showing: "",
       fileDescription:
         "* 카메라 아이콘을 눌러 사진을 업로드한 뒤 등록 버튼을 눌러주세요.",
+      errors: [0, 0, 0, 0]
     };
   },
   mounted() {
@@ -294,6 +296,7 @@ export default {
     },
 
     createContent() {
+      this.errors = [0, 0, 0, 0]
       const data = {
         image_id: this.getId,
         category: this.category ? this.category : this.getCategory,
@@ -306,28 +309,44 @@ export default {
         x: this.$store.state.locationX,
         y: this.$store.state.locationY,
       };
-      console.log(data)
-      axios
-        .post(`${this.$store.state.baseURL}lost/posting/`, data)
-        .then((res) => {
-          this.$store.state.lostname = res.data.lostname;
-          this.$router.push("created");
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      if (data.color === null) {
+        this.errors.splice(1, 1, 1)
+      }
+      if (data.category === null) {
+        this.errors.splice(0, 1, 1)
+      }
+      if (data.lost_time.length < 16) {
+        this.errors.splice(2, 1, 1)
+      }
+      if (data.password.length < 4) {
+        this.errors.splice(3, 1, 1)
+      }
+      if (this.errors.reduce((a, b) => a + b, 0) === 0) {
+        axios
+          .post(`${this.$store.state.baseURL}lost/posting/`, data)
+          .then((res) => {
+            this.$store.state.lostname = res.data.lostname;
+            this.$router.push("created");
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
     },
     onClickImageUpload() {
       this.$refs.imageInput.click();
     },
     onSelectCategory(value) {
       this.category = value;
+      this.errors.splice(0, 1, 0)
     },
     onSelectColor(value) {
       this.color = value;
+      this.errors.splice(1, 1, 0)
     },
     onTimeSelect(value) {
       this.time = this.timeList[value];
+      this.errors.splice(2, 1, 0)
     },
     validEmail(email) {
       if (/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
@@ -341,9 +360,11 @@ export default {
         return true;
       }
     },
-    checkPassword(password) {
-      if (password.length > 3) {
-        return true;
+    checkPassword() {
+      if (this.password.length < 4) {
+        this.errors.splice(3, 1, 1)
+      } else {
+        this.errors.splice(3, 1, 0)
       }
     },
     ...mapActions(["postImageUser", "getColorData"]),
@@ -488,7 +509,7 @@ export default {
 }
 .left-wrapper {
   float: left;
-  width: 60%;
+  width: 675px;
   border: 1px solid black;
   border-radius: 2%;
   margin-right: 45px;
@@ -497,7 +518,7 @@ export default {
 }
 .right-wrapper {
   float: left;
-  width: 30%;
+  width: 350px;
   text-align: initial;
 }
 .description-wrapper {
