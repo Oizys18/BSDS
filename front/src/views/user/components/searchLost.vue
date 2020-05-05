@@ -58,6 +58,7 @@ export default {
         .then(res => {
           this.$store.state.loading = false;
           this.item = res.data;
+          this.$store.state.lostname = this.lostname;
           this.$store.state.showModal = true;
         })
         .catch(err => {
