@@ -193,7 +193,7 @@ export default {
 }
 .left-wrapper {
   float: left;
-  width: 60%;
+  width: 65%;
   border: 1px solid black;
   border-radius: 2%;
   margin-right: 30px;
@@ -202,7 +202,7 @@ export default {
 }
 .right-wrapper {
   float: left;
-  width: 30%;
+  width: 25%;
   text-align: initial;
 }
 .button-wrapper {
@@ -210,6 +210,9 @@ export default {
   width: 100%;
   padding: 0px 10px 10px 10px;
   text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .img-wrapper {
   margin: 5px;
@@ -231,9 +234,6 @@ export default {
   font-size: 1.1rem;
   font-weight: bold;
   margin: 0 15px 0px 10px;
-}
-.admin-btn {
-  width: 300px;
 }
 .error {
   font-size: 0.8rem;

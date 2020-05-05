@@ -547,10 +547,13 @@ export default {
   text-align: initial;
 }
 .button-wrapper {
+  display: flex;
   border: none;
   width: 100%;
   padding: 0px 10px 10px 10px;
   text-align: center;
+  justify-content: center;
+  align-items: center;
 }
 .img-wrapper {
   margin: 5px;
@@ -607,14 +610,10 @@ input[type="email"] {
   word-break: keep-all;
 }
 .submit-btn {
-  text-align: center;
+  /*text-align: center;*/
 }
 .user-btn {
-  /*width: 300px;*/
   margin-top: 15px;
-}
-.btn-option {
-  margin: 3px;
 }
 .error {
   font-size: 0.8rem;
