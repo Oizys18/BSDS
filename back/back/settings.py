@@ -11,7 +11,7 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
 TEMPLATE_DEBUG = DEBUG
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '22bce5a9.ngrok.io', '[::1]']
+ALLOWED_HOSTS = ['13.125.33.242', '[::1]', 'localhost', '127.0.0.1']
 
 CORS_ALLOW_CREDENTIALS = True
 
@@ -19,8 +19,31 @@ CORS_ORIGIN_ALLOW_ALL = False
 
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:8080',
-    'http://149cf7cc.ngrok.io',
+    'http://i02a405.p.ssafy.io',
 ]
+
+CORS_ALLOW_METHODS = (
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+)
+
+CORS_ALLOW_HEADERS = (
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'access-control-request-method',
+    'access-control-request-headers',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+)
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
@@ -33,6 +56,7 @@ REST_FRAMEWORK = {
     ),
 }
 
+REST_USE_JWT = True
 
 JWT_AUTH = {
     'JWT_SECRET_KEY': SECRET_KEY,
@@ -125,7 +149,12 @@ USE_TZ = False
 
 AUTH_USER_MODEL = 'accounts.User'
 
+ROOT_DIR = os.path.dirname(BASE_DIR)
+
 STATIC_URL = '/static/'
+STATIC_DIR = os.path.join(BASE_DIR, 'static')
+STATICFILES_DIRS = [STATIC_DIR, ]
+STATIC_ROOT = os.path.join(BASE_DIR, 'static', 'staticfiles')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

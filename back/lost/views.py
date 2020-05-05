@@ -11,7 +11,7 @@ import hashlib
 from django.core.cache import cache
 from django.core.mail import send_mail
 from back.settings import EMAIL_HOST_USER
-from ai.views import get_numpy_path, get_category, get_similar_image, get_closer_user, get_hex, hex_to_rgb, get_color
+from ai.views import get_numpy_path, get_category, get_closer_user, get_hex, hex_to_rgb, get_color
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
@@ -179,7 +179,7 @@ def get_lost_list_admin(request):
 
     datasets = {
         'meta': {
-            'total_cnt': posting.count(),
+            'total': posting.count(),
         },
         'documents': serializer.data
     }
