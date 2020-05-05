@@ -406,7 +406,7 @@ export default {
 #addressinput {
   border: 1px solid black;
   border-radius: 15px;
-  padding: 0.25em;
+  padding: 0.5em;
   width: 60%;
   outline: none;
 }

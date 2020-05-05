@@ -239,7 +239,6 @@ export default {
   display: flex;
   cursor: pointer;
   font-size: 1.3em;
-  margin-top: 12px;
   margin-bottom: 12px;
   margin-right:12px;
   padding-left: 10px;
@@ -269,6 +268,7 @@ export default {
   border-bottom-color: #e2e2e2;
   border-radius: 20px;
   overflow: hidden;
+  margin-bottom: 12px;
   width: 10%;
   display: flex;
   justify-content: center;
