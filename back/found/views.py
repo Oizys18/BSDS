@@ -5,7 +5,6 @@ from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from django.views.decorators.cache import cache_page
 from datetime import timedelta, datetime
 import json
 from django.core.mail import send_mail
@@ -54,7 +53,7 @@ def search_found(request):
 
     datasets = {
         'meta': {
-            'total_cnt': posting_set.count()
+            'total': posting_set.count()
         },
         'documents': serializer.data
     }
@@ -163,19 +162,18 @@ def create_found(request):
             subject = f'[분실둥실] {request.user.center_name}{request.user.role}에서 유사한 분실물을 보관중입니다.'
             message = f'잃어버린 생각이 뭉게뭉게☁ 날 때, 분실물 클라우드 ☁분실둥실☁ 입니다.' \
                       f'{request.user.center_name}{request.user.role}에서 등록하신 분실품과 ' \
-                      f'유사한 물품을 보관중입니다. (http://13.125.33.242:8080/)' \
+                      f'유사한 물품을 보관중입니다. (http://i02a405.p.ssafy.io/)' \
                       f'해당 물품을 관할기관에서 수령할 시 본인임을 증명할 수 있는 서류(신분증 등)가 필요할 수 있습니다.' \
                       f'감사합니다.'
 
-            recipient_list = email_list
-            send_mail(subject, message, EMAIL_HOST_USER, recipient_list, html_message=message)
+            if email_list:
+                send_mail(subject, message, EMAIL_HOST_USER, email_list, html_message=message)
 
         posting_serializer = FoundPostingDetailSerializer(posting)
         return Response(status=200, data=posting_serializer.data)
     return Response(status=400, data={'message': 'Invalid input'})
 
 
-@cache_page(60 * 2)
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_user_found_list(request):
@@ -192,7 +190,6 @@ def get_user_found_list(request):
     return Response(status=200, data=datasets)
 
 
-@cache_page(60 * 2)
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_found_detail(request, found_id):
