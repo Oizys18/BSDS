@@ -29,11 +29,11 @@
             <select-one
               class="select-category"
               :default="getCategory === null ? '분류' : getCategoryName"
-              :items="Object.values($store.state.categories)"
+              :items="categories"
               @input="onSelectCategory"
             />
             <span class="error" v-if="this.errors[0]">
-              * 필수 입력란입니다.
+              * 필수 입력란
             </span>
           </div>
           <div class="category-wrapper">
@@ -41,11 +41,11 @@
             <select-one
               class="select-category"
               :default="getColor === null ? '색상' : getColorName"
-              :items="Object.values($store.state.colors)"
+              :items="colors"
               @input="onSelectColor"
             />
             <span class="error" v-if="this.errors[1]"
-              >* 필수 입력란입니다.</span
+              >* 필수 입력란</span
             >
           </div>
           <div class="input-wrapper">
@@ -129,11 +129,11 @@ export default {
       this.$refs.imageInput.click();
     },
     onSelectCategory(value) {
-      this.category = parseInt(value) + 1;
+      this.category = value;
       this.errors.splice(0, 1, 0)
     },
     onSelectColor(value) {
-      this.color = parseInt(value) + 1;
+      this.color = value;
       this.errors.splice(1, 1, 0)
     },
     checkForm(value) {
@@ -155,6 +155,12 @@ export default {
       "getCategoryName",
       "getColorName",
     ]),
+    categories() {
+      return this.$store.state.categories;
+    },
+    colors() {
+      return this.$store.state.colors;
+    },
     ...mapState(["image_id"]),
   },
   mounted() {
@@ -169,7 +175,8 @@ export default {
   height: 100px;
   margin: 5px;
   padding: 10px;
-  border: none;
+  border: 1px solid black;
+  border-radius: 15px;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
@@ -186,10 +193,10 @@ export default {
 }
 .left-wrapper {
   float: left;
-  width: 550px;
+  width: 60%;
   border: 1px solid black;
   border-radius: 2%;
-  margin-right: 45px;
+  margin-right: 30px;
   margin-bottom: 30px;
   padding: 1rem;
 }
