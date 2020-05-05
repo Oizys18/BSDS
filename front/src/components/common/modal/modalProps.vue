@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div >
     <div class="collider" v-on:click="exitModal"></div>
-    <div class="modal-huge-wrapper">
+    <div class="modal-huge-wrapper animated zoomIn faster">
       <div class="modal-huge-left">
         <div class="modal-huge-image">
           <img
