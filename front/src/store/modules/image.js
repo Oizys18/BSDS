@@ -106,6 +106,9 @@ const actions= {
         commit('setColor', res.data.color)
       })
       .catch(err => console.log(err))
+  },
+  clearImage: ({commit}) => {
+    commit('clearState')
   }
 };
 
