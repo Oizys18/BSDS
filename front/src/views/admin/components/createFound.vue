@@ -20,7 +20,7 @@
               @change="getColorData"
             />
             <img class="image-preview" v-if="getImgUrl" :src="getImgUrl" />
-            <span class="image-button"  @click="postImageAdmin">
+            <span class="image-button"  @click="postImageAdmin" id="submitImg">
               <button-default :text="'이미지 등록'" />
             </span>
           </div>
@@ -50,6 +50,7 @@
           </div>
           <div class="input-wrapper">
             <textarea
+              id="txt-content-area"
               class="content-area"
               v-model="content"
               type="textarea"
@@ -60,7 +61,7 @@
         <div class="right-wrapper">
           <div class="button-wrapper">
             <div @click="createContent">
-              <button-default class="admin-btn" :text="'등록하기'" />
+              <button-default id="submit" class="admin-btn" :text="'등록하기'" />
             </div>
             <div @click="go({ name: 'adminIndex' })">
               <button-default class="admin-btn" :text="'취소'" />
