@@ -88,16 +88,38 @@ export default {
       if (this.pageNum > 1) {
         this.pageNum -= 1;
         if (this.pageNum >= 5 && this.pageNumLi[0] > 1) {
-          let result = [];
-          this.pageNumLi.forEach((x) => result.push(x - 1));
-          this.pageNumLi = result;
+          if (this.pageNum + 5 > this.numOfPages) {
+            let max = this.numOfPages;
+            this.pageNumLi = [
+              max - 8,
+              max - 7,
+              max - 6,
+              max - 5,
+              max - 4,
+              max - 3,
+              max - 2,
+              max - 1,
+              max,
+            ];
+          } else {
+            this.pageNumLi = [
+              this.pageNum - 4,
+              this.pageNum - 3,
+              this.pageNum - 2,
+              this.pageNum - 1,
+              this.pageNum,
+              this.pageNum + 1,
+              this.pageNum + 2,
+              this.pageNum + 3,
+              this.pageNum + 4,
+            ];
+          }
         }
         this.cardKey += 1;
         this.btnPage += 1;
       }
     },
     onClickPage(num) {
-      console.log(num);
       if (num < 6) {
         this.pageNumLi = [1, 2, 3, 4, 5, 6, 7, 8, 9];
       } else if (num + 5 > this.numOfPages) {
