@@ -4,20 +4,22 @@
       <span @click="prevPage" :key="btnPrev">
         <button-default :text="'이전'" :bgColor="btnPrev" />
       </span>
-      <span v-for="num in numOfPages" :key="num" @click="onClickPage(num)">
-        <span v-if="pageNum === num">
-          <button-default
-            :text="num.toString()"
-            :bgColor="bgColor"
-            :txtColor="txtColor"
-          />
+      <span class="list-page-btns" :key="btnPage">
+        <span v-for="num in pageNumLi" :key="num" @click="onClickPage(num)">
+          <span v-if="pageNum === num">
+            <button-default
+              :text="num.toString()"
+              :bgColor="bgColor"
+              :txtColor="txtColor"
+            />
+          </span>
+          <span v-else>
+            <button-default :text="num.toString()" />
+          </span>
         </span>
-        <span v-else>
-          <button-default :text="num.toString()" />
+        <span @click="nextPage" :key="btnNext">
+          <button-default :text="'다음'" :bgColor="btnNext" />
         </span>
-      </span>
-      <span @click="nextPage" :key="btnNext">
-        <button-default :text="'다음'" :bgColor="btnNext" />
       </span>
     </div>
     <div id="card-container" :key="cardKey">
@@ -61,28 +63,72 @@ export default {
     return {
       cardKey: 0,
       pageNum: 1,
+      btnPage: 0,
       imagesrc: `media/no_image.png`,
       isClicked: false,
       bgColor: "grey",
       txtColor: "white",
+      pageNumLi: [1, 2, 3, 4, 5, 6, 7, 8, 9],
     };
   },
   methods: {
     nextPage() {
       if (this.pageNum < this.numOfPages) {
         this.pageNum += 1;
+        if (this.pageNum > 5 && this.pageNumLi[8] < this.numOfPages) {
+          let result = [];
+          this.pageNumLi.forEach((x) => result.push(x + 1));
+          this.pageNumLi = result;
+        }
         this.cardKey += 1;
+        this.btnPage += 1;
       }
     },
     prevPage() {
       if (this.pageNum > 1) {
-        this.cardKey += 1;
         this.pageNum -= 1;
+        if (this.pageNum >= 5 && this.pageNumLi[0] > 1) {
+          let result = [];
+          this.pageNumLi.forEach((x) => result.push(x - 1));
+          this.pageNumLi = result;
+        }
+        this.cardKey += 1;
+        this.btnPage += 1;
       }
     },
     onClickPage(num) {
+      console.log(num);
+      if (num < 6) {
+        this.pageNumLi = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+      } else if (num + 5 > this.numOfPages) {
+        let max = this.numOfPages;
+        this.pageNumLi = [
+          max - 8,
+          max - 7,
+          max - 6,
+          max - 5,
+          max - 4,
+          max - 3,
+          max - 2,
+          max - 1,
+          max,
+        ];
+      } else {
+        this.pageNumLi = [
+          num - 4,
+          num - 3,
+          num - 2,
+          num - 1,
+          num,
+          num + 1,
+          num + 2,
+          num + 3,
+          num + 4,
+        ];
+      }
       this.pageNum = num;
       this.cardKey += 1;
+      this.btnPage += 1;
     },
     showModal() {
       this.$store.state.showModal = true;
@@ -157,7 +203,11 @@ export default {
   flex-direction: column;
   cursor: pointer;
 }
-
+.list-page-btns {
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+}
 .card-list {
   margin: auto;
   display: flex;
