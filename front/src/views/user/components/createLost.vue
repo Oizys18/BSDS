@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <navbar />
-    <div class="create-lost">
+    <div class="create-lost animated fadeIn fast">
       <form>
         <div class="left-wrapper">
           <span class="error">{{ fileDescription }}</span>

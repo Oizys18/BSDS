@@ -1,7 +1,7 @@
 <template>
-  <div class="search-lost-wrapper">
+  <div class="search-lost-wrapper ">
     <navbar />
-    <div class="search-lost-container">
+    <div class="search-lost-container animated fadeIn faster">
       <div class="search-lost-title">신고 번호를 입력해주세요</div>
       <div class="search-container">
         <span class="search-header">아이디</span>

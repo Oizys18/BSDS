@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="admin-info">
+    <div class="admin-info animated fadeIn fast">
       <span class="admin">
         {{ getUserInfo.parent_department + ' '+  getUserInfo.center_name + getUserInfo.role }}
       </span>
@@ -13,8 +13,7 @@
       </span>
       </div>
     </div>
-    <div id="admin-btn-wrapper">
-
+    <div id="admin-btn-wrapper" class="animated zoomIn faster">
       <div class="page-link-button">
         <div class="admin-detail-div" @click="go('createFound')">
           <div class="admin-icon">

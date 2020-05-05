@@ -1,9 +1,8 @@
 <template>
-  <div class="navbar-container">
-    <img class="logo" @click="go('/')" src="@/assets/images/mainlogo.png" />
+  <div class="navbar-container ">
+    <img class="logo animated fadeInDown" @click="go('/')" src="@/assets/images/mainlogo.png" />
     <div class="navbtn-wrapper">
-      
-      <span @click="go('/')" class="nav-btn" >
+      <span @click="go('/')" class="nav-btn">
         <buttonDefault :text="btnText4" />
       </span>
       <span @click="go('/create')" class="nav-btn">
@@ -75,5 +74,4 @@ img {
   font-weight: bold;
   margin: 3px 10px 10px 10px;
 }
-
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div class="keyword-search-wrapper">
     <navbar />
-    <div class="keyword-search-container">
+    <div class="keyword-search-container animated fadeIn fast">
       <div class="title-container">
         <span class="unselected" @click="go('/')">이미지 검색</span>
         <span class="selected">상세 검색</span>

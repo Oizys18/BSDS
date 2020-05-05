@@ -1,7 +1,7 @@
 <template>
-  <div class="user-index-wrapper">
+  <div class="user-index-wrapper ">
     <navbar />
-    <div class="user-index-container">
+    <div class="user-index-container animated fadeIn faster">
       <div class="title-container">
         <span class="selected">
           이미지 검색
@@ -41,7 +41,7 @@
             :key="index.id"
             @click="showModal(item)"
           >
-            <cardSmall :item="item" />
+            <cardSmall :item="item" class="animated delay-0.1s zoomIn faster"/>
           </div>
         </div>
         <div class="keyword-button">
