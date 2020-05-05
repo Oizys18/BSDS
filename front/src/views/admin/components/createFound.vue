@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <admin-navbar />
-    <div class="create-lost">
+    <div class="create-found">
       <form>
         <div class="left-wrapper">
           <span class="error">{{ fileDescription }}</span>
@@ -170,6 +170,9 @@ export default {
 </script>
 
 <style scoped>
+  .create-found {
+    width: 60%;
+  }
 .content-area {
   width: 100%;
   height: 100px;
@@ -202,17 +205,17 @@ export default {
 }
 .right-wrapper {
   float: left;
-  width: 25%;
+  width: 20%;
   text-align: initial;
 }
 .button-wrapper {
   border: none;
-  width: 100%;
+  width: 80%;
   padding: 0px 10px 10px 10px;
   text-align: center;
   display: flex;
   justify-content: center;
-  align-items: center;
+  flex-direction: column;
 }
 .img-wrapper {
   margin: 5px;
@@ -240,6 +243,7 @@ export default {
   color: #fb121d;
   padding-top: 2px;
   margin: 0 15px 0px 10px;
+  word-break: keep-all;
 }
 .file-input-btn {
   display: flex;
@@ -253,4 +257,10 @@ export default {
   justify-self: center;
   align-items: center;
 }
+  .admin-btn {
+    width: 100%;
+  }
+  .select-category {
+    width: auto;
+  }
 </style>
