@@ -2,7 +2,7 @@
   <div>
     <admin-navbar />
     <div v-if="getItemSize > 0">
-      <paginated-lost :pageHead="'분실신고 목록'" :items="getItems" :page-size="9"/>
+      <paginated-list :pageHead="'분실신고 목록'" :items="getItems" :page-size="9"/>
     </div>
     <div v-else></div>
   </div>
@@ -11,11 +11,11 @@
 <script>
   import  { mapState, mapGetters } from 'vuex'
   import adminNavbar from "./adminNavbar";
-  import paginatedLost from "./paginatedLost";
+  import paginatedList from "./paginatedList";
   export default {
     name: "lostList",
     components: {
-      paginatedLost,
+      paginatedList,
       adminNavbar
     },
     data() {
