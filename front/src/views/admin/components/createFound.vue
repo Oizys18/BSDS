@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <admin-navbar />
-    <div class="create-found">
+    <div class="create-found animated fadeIn faster">
       <form>
         <div class="left-wrapper">
           <span class="error">{{ fileDescription }}</span>

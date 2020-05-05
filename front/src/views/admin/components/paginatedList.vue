@@ -1,5 +1,5 @@
 <template>
-  <div id="paginatedList-wrapper">
+  <div id="paginatedList-wrapper" class="animated fadeIn faster">
     <div class="list-page-btn">
       <span @click="prevPage" :key="btnPrev">
         <button-default :text="'이전'" :bgColor="btnPrev" />
