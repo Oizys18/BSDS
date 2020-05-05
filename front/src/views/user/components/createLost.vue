@@ -70,7 +70,9 @@
             <span class="select-location">
               <div class="select-location-container">
                 <div class="location-wrapper">
-                  <label for="addressinput">예상 분실위치</label>
+                  <label class="location-title" for="addressinput"
+                    >예상 분실위치</label
+                  >
                   <div>
                     <input
                       id="addressinput"
@@ -219,7 +221,8 @@ export default {
       addressInput: "",
       results: "",
       showing: "",
-      fileDescription: "* 카메라 아이콘을 눌러 사진을 업로드한 뒤 등록 버튼을 눌러주세요."
+      fileDescription:
+        "* 카메라 아이콘을 눌러 사진을 업로드한 뒤 등록 버튼을 눌러주세요.",
     };
   },
   mounted() {
@@ -306,7 +309,7 @@ export default {
       axios
         .post(`${this.$store.state.baseURL}lost/posting/`, data)
         .then((res) => {
-          this.$store.state.lostname = res.data.lostname
+          this.$store.state.lostname = res.data.lostname;
           this.$router.push("created");
         })
         .catch((err) => {
@@ -359,7 +362,7 @@ export default {
 </script>
 
 <style scoped>
-.image-button{
+.image-button {
   position: relative;
   display: flex;
   justify-self: center;
@@ -399,7 +402,16 @@ export default {
   border-radius: 15px;
   padding: 5px;
 }
-
+#addressinput {
+  border: 1px solid black;
+  border-radius: 15px;
+  padding: 0.25em;
+  width: 60%;
+  outline: none;
+}
+#addressinput label {
+  margin: 15px;
+}
 .modal-map-wrapper {
   /* position */
   position: fixed;
@@ -435,12 +447,20 @@ export default {
   height: 100px;
   margin: 5px;
   padding: 10px;
-  border: none;
+  border: 1px solid black;
+  border-radius: 15px;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
   resize: none;
 }
+.content-area:hover {
+  outline: none;
+}
+.content-area:active {
+  outline: none;
+}
+
 .file-input {
   display: none;
 }
@@ -448,6 +468,12 @@ export default {
   width: 25%;
   margin-right: 10px;
   padding-left: 8px;
+}
+.select-year:hover {
+  outline: none;
+}
+.select-year:active {
+  outline: none;
 }
 .select-time {
   width: 15%;
@@ -496,6 +522,14 @@ export default {
 .input-wrapper {
   display: flex;
   margin-bottom: 15px;
+  outline: none;
+}
+
+.input-wrapper:hover {
+  outline: none;
+}
+.input-wrapper:active {
+  outline: none;
 }
 .date-select-wrapper select {
   height: 1.5rem;

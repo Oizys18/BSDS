@@ -27,7 +27,7 @@ export default {
   components: {
     navbar,
     modalProps,
-    cardSmall
+    cardSmall,
   },
   data() {
     return {
@@ -36,19 +36,19 @@ export default {
       isClicked: false,
       pageSize: 8,
       imagesrc: `media/no_image.png`,
-      baseurl: process.env.VUE_APP_BASE_URL
+      baseurl: process.env.VUE_APP_BASE_URL,
     };
   },
   methods: {
     showModal(item) {
       this.$store.state.showModal = true;
       this.item = item;
-    }
+    },
   },
   watch: {
     $route() {
       this.$store.state.showModal = false;
-    }
+    },
   },
   mounted() {
     this.$store.state.loading = true;
@@ -60,14 +60,14 @@ export default {
       this.$store.state.loading = false;
       axios
         .get(this.baseurl + "found/search/")
-        .then(res => {
+        .then((res) => {
           this.items = res.data.documents.slice(0, 9);
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
         });
     }
-  }
+  },
 };
 </script>
 
