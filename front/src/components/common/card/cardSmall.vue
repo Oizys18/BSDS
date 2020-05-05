@@ -12,7 +12,7 @@
     </div>
     <div class="card-small-text">
       <div class="itemCategory">
-        분류: {{ this.$store.state.categories[item.id] }}
+        분류: {{ this.$store.state.categories[item.category] }}
       </div>
       <div class="itemColor">
         색상: {{ this.$store.state.colors[item.color] }}
