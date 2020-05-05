@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <admin-navbar />
-    <div class="create-lost">
+    <div class="create-found">
       <form>
         <div class="left-wrapper">
           <span class="error">{{ fileDescription }}</span>
@@ -29,11 +29,11 @@
             <select-one
               class="select-category"
               :default="getCategory === null ? '분류' : getCategoryName"
-              :items="Object.values($store.state.categories)"
+              :items="categories"
               @input="onSelectCategory"
             />
             <span class="error" v-if="this.errors[0]">
-              * 필수 입력란입니다.
+              * 필수 입력란
             </span>
           </div>
           <div class="category-wrapper">
@@ -41,11 +41,11 @@
             <select-one
               class="select-category"
               :default="getColor === null ? '색상' : getColorName"
-              :items="Object.values($store.state.colors)"
+              :items="colors"
               @input="onSelectColor"
             />
             <span class="error" v-if="this.errors[1]"
-              >* 필수 입력란입니다.</span
+              >* 필수 입력란</span
             >
           </div>
           <div class="input-wrapper">
@@ -129,11 +129,11 @@ export default {
       this.$refs.imageInput.click();
     },
     onSelectCategory(value) {
-      this.category = parseInt(value) + 1;
+      this.category = value;
       this.errors.splice(0, 1, 0)
     },
     onSelectColor(value) {
-      this.color = parseInt(value) + 1;
+      this.color = value;
       this.errors.splice(1, 1, 0)
     },
     checkForm(value) {
@@ -155,6 +155,12 @@ export default {
       "getCategoryName",
       "getColorName",
     ]),
+    categories() {
+      return this.$store.state.categories;
+    },
+    colors() {
+      return this.$store.state.colors;
+    },
     ...mapState(["image_id"]),
   },
   mounted() {
@@ -164,12 +170,16 @@ export default {
 </script>
 
 <style scoped>
+  .create-found {
+    width: 60%;
+  }
 .content-area {
   width: 100%;
   height: 100px;
   margin: 5px;
   padding: 10px;
-  border: none;
+  border: 1px solid black;
+  border-radius: 15px;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
@@ -186,23 +196,26 @@ export default {
 }
 .left-wrapper {
   float: left;
-  width: 550px;
+  width: 65%;
   border: 1px solid black;
   border-radius: 2%;
-  margin-right: 45px;
+  margin-right: 30px;
   margin-bottom: 30px;
   padding: 1rem;
 }
 .right-wrapper {
   float: left;
-  width: 30%;
+  width: 20%;
   text-align: initial;
 }
 .button-wrapper {
   border: none;
-  width: 100%;
+  width: 80%;
   padding: 0px 10px 10px 10px;
   text-align: center;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
 }
 .img-wrapper {
   margin: 5px;
@@ -225,14 +238,12 @@ export default {
   font-weight: bold;
   margin: 0 15px 0px 10px;
 }
-.admin-btn {
-  width: 300px;
-}
 .error {
   font-size: 0.8rem;
   color: #fb121d;
   padding-top: 2px;
   margin: 0 15px 0px 10px;
+  word-break: keep-all;
 }
 .file-input-btn {
   display: flex;
@@ -246,4 +257,10 @@ export default {
   justify-self: center;
   align-items: center;
 }
+  .admin-btn {
+    width: 100%;
+  }
+  .select-category {
+    width: auto;
+  }
 </style>

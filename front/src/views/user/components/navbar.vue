@@ -46,7 +46,7 @@ export default {
 .navbar-container {
   /* position */
   position: absolute;
-  top: 8vh;
+  top: 4vh;
   left: 40vw;
 
   /* shape and style */

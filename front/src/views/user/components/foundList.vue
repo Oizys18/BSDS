@@ -86,7 +86,6 @@ export default {
 }
 #found-card-container {
   display: grid;
-
   grid-template-rows: repeat(3, 230px);
   grid-template-columns: repeat(3, 230px);
   justify-content: center;

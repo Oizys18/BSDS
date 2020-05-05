@@ -142,7 +142,7 @@ export default {
 #paginatedList-wrapper {
   width: 100%;
   height: 100%;
-  margin-top: 18vh;
+  margin-top: 14vh;
   justify-content: center;
   align-items: center;
   flex-direction: column;
@@ -152,7 +152,7 @@ export default {
 .list-page-btn {
   position: fixed;
   top: 20%;
-  left: 350px;
+  left: 22%;
   display: flex;
   flex-direction: column;
   cursor: pointer;
