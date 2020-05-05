@@ -1,8 +1,6 @@
 <template>
   <div class="navbar-container">
-    <div class="logo-shadow">
-      <img class="logo" @click="go('/')" src="@/assets/images/mainlogo.png" />
-    </div>
+    <img class="logo" @click="go('/')" src="@/assets/images/mainlogo.png" />
     <div class="navbtn-wrapper">
       <span @click="go('/')" class="nav-btn">
         <buttonDefault :text="btnText4" />
@@ -47,47 +45,26 @@ export default {
 .navbar-container {
   /* position */
   position: absolute;
-  margin-top: 20px;
-  top: 0;
-  left: 0;
+  top: 8vh;
+  left: 40vw;
 
   /* shape and style */
   height: 10%;
-  width: 100%;
-  /*background-color: whitesmoke;*/
-  /*box-shadow: 0 0 5px;*/
-
-  /* content align */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  padding: 20px;
+  width: 20%;
 }
 
-.navbtn-wrapper {
-  position: absolute;
-  top: 90%;
-}
-
-.logo {
-  margin-bottom: 15px;
-  /*align-self: center;*/
-  /*justify-self: baseline;*/
-  /*border-bottom: white;*/
-}
-.logo-shadow {
-  height: 100%;
-  width: 40%;
-  border-style: solid;
-  border-image: linear-gradient(to right, #ff5f7a 0%, #3ab795 100%);
-  border-image-slice: 1;
-  border-image-width: 0 0 0.3 0px;
-  /*border-bottom: 1px solid #ffccd5;*/
-  margin-bottom: 5px;
-}
 img {
-  max-height: 90%;
+  max-height: 100%;
+}
+.navbtn-wrapper {
+  padding: 0.7em;
+  border-radius: 15px;
+  position: fixed;
+  top: 30%;
+  left: 10%;
+  display: flex;
+  flex-direction: column;
+  border: 2px solid #c2c2c2;
 }
 .nav-btn {
   border: 1px solid grey;
@@ -97,4 +74,5 @@ img {
   font-weight: bold;
   margin: 3px 10px 10px 10px;
 }
+
 </style>

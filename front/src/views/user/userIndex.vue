@@ -7,7 +7,7 @@
           이미지 검색
         </span>
         <span class="unselected" @click="go('/keywordsearch')">
-          상세검색
+          상세 검색
         </span>
       </div>
       <div class="file-bar">
@@ -117,7 +117,7 @@ export default {
             this.items = res.data.documents;
             this.searched = true;
           })
-          .catch(err => {
+          .catch((err) => {
             this.$store.state.loading = false;
             console.log(err);
           });
@@ -136,8 +136,18 @@ export default {
 </script>
 
 <style scoped>
+.navbar-container {
+  /* position */
+  position: absolute;
+  top: 160px;
+  left: 40vw;
+
+  /* shape and style */
+  height: 20%;
+  width: 20%;
+}
 .user-index-wrapper {
-  margin-top: 250px;
+  margin-top: 300px;
   justify-content: center;
   align-items: center;
   display: flex;
@@ -229,6 +239,9 @@ export default {
   display: flex;
   cursor: pointer;
   font-size: 1.3em;
+  margin-top: 12px;
+  margin-bottom: 12px;
+  margin-right:12px;
   padding-left: 10px;
   align-items: center;
   justify-content: flex-start;
