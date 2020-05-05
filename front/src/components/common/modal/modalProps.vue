@@ -50,7 +50,8 @@
         </div>
         <div class="modal-huge-status">
           <span class="grid-title">물품 상태</span>
-          <span>물품이 주인을 찾았다면 체크해주세요.</span>
+          <span class="description" v-if="isLoggedIn">물품이 주인을 찾았다면 체크해주세요.</span>
+          <span class="description" v-else>수령 확인은 작성자 본인과 관리자만 가능합니다.</span>
           <div class="modal-huge-radio" data-toggle="buttons">
             <label class="box-radio-input">
               <input
@@ -59,7 +60,7 @@
                 value="true"
                 v-model="data.status"
               />
-              <span class="check">V</span>
+              <span class="check"><i class="fas fa-check"></i></span>
               <span class="description">수령</span>
             </label>
             <label class="box-radio-input">
@@ -69,11 +70,11 @@
                 value="false"
                 v-model="data.status"
               />
-              <span class="check">V</span>
+              <span class="check"><i class="fas fa-check"></i></span>
               <span class="description">보관</span>
             </label>
           </div>
-          <span @click="onChangeStatus">
+          <span @click="isLoggedIn ? onChangeStatusAdmin() : onChangeStatusUser()">
             <button-default :text="'저장'" />
           </span>
         </div>
@@ -105,7 +106,7 @@ export default {
     exitModal() {
       this.$store.state.showModal = false;
     },
-    onChangeStatus() {
+    onChangeStatusAdmin() {
       this.status ? (this.status = false) : (this.status = true);
       axios
         .patch(
@@ -116,6 +117,16 @@ export default {
               Authorization: `JWT ${sessionStorage.getItem("jwt")}`,
             },
           }
+        )
+        .then((res) => console.log(res))
+        .catch((err) => console.log(err));
+    },
+    onChangeStatusUser() {
+      this.status ? (this.status = false) : (this.status = true);
+      axios
+        .patch(
+      `${this.baseurl}lost/posting/${this.$store.state.lostname}/status/`,
+      {},
         )
         .then((res) => console.log(res))
         .catch((err) => console.log(err));
@@ -131,7 +142,7 @@ export default {
     colors() {
       return this.$store.state.colors;
     },
-    ...mapGetters(["getStatus"]),
+    ...mapGetters(["getStatus", "isLoggedIn"]),
   },
 };
 </script>
@@ -230,7 +241,7 @@ export default {
 .modal-huge-status {
   grid-area: status;
   display: flex;
-  padding: 25px 15px 10px 15px;
+  padding: 10px 15px 10px 15px;
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
@@ -268,4 +279,8 @@ export default {
   display: flex;
   justify-content: center;
 }
+.description {
+  font-size: 1.0rem;
+}
+
 </style>

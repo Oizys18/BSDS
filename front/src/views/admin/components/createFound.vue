@@ -4,14 +4,12 @@
     <div class="create-lost">
       <form>
         <div class="left-wrapper">
+          <span class="error">{{ fileDescription }}</span>
           <div class="img-wrapper">
             <div class="file-input-btn">
               <label for="file-input" class="image-label">
                 <img class="image-upload" src="@/assets/images/camera.png" />
               </label>
-              <span @click="postImageAdmin">
-                <button-default :text="'이미지 확인'" />
-              </span>
             </div>
             <input
               class="file-input"
@@ -22,6 +20,9 @@
               @change="getColorData"
             />
             <img class="image-preview" v-if="getImgUrl" :src="getImgUrl" />
+            <span class="image-button"  @click="postImageAdmin">
+              <button-default :text="'이미지 등록'" />
+            </span>
           </div>
           <div class="category-wrapper">
             <span class="select">물품 분류</span>
@@ -90,6 +91,7 @@ export default {
       content: "",
       category: this.getCategory,
       color: this.getColor,
+      fileDescription: "* 카메라 아이콘을 눌러 사진을 업로드한 뒤 등록 버튼을 눌러주세요."
     };
   },
   methods: {
@@ -226,5 +228,11 @@ export default {
   justify-content: center;
   align-items: center;
   flex-direction: column;
+}
+.image-button{
+  position: relative;
+  display: flex;
+  justify-self: center;
+  align-items: center;
 }
 </style>

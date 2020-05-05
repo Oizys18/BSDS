@@ -2,7 +2,7 @@
   <div id="paginatedList-wrapper">
     <div id="card-container">
       <div
-        @click="showModal(item) + getDetailLost(item.id)"
+        @click="showModal() + getDetailLost(item.id)"
         v-for="(item, index) in calData"
         :key="index.id"
         class="card-list"
@@ -69,9 +69,8 @@ export default {
     onClickPage(num) {
       this.pageNum = num
     },
-    showModal(item) {
+    showModal() {
       this.$store.state.showModal = true;
-      this.item = item;
     },
     exit_Modal(flag) {
       this.isClicked = !flag;
