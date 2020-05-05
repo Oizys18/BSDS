@@ -1,6 +1,5 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import store from "@/store/index"
 import pnf from "@/views/pnf.vue";
 import userIndex from "@/views/user/userIndex.vue";
 import adminIndex from "@/views/admin/admin.vue";
@@ -16,7 +15,7 @@ import lostList from "@/views/admin/components/lostList";
 Vue.use(VueRouter);
 
 const requireAuth = () => (to, from, next) => {
-  if (store.getters.isLoading) {
+  if (sessionStorage.jwt) {
     return next();
   }
   next('/admin');

@@ -31,15 +31,8 @@
           </div>
           <div class="info" v-if="data.user">
             <span class="grid-title">보관 장소</span>
-            <span>{{
-              data.user.parent_department +
-                " " +
-                data.user.center_name +
-                data.user.role
-            }}</span>
+            <span>{{ data.user.center_name + data.user.role }}</span>
           </div>
-        </div>
-        <div class="modal-huge-content">
           <span class="grid-title">내용</span>
           <span v-if="data.content" class="grid-content">
             {{ data.content }}
@@ -47,6 +40,9 @@
           <span v-else class="grid-content">
             내용없음
           </span>
+        </div>
+        <div class="modal-huge-content">
+
         </div>
       </div>
       <div class="modal-huge-right">
@@ -70,7 +66,7 @@
 
           <span
             class="modal-button-container"
-            @click="isLoggedIn ? onChangeStatusAdmin() : onChangeStatusUser()"
+            @click="currentUrl ? onChangeStatusFound() : onChangeStatusLost()"
           >
             <span v-on:click="exitModal">
               <button-default :text="'저장 후 닫기'" />
@@ -106,7 +102,7 @@ export default {
     exitModal() {
       this.$store.state.showModal = false;
     },
-    onChangeStatusAdmin() {
+    onChangeStatusFound() {
       if (this.data.status != this.nxtStatus) {
         axios
           .patch(
@@ -122,7 +118,7 @@ export default {
           .catch((err) => console.log(err));
       }
     },
-    onChangeStatusUser() {
+    onChangeStatusLost() {
       if (this.data.status != this.nxtStatus) {
         axios
           .patch(
@@ -143,6 +139,16 @@ export default {
     },
     colors() {
       return this.$store.state.colors;
+    },
+    currentUrl() {
+      console.log(window.location)
+      if (window.location.href.includes("found")) {
+        return true
+      } else if (window.location.href.includes("created")){
+        return true
+      } else {
+        return false
+      }
     },
     ...mapGetters(["getStatus", "isLoggedIn"]),
   },
@@ -262,7 +268,7 @@ input:checked + .slider:before {
 .modal-huge-left {
   float: left;
   width: 61%;
-  height: 50vh;
+  height: 80%;
   border-radius: 15px;
   border: 1px solid rgb(170, 170, 170);
   background-color: #ffffff;
