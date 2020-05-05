@@ -165,7 +165,7 @@ def create_found(request):
 
                 merge_data = {
                     'center_name': f'{request.user.center_name}{request.user.role}',
-                    'image': 'http://13.125.33.242:8000/media/' + thumbnail.image,
+                    'image': f'http://13.125.33.242:8000/media/{thumbnail.image}'
                 }
 
                 html_content = render_to_string('found/email.html', merge_data)

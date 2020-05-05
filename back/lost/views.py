@@ -8,7 +8,6 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from datetime import datetime
 import hashlib
-from django.core.cache import cache
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from back.settings import EMAIL_HOST_USER
@@ -80,7 +79,7 @@ def create_lost(request):
             thumbnail.posting_id = posting.id
             thumbnail.save()
 
-            image = 'http://13.125.33.242:8000/media/' + thumbnail.image
+            image = f'http://13.125.33.242:8000/media/{thumbnail.image}'
 
         if posting.email:
             subject = f'[분실둥실] 새로운 게시글이 등록되었습니다.'
@@ -189,11 +188,7 @@ def update_lost_image(request, lostname):
 @permission_classes([IsAuthenticated])
 def get_lost_list_admin(request):
     user_id = request.user.id
-    posting = cache.get(f'admin_lost_{user_id}')
-    if not posting:
-        posting = LostPosting.objects.filter(Q(p1=user_id) | Q(p2=user_id), status=0)
-        cache.set(f'admin_lost_{user_id}', posting, 60*5)
-
+    posting = LostPosting.objects.filter(Q(p1=user_id) | Q(p2=user_id), status=0)
     serializer = AdminLostListSerializer(posting, many=True)
 
     datasets = {
