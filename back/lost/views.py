@@ -9,7 +9,8 @@ from rest_framework.response import Response
 from datetime import datetime
 import hashlib
 from django.core.cache import cache
-from django.core.mail import send_mail
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
 from back.settings import EMAIL_HOST_USER
 from ai.views import get_numpy_path, get_category, get_closer_user, get_hex, hex_to_rgb, get_color
 from django.contrib.auth import get_user_model
@@ -73,10 +74,28 @@ def create_lost(request):
 
         posting.save()
 
+        image = 'http://13.125.33.242:8000/media/no_image.png'
         if data.get('image_id'):
             thumbnail = get_object_or_404(LostThumbnail, id=data['image_id'])
             thumbnail.posting_id = posting.id
             thumbnail.save()
+
+            image = 'http://13.125.33.242:8000/media/' + thumbnail.image
+
+        if posting.email:
+            subject = f'[분실둥실] 새로운 게시글이 등록되었습니다.'
+            message = ''
+
+            merge_data = {
+                'image': image,
+                'lostname': posting.lostname
+            }
+
+            html_content = render_to_string('lost/lost_email.html', merge_data)
+
+            msg = EmailMultiAlternatives(subject, message, EMAIL_HOST_USER, [posting.email])
+            msg.attach_alternative(html_content, "text/html")
+            msg.send()
 
         datasets = {
             'lost_id': posting.id,
@@ -202,14 +221,15 @@ def send_lost_notice(request, lost_id):
     posting = get_object_or_404(LostPosting, id=lost_id)
     if posting.email:
         subject = f'[분실둥실] {request.user.center_name}{request.user.role}에서 유사한 분실물을 보관중입니다.'
-        message = f'잃어버린 생각이 뭉게뭉게☁ 날 때, 분실물 클라우드 ☁분실둥실☁ 입니다.' \
-                  f'{request.user.center_name}{request.user.role}에서 등록하신 분실품({posting.lostname})과 ' \
-                  f'유사한 물품을 보관중입니다.' \
-                  f'해당 물품을 관할기관에서 수령할 시 본인임을 증명할 수 있는 서류(신분증 등)가 필요할 수 있습니다.' \
-                  f'감사합니다.'
+        message = ''
 
         recipient_list = [posting.email]
-        send_mail(subject, message, EMAIL_HOST_USER, recipient_list, html_message=message)
+        merge_data = {'center_name': request.center_name}
+        html_content = render_to_string('lost/email.html', merge_data)
+
+        msg = EmailMultiAlternatives(subject, message, EMAIL_HOST_USER, recipient_list)
+        msg.attach_alternative(html_content, "text/html")
+        msg.send()
 
     return Response(status=203)
 
