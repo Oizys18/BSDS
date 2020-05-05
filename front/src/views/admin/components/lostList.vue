@@ -1,7 +1,7 @@
 <template>
   <div>
     <admin-navbar />
-    <div v-if="getItemSize > 0">
+    <div v-if="getItemSize > 0" class="animated fadeIn faster">
       <paginated-list
         :pageHead="'분실신고 목록'"
         :items="getItems"

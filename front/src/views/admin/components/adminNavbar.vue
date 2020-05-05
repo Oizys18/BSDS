@@ -1,8 +1,6 @@
 <template>
   <div class="navbar-container">
     <img @click="go({name: 'adminIndex'})" src="@/assets/images/mainlogo.png">
-<!--    <div class="logo-shadow">-->
-<!--    </div>-->
   </div>
 </template>
 

@@ -1,7 +1,7 @@
 <template>
   <div>
   <admin-navbar />
-  <div class="login-form">
+  <div class="login-form animated fadeIn faster">
     <form class="login-input" >
       <div class="login-box">
         <div class="user-input">
