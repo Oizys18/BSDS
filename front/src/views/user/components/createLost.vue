@@ -4,6 +4,7 @@
     <div class="create-lost">
       <form>
         <div class="left-wrapper">
+          <span class="error">{{ fileDescription }}</span>
           <div class="img-wrapper">
             <div class="file-input-btn">
               <label for="file-input" class="image-label">
@@ -218,6 +219,7 @@ export default {
       addressInput: "",
       results: "",
       showing: "",
+      fileDescription: "* 카메라 아이콘을 눌러 사진을 업로드한 뒤 등록 버튼을 눌러주세요."
     };
   },
   mounted() {

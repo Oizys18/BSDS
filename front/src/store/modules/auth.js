@@ -28,7 +28,7 @@ const state = {
 
 // Vuex 에서는 Arrow Function
 const getters = {
-  isLoggedIn: () => sessionStorage.jwt ? true : false, // 특정 값을 true/false 로 바꾸는 구문
+  isLoggedIn: () => !!sessionStorage.jwt, // 특정 값을 true/false 로 바꾸는 구문
   getErrors: state => state.errors,
   isLoading: state => state.loading,
   getUserId: state => state.token ? decoded(state.token).user_id : '',
