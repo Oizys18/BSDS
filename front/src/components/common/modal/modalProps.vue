@@ -55,31 +55,19 @@
           <span class="description" v-if="isLoggedIn"
             >물품이 주인을 찾았다면 체크해주세요.</span
           >
-          <span class="description" v-else
+          <span class="description" v-else style="color:red"
             >수령 확인은 작성자 본인과 관리자만 가능합니다.</span
           >
-          <div class="modal-huge-radio" data-toggle="buttons">
-            <label class="box-radio-input">
-              <input
-                type="radio"
-                name="cp_item"
-                value="true"
-                v-model="data.status"
-              />
-              <span class="check"><i class="fas fa-check"></i></span>
-              <span class="description">수령</span>
+
+          <div class="switch-check">
+            <span class="switch-text">보관</span>
+            <label class="switch">
+              <input type="checkbox" v-model="nxtStatus" />
+              <span class="slider round"></span>
             </label>
-            <label class="box-radio-input">
-              <input
-                type="radio"
-                name="cp_item"
-                value="false"
-                v-model="data.status"
-              />
-              <span class="check"><i class="fas fa-check"></i></span>
-              <span class="description">보관</span>
-            </label>
+            <span class="switch-text">수령</span>
           </div>
+
           <span
             class="modal-button-container"
             @click="isLoggedIn ? onChangeStatusAdmin() : onChangeStatusUser()"
@@ -105,6 +93,7 @@ export default {
     return {
       status: null,
       imagesrc: `media/no_image.png`,
+      nxtStatus: this.data.status,
     };
   },
   props: {
@@ -118,29 +107,31 @@ export default {
       this.$store.state.showModal = false;
     },
     onChangeStatusAdmin() {
-      this.status ? (this.status = false) : (this.status = true);
-      axios
-        .patch(
-          `${this.baseurl}found/posting/${this.data.id}/status/`,
-          {},
-          {
-            headers: {
-              Authorization: `JWT ${sessionStorage.getItem("jwt")}`,
-            },
-          }
-        )
-        .then()
-        .catch((err) => console.log(err));
+      if (this.data.status != this.nxtStatus) {
+        axios
+          .patch(
+            `${this.baseurl}found/posting/${this.data.id}/status/`,
+            {},
+            {
+              headers: {
+                Authorization: `JWT ${sessionStorage.getItem("jwt")}`,
+              },
+            }
+          )
+          .then()
+          .catch((err) => console.log(err));
+      }
     },
     onChangeStatusUser() {
-      this.status ? (this.status = false) : (this.status = true);
-      axios
-        .patch(
-          `${this.baseurl}lost/posting/${this.$store.state.lostname}/status/`,
-          {}
-        )
-        .then((res) => console.log(res))
-        .catch((err) => console.log(err));
+      if (this.data.status != this.nxtStatus) {
+        axios
+          .patch(
+            `${this.baseurl}lost/posting/${this.$store.state.lostname}/status/`,
+            {}
+          )
+          .then((res) => console.log(res))
+          .catch((err) => console.log(err));
+      }
     },
   },
   computed: {
@@ -159,6 +150,79 @@ export default {
 </script>
 
 <style scoped>
+.switch-text {
+  padding: 0.5em;
+}
+.switch-check {
+  display: flex;
+  justify-content: center;
+  margin: 15px;
+  align-items: center;
+  padding: 0.5em;
+}
+/* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+input:checked + .slider {
+  background-color: #2196f3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196f3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
 .collider {
   position: absolute;
   width: 100vw;

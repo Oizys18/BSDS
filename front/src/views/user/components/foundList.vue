@@ -1,5 +1,5 @@
 <template>
-  <div id="found-wrapper">
+  <div id="found-wrapper" :key="foundKey">
     <navbar />
     <div id="found-card-container">
       <div
@@ -33,7 +33,7 @@ export default {
     return {
       item: Object,
       items: Object,
-      isClicked: false,
+      foundKey: 0,
       pageSize: 8,
       imagesrc: `media/no_image.png`,
       baseurl: process.env.VUE_APP_BASE_URL,
@@ -48,6 +48,9 @@ export default {
   watch: {
     $route() {
       this.$store.state.showModal = false;
+    },
+    items() {
+      this.foundKey += 1;
     },
   },
   mounted() {
@@ -86,13 +89,13 @@ export default {
 
   grid-template-rows: repeat(3, 230px);
   grid-template-columns: repeat(3, 230px);
-  justify-content: space-around;
+  justify-content: center;
   align-items: center;
   margin: 10px;
 }
 .found-card {
-  /* margin: auto; */
   display: flex;
+  justify-content: center;
   box-sizing: border-box;
 }
 </style>

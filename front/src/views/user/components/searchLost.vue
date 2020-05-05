@@ -111,7 +111,7 @@ export default {
   font-weight: bold;
   font-size: 1.3em;
   padding-left: 10px;
-  background-color: #fdfdfd;
+  background-color: #ffffff;
   border: 1px solid #ebebeb;
   border-bottom-color: #e2e2e2;
   border-radius: 20px;
@@ -120,12 +120,15 @@ export default {
 
 input.search-input {
   border: none;
-  width: 60%;
+  width: 80%;
   height: 70%;
+  padding-left:20px;
   align-items: center;
   font-size: 0.8em;
   margin-right: 10%;
   outline: none;
+  background-color:rgb(238, 238, 238);
+  border-radius: 15px;
 }
 .search-button {
   margin: 15px;
