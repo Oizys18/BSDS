@@ -293,8 +293,8 @@ export default {
     createContent() {
       const data = {
         image_id: this.getId,
-        category: this.getCategory,
-        color: this.getColor,
+        category: this.category ? this.category : this.getCategory,
+        color: this.color ? this.color : this.getColor,
         content: this.content,
         lost_time: this.date + " " + this.time,
         email: this.email,
@@ -303,6 +303,7 @@ export default {
         x: this.$store.state.locationX,
         y: this.$store.state.locationY,
       };
+      console.log(data)
       axios
         .post(`${this.$store.state.baseURL}lost/posting/`, data)
         .then((res) => {

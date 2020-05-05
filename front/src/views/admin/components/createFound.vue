@@ -89,7 +89,7 @@ export default {
   data() {
     return {
       content: "",
-      category: this.getCategory,
+      category: "",
       color: this.getColor,
       fileDescription: "* 카메라 아이콘을 눌러 사진을 업로드한 뒤 등록 버튼을 눌러주세요."
     };
@@ -99,8 +99,8 @@ export default {
       const data = {
         image_id: this.getId,
         content: this.content,
-        category: this.getCategory,
-        color: this.getColor,
+        category: this.category ? this.category : this.getCategory,
+        color: this.color ? this.color : this.getColor,
       };
       axios
         .post(`${this.$store.state.baseURL}found/posting/`, data, {
@@ -108,9 +108,8 @@ export default {
             Authorization: `JWT ${sessionStorage.getItem("jwt")}`,
           },
         })
-        .then((res) => {
-          console.log(res);
-          this.$router.push("created");
+        .then(() => {
+          this.$router.push({ name: "adminIndex" });
         })
         .catch((err) => {
           console.log(err);
