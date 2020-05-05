@@ -4,11 +4,13 @@
     <div class="modal-huge-wrapper">
       <div class="modal-huge-left">
         <div class="modal-huge-image">
-          <img :src="
-            data.thumbnail.length
-            ? `${baseurl}${data.thumbnail}`
-            : `${baseurl}${imagesrc}`
-        " />
+          <img
+            :src="
+              data.thumbnail.length
+                ? `${baseurl}${data.thumbnail}`
+                : `${baseurl}${imagesrc}`
+            "
+          />
         </div>
         <div class="modal-huge-info">
           <div class="info">
@@ -29,7 +31,12 @@
           </div>
           <div class="info" v-if="data.user">
             <span class="grid-title">보관 장소</span>
-            <span>{{ data.user.parent_department + ' ' + data.user.center_name + data.user.role }}</span>
+            <span>{{
+              data.user.parent_department +
+                " " +
+                data.user.center_name +
+                data.user.role
+            }}</span>
           </div>
         </div>
         <div class="modal-huge-content">
@@ -45,37 +52,43 @@
       <div class="modal-huge-right">
         <div class="modal-huge-status">
           <span class="grid-title">물품 상태</span>
-          <span class="description" v-if="isLoggedIn">물품이 주인을 찾았다면 체크해주세요.</span>
-          <span class="description" v-else>수령 확인은 작성자 본인과 관리자만 가능합니다.</span>
+          <span class="description" v-if="isLoggedIn"
+            >물품이 주인을 찾았다면 체크해주세요.</span
+          >
+          <span class="description" v-else
+            >수령 확인은 작성자 본인과 관리자만 가능합니다.</span
+          >
           <div class="modal-huge-radio" data-toggle="buttons">
             <label class="box-radio-input">
               <input
-                      type="radio"
-                      name="cp_item"
-                      value="true"
-                      v-model="data.status"
+                type="radio"
+                name="cp_item"
+                value="true"
+                v-model="data.status"
               />
               <span class="check"><i class="fas fa-check"></i></span>
               <span class="description">수령</span>
             </label>
             <label class="box-radio-input">
               <input
-                      type="radio"
-                      name="cp_item"
-                      value="false"
-                      v-model="data.status"
+                type="radio"
+                name="cp_item"
+                value="false"
+                v-model="data.status"
               />
               <span class="check"><i class="fas fa-check"></i></span>
               <span class="description">보관</span>
             </label>
           </div>
-          <span @click="isLoggedIn ? onChangeStatusAdmin() : onChangeStatusUser()">
-            <button-default :text="'저장'" />
+          <span
+            class="modal-button-container"
+            @click="isLoggedIn ? onChangeStatusAdmin() : onChangeStatusUser()"
+          >
+            <span v-on:click="exitModal">
+              <button-default :text="'저장 후 닫기'" />
+            </span>
           </span>
         </div>
-        <span class="modal-huge-collide" v-on:click="exitModal">
-          <button-default :text="'닫기'"/>
-        </span>
       </div>
     </div>
   </div>
@@ -123,8 +136,8 @@ export default {
       this.status ? (this.status = false) : (this.status = true);
       axios
         .patch(
-      `${this.baseurl}lost/posting/${this.$store.state.lostname}/status/`,
-      {},
+          `${this.baseurl}lost/posting/${this.$store.state.lostname}/status/`,
+          {}
         )
         .then((res) => console.log(res))
         .catch((err) => console.log(err));
@@ -149,12 +162,18 @@ export default {
 .collider {
   position: absolute;
   width: 100vw;
-  height: 105vh;
+  height: 100vh;
   z-index: 0;
   top: 0;
   left: 0;
   background: #2c3e50;
   opacity: 20%;
+}
+.modal-button-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
 }
 .modal-huge-wrapper {
   /* position */
@@ -163,65 +182,35 @@ export default {
   left: 25%;
 
   /* modal shape */
-  /*height: 50%;*/
   width: 50%;
-  /*border: 1px solid black;*/
-  /*border-radius: 15px;*/
 
   /* content */
-  /*background-color: white;*/
   color: black;
   font-size: 1rem;
-
-  /* justify-content: center;
-    align-items: center; */
 }
 
 .modal-huge-container {
   width: 100%;
   height: 100%;
-  /* contents align */
-  /*display: grid;*/
-  /*grid-template-rows: repeat(7, 14.5%);*/
-  /*grid-template-columns: repeat(4, 25%);*/
-  /*grid-template-areas:*/
-  /*  "image image status status"*/
-  /*  "image image status status"*/
-  /*  "image image status status"*/
-  /*  "image image status status"*/
-  /*  "info info content content"*/
-  /*  "info info content content"*/
-  /*  "info info content content";*/
   display: flex;
-
 }
 
 .modal-huge-left {
   float: left;
-  width: 60%;
+  width: 61%;
+  height: 50vh;
   border-radius: 15px;
-  border: 1px solid black;
+  border: 1px solid rgb(170, 170, 170);
   background-color: #ffffff;
 }
 
 .modal-huge-right {
   width: 30%;
   float: left;
-  margin-left: 30px;
+  margin-left: 20px;
 }
 
-.modal-huge-collide {
-  /*position: absolute;*/
-  /*right: 0;*/
-  /*border: none;*/
-  z-index: 10;
-  margin-top: 15px;
-}
 .modal-huge-image {
-  /*width: 100%;*/
-  /*height: 100%;*/
-  /*border-radius: 15px;*/
-  /*grid-area: image;*/
   display: flex;
   justify-content: center;
   align-items: center;
@@ -262,7 +251,7 @@ export default {
   justify-content: space-around;
   word-break: keep-all;
   border-radius: 15px;
-  border: 1px solid black;
+  border: 1px solid rgb(170, 170, 170);
   background-color: #ffffff;
 }
 .modal-huge-radio {
@@ -298,7 +287,6 @@ export default {
   justify-content: center;
 }
 .description {
-  font-size: 1.0rem;
+  font-size: 1rem;
 }
-
 </style>

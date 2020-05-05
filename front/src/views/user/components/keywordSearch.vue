@@ -213,7 +213,6 @@ export default {
   /* shape and style */
   height: 20%;
   width: 20%;
-
 }
 .errorMsg {
   color: red;
@@ -267,7 +266,9 @@ export default {
   flex-direction: column;
   width: 50%;
 }
-
+.selector #selectdate input{
+  width:150px;
+}
 .search-address label {
   padding: 0.1em;
   font-size: 1.3em;
