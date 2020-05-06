@@ -75,9 +75,18 @@ export default {
 </script>
 
 <style scoped>
+.navbar-container{
+  position: absolute;
+  top: 1vh;
+  left: 40vw;
+
+  /* shape and style */
+  height: 10%;
+  width: 20%;
+}
 #found-wrapper {
   height: 100%;
-  margin-top: 18vh;
+  margin-top: 9vh;
   justify-content: center;
   align-items: center;
   flex-direction: column;
@@ -90,7 +99,6 @@ export default {
   grid-template-columns: repeat(3, 230px);
   justify-content: center;
   align-items: center;
-  margin: 10px;
 }
 .found-card {
   display: flex;
