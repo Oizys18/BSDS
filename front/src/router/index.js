@@ -9,13 +9,18 @@ import createLost from "@/views/user/components/createLost.vue";
 import searchLost from "@/views/user/components/searchLost.vue";
 import createdUser from "@/views/user/components/createdUser.vue";
 import createFound from "@/views/admin/components/createFound.vue";
-import createdAdmin from "@/views/admin/components/createdAdmin.vue";
 import createdList from "@/views/admin/components/createdList";
 import lostList from "@/views/admin/components/lostList";
-import adminLogin from "@/views/admin/components/adminLogin";
-
 
 Vue.use(VueRouter);
+
+const requireAuth = () => (to, from, next) => {
+  if (sessionStorage.jwt) {
+    return next();
+  }
+  next('/admin');
+};
+
 
 const routes = [
   {
@@ -57,26 +62,19 @@ const routes = [
     path: "/admin/create",
     name: "createFound",
     component: createFound,
-  },
-  {
-    path: "/admin/created",
-    name: "createdAdmin",
-    component: createdAdmin,
-  },
+    beforeEnter: requireAuth()
+},
   {
     path: "/admin/createdList",
     name: "createdList",
     component: createdList,
+    beforeEnter: requireAuth()
   },
   {
     path: "/admin/lostList",
     name: "lostList",
     component: lostList,
-  },
-  {
-    path: "/admin/login",
-    name: "login",
-    component: adminLogin
+    beforeEnter: requireAuth()
   },
   {
     path: "*",

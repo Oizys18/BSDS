@@ -1,17 +1,15 @@
 <template>
   <div class="container">
     <admin-navbar />
-    <div class="create-lost">
+    <div class="create-found animated fadeIn faster">
       <form>
         <div class="left-wrapper">
+          <span class="error">{{ fileDescription }}</span>
           <div class="img-wrapper">
             <div class="file-input-btn">
               <label for="file-input" class="image-label">
                 <img class="image-upload" src="@/assets/images/camera.png" />
               </label>
-              <span @click="postImageAdmin">
-                <button-default :text="'이미지 확인'" />
-              </span>
             </div>
             <input
               class="file-input"
@@ -22,33 +20,37 @@
               @change="getColorData"
             />
             <img class="image-preview" v-if="getImgUrl" :src="getImgUrl" />
+            <span class="image-button"  @click="postImageAdmin" id="submitImg">
+              <button-default :text="'이미지 등록'" />
+            </span>
           </div>
           <div class="category-wrapper">
             <span class="select">물품 분류</span>
             <select-one
               class="select-category"
               :default="getCategory === null ? '분류' : getCategoryName"
-              :items="Object.values($store.state.categories)"
+              :items="categories"
               @input="onSelectCategory"
             />
-            <span class="error" v-if="getCategory === null"
-              >* 필수 입력란입니다.</span
-            >
+            <span class="error" v-if="this.errors[0]">
+              * 필수 입력란
+            </span>
           </div>
           <div class="category-wrapper">
             <span class="select">색상</span>
             <select-one
               class="select-category"
               :default="getColor === null ? '색상' : getColorName"
-              :items="Object.values($store.state.colors)"
+              :items="colors"
               @input="onSelectColor"
             />
-            <span class="error" v-if="getColor === null"
-              >* 필수 입력란입니다.</span
+            <span class="error" v-if="this.errors[1]"
+              >* 필수 입력란</span
             >
           </div>
           <div class="input-wrapper">
             <textarea
+              id="txt-content-area"
               class="content-area"
               v-model="content"
               type="textarea"
@@ -59,7 +61,7 @@
         <div class="right-wrapper">
           <div class="button-wrapper">
             <div @click="createContent">
-              <button-default class="admin-btn" :text="'등록하기'" />
+              <button-default id="submit" class="admin-btn" :text="'등록하기'" />
             </div>
             <div @click="go({ name: 'adminIndex' })">
               <button-default class="admin-btn" :text="'취소'" />
@@ -88,40 +90,52 @@ export default {
   data() {
     return {
       content: "",
-      category: this.getCategory,
-      color: this.getColor,
+      category: "",
+      color: "",
+      fileDescription: "* 카메라 아이콘을 눌러 사진을 업로드한 뒤 등록 버튼을 눌러주세요.",
+      errors: [0, 0]
     };
   },
   methods: {
     createContent() {
+      this.errors = [0, 0]
       const data = {
         image_id: this.getId,
         content: this.content,
-        category: this.getCategory,
-        color: this.getColor,
+        category: this.category ? this.category : this.getCategory,
+        color: this.color ? this.color : this.getColor,
       };
-      axios
-        .post(`${this.$store.state.baseURL}found/posting/`, data, {
-          headers: {
-            Authorization: `JWT ${sessionStorage.getItem("jwt")}`,
-          },
-        })
-        .then((res) => {
-          console.log(res);
-          this.$router.push("created");
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      if (data.color === null) {
+        this.errors.splice(1, 1, 1)
+      }
+      if (data.category === null) {
+        this.errors.splice(0, 1, 1)
+      }
+      if (this.errors.reduce((a, b) => a + b, 0) === 0) {
+        axios
+          .post(`${this.$store.state.baseURL}found/posting/`, data, {
+            headers: {
+              Authorization: `JWT ${sessionStorage.getItem("jwt")}`,
+            },
+          })
+          .then(() => {
+            this.$router.push({name: "adminIndex"});
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
     },
     onClickImageUpload() {
       this.$refs.imageInput.click();
     },
     onSelectCategory(value) {
       this.category = value;
+      this.errors.splice(0, 1, 0)
     },
     onSelectColor(value) {
       this.color = value;
+      this.errors.splice(1, 1, 0)
     },
     checkForm(value) {
       if (value) {
@@ -142,18 +156,31 @@ export default {
       "getCategoryName",
       "getColorName",
     ]),
+    categories() {
+      return this.$store.state.categories;
+    },
+    colors() {
+      return this.$store.state.colors;
+    },
     ...mapState(["image_id"]),
   },
+  mounted() {
+    this.$store.dispatch("clearImage")
+  }
 };
 </script>
 
 <style scoped>
+  .create-found {
+    width: 60%;
+  }
 .content-area {
   width: 100%;
   height: 100px;
   margin: 5px;
   padding: 10px;
-  border: none;
+  border: 1px solid black;
+  border-radius: 15px;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
@@ -168,28 +195,28 @@ export default {
   align-items: center;
   justify-content: center;
 }
-.create-form {
-  overflow: hidden;
-}
 .left-wrapper {
   float: left;
-  width: 60%;
+  width: 65%;
   border: 1px solid black;
   border-radius: 2%;
-  margin-right: 45px;
+  margin-right: 30px;
   margin-bottom: 30px;
   padding: 1rem;
 }
 .right-wrapper {
   float: left;
-  width: 30%;
+  width: 20%;
   text-align: initial;
 }
 .button-wrapper {
   border: none;
-  width: 100%;
+  width: 80%;
   padding: 0px 10px 10px 10px;
   text-align: center;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
 }
 .img-wrapper {
   margin: 5px;
@@ -212,14 +239,12 @@ export default {
   font-weight: bold;
   margin: 0 15px 0px 10px;
 }
-.admin-btn {
-  width: 300px;
-}
 .error {
   font-size: 0.8rem;
   color: #fb121d;
   padding-top: 2px;
   margin: 0 15px 0px 10px;
+  word-break: keep-all;
 }
 .file-input-btn {
   display: flex;
@@ -227,4 +252,16 @@ export default {
   align-items: center;
   flex-direction: column;
 }
+.image-button{
+  position: relative;
+  display: flex;
+  justify-self: center;
+  align-items: center;
+}
+  .admin-btn {
+    width: 100%;
+  }
+  .select-category {
+    width: auto;
+  }
 </style>

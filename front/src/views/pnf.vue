@@ -1,10 +1,11 @@
 <template>
-  <div class="pnf-wrapper">
-    <div class="pnf">
-      PNF
-    </div>
-    <div class="pnfnum">
-      404
+  <div class="pnf-back">
+    <div class="pnf-wrapper">
+      <div class="pnf" id="pnflogo">
+        <img class="logo" @click="go('/')" src="@/assets/images/mainlogo.png" />
+        <br />
+        페이지가 없습니다!
+      </div>
     </div>
   </div>
 </template>
@@ -12,31 +13,38 @@
 <script>
 export default {
   name: "pnf",
+  methods: {
+    mouseIsMoving(e) {
+      console.log(e);
+      var hamX = document.getElementById("pnflogo").offsetLeft;
+      var hamY = document.getElementById("pnflogo").offsetTop;
+      var x = (hamX - e.pageX) * 0.1;
+      var y = (hamY - e.pageY) * 0.1;
+      document.getElementById("pnflogo").style.webkitTransform =
+        "translate(" + x + "px" + "," + y + "px)";
+    },
+  },
+  mounted() {
+    window.addEventListener("mousemove", this.mouseIsMoving);
+  },
 };
 </script>
 
 <style scoped>
+.logo {
+  width: 50%;
+}
 .pnf-wrapper {
   justify-content: center;
   align-items: center;
   display: flex;
 }
 .pnf {
-  top: 15%;
+  top: 25%;
   left: 25%;
+  font-size: 4em;
   position: fixed;
-  font-size: 20rem;
   font-weight: bolder;
-  color: #38618c;
-  text-shadow: 20px 20px 5px rgb(105, 105, 105);
-}
-.pnfnum {
-  top: 38%;
-  position: fixed;
-  left: 35%;
-  font-size: 23rem;
-  font-weight: bolder;
-  color: #0a95ff;
-  text-shadow: 20px 20px 5px rgb(105, 105, 105);
+  color: rgb(240, 95, 95);
 }
 </style>

@@ -1,9 +1,10 @@
 <template>
   <div class="container">
     <navbar />
-    <div class="create-lost">
+    <div class="create-lost animated fadeIn fast">
       <form>
         <div class="left-wrapper">
+          <span class="error">{{ fileDescription }}</span>
           <div class="img-wrapper">
             <div class="file-input-btn">
               <label for="file-input" class="image-label">
@@ -27,24 +28,24 @@
             <span class="select">물품 분류</span>
             <select-one
               class="select-category"
-              :items="Object.values($store.state.categories)"
+              :items="categories"
               :default="getCategory === null ? '분류' : getCategoryName"
               @input="onSelectCategory"
             />
-            <span class="error" v-if="getCategory === null"
-              >* 필수 입력란입니다.</span
+            <span class="error" v-if="this.errors[0]"
+            >{{ this.errorMessage }}</span
             >
           </div>
           <div class="category-wrapper">
             <span class="select">색상</span>
             <select-one
               class="select-category"
-              :items="Object.values($store.state.colors)"
+              :items="colors"
               :default="getColor === null ? '색상' : getColorName"
               @input="onSelectColor"
             />
-            <span class="error" v-if="getColor === null"
-              >* 필수 입력란입니다.</span
+            <span class="error" v-if="this.errors[1]"
+            >{{ this.errorMessage }}</span
             >
           </div>
           <div class="date-wrapper">
@@ -61,15 +62,17 @@
               :items="timeList"
               @input="onTimeSelect"
             />
-            <span class="error" v-if="!checkForm(this.time)"
-              >* 필수 입력란입니다.</span
+            <span class="error" v-if="this.errors[2]"
+              >{{ this.errorMessage }}</span
             >
           </div>
           <span class="category-wrapper">
             <span class="select-location">
               <div class="select-location-container">
                 <div class="location-wrapper">
-                  <label for="addressinput">예상 분실위치</label>
+                  <label class="location-title" for="addressinput"
+                    >예상 분실위치</label
+                  >
                   <div>
                     <input
                       id="addressinput"
@@ -124,9 +127,10 @@
                 class="input-password-email"
                 type="password"
                 v-model="password"
+                @input="checkPassword"
               />
-              <span class="error" v-if="!checkPassword(this.password)"
-                >* 비밀번호는 네 글자 이상 입력해주세요.</span
+              <span class="error" v-if="this.errors[3]"
+                >* 비밀번호는 네 자 이상 입력해주세요.</span
               >
             </div>
             <div class="email">
@@ -154,7 +158,7 @@
                     value="true"
                     v-model="do_notice"
                   />
-                  <span class="check">V</span>
+                  <span class="check"><i class="fas fa-check"></i></span>
                   <span class="description">동의</span>
                 </label>
                 <label class="box-radio-input">
@@ -164,7 +168,7 @@
                     value="false"
                     v-model="do_notice"
                   />
-                  <span class="check">V</span>
+                  <span class="check"><i class="fas fa-check"></i></span>
                   <span class="description">비동의</span>
                 </label>
               </div>
@@ -185,7 +189,6 @@
 </template>
 
 <script>
-// import router from '../router'
 import selectOne from "@/components/common/dropdown/selectOne";
 import navbar from "@/views/user/components/navbar";
 import buttonDefault from "@/components/common/button/buttonDefault";
@@ -207,7 +210,7 @@ export default {
       category: this.getCategory,
       color: this.getColor,
       date: null,
-      timeList: [],
+      // timeList: {},
       time: "",
       password: "",
       email: "",
@@ -218,16 +221,14 @@ export default {
       addressInput: "",
       results: "",
       showing: "",
+      fileDescription:
+        "* 카메라 아이콘을 눌러 사진을 업로드한 뒤 등록 버튼을 눌러주세요.",
+      errors: [0, 0, 0, 0],
+      errorMessage: "* 필수 입력란"
     };
   },
   mounted() {
-    for (let i = 0; i < 25; i++) {
-      if (i < 10) {
-        this.timeList.push("0" + i.toString() + ":00");
-      } else {
-        this.timeList.push(i.toString() + ":00");
-      }
-    }
+    this.$store.dispatch('clearImage')
   },
   methods: {
     searchAddress() {
@@ -289,10 +290,11 @@ export default {
     },
 
     createContent() {
+      this.errors = [0, 0, 0, 0]
       const data = {
         image_id: this.getId,
-        category: this.getCategory,
-        color: this.getColor,
+        category: this.category ? this.category : this.getCategory,
+        color: this.color ? this.color : this.getColor,
         content: this.content,
         lost_time: this.date + " " + this.time,
         email: this.email,
@@ -301,27 +303,44 @@ export default {
         x: this.$store.state.locationX,
         y: this.$store.state.locationY,
       };
-      axios
-        .post(`${this.$store.state.baseURL}lost/posting/`, data)
-        .then((res) => {
-          this.$store.state.lostname = res.data.lostname
-          this.$router.push("created");
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      if (data.color === null) {
+        this.errors.splice(1, 1, 1)
+      }
+      if (data.category === null) {
+        this.errors.splice(0, 1, 1)
+      }
+      if (data.lost_time.length < 16) {
+        this.errors.splice(2, 1, 1)
+      }
+      if (data.password.length < 4) {
+        this.errors.splice(3, 1, 1)
+      }
+      if (this.errors.reduce((a, b) => a + b, 0) === 0) {
+        axios
+          .post(`${this.$store.state.baseURL}lost/posting/`, data)
+          .then((res) => {
+            this.$store.state.lostname = res.data.lostname;
+            this.$router.push("created");
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
     },
     onClickImageUpload() {
       this.$refs.imageInput.click();
     },
     onSelectCategory(value) {
       this.category = value;
+      this.errors.splice(0, 1, 0)
     },
     onSelectColor(value) {
       this.color = value;
+      this.errors.splice(1, 1, 0)
     },
     onTimeSelect(value) {
       this.time = this.timeList[value];
+      this.errors.splice(2, 1, 0)
     },
     validEmail(email) {
       if (/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
@@ -335,9 +354,11 @@ export default {
         return true;
       }
     },
-    checkPassword(password) {
-      if (password.length > 3) {
-        return true;
+    checkPassword() {
+      if (this.password.length < 4) {
+        this.errors.splice(3, 1, 1)
+      } else {
+        this.errors.splice(3, 1, 0)
       }
     },
     ...mapActions(["postImageUser", "getColorData"]),
@@ -351,17 +372,37 @@ export default {
       "getCategoryName",
       "getColorName",
     ]),
+    categories() {
+      return this.$store.state.categories;
+    },
+    colors() {
+      return this.$store.state.colors;
+    },
+    timeList() {
+      var timeList = {};
+      for (let i = 0; i < 25; i++) {
+        if (i < 10) {
+          timeList[i] = ("0" + i.toString() + ":00");
+        } else {
+          timeList[i] = (i.toString() + ":00");
+        }
+      }
+      return timeList
+    },
     ...mapState(["image_id"]),
-  },
+  }
 };
 </script>
 
 <style scoped>
-.image-button{
-  position: relative;
-  display: flex;
-  justify-self: center;
-  align-items: center;
+  .create-lost {
+    width: 60%;
+  }
+.image-button {
+  /*position: relative;*/
+  /*display: flex;*/
+  /*justify-self: center;*/
+  /*align-items: center;*/
 }
 .select-location {
   width: 100%;
@@ -397,7 +438,16 @@ export default {
   border-radius: 15px;
   padding: 5px;
 }
-
+#addressinput {
+  border: 1px solid black;
+  border-radius: 15px;
+  padding: 0.5em;
+  width: 60%;
+  outline: none;
+}
+#addressinput label {
+  margin: 15px;
+}
 .modal-map-wrapper {
   /* position */
   position: fixed;
@@ -429,30 +479,48 @@ export default {
   color: blue;
 }
 .content-area {
-  width: 100%;
+  width: 95%;
   height: 100px;
   margin: 5px;
   padding: 10px;
-  border: none;
+  border: 1px solid black;
+  border-radius: 15px;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
   resize: none;
 }
+.content-area:hover {
+  outline: none;
+}
+.content-area:active {
+  outline: none;
+}
+
 .file-input {
   display: none;
+}
+
+.select-category {
+  width: 25%;
 }
 .select-year {
   width: 25%;
   margin-right: 10px;
   padding-left: 8px;
 }
+.select-year:hover {
+  outline: none;
+}
+.select-year:active {
+  outline: none;
+}
 .select-time {
   width: 15%;
   margin-right: 10px;
 }
 .container {
-  margin-top: 200px;
+  margin-top: 15vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -462,13 +530,12 @@ export default {
   width: 60%;
   border: 1px solid black;
   border-radius: 2%;
-  margin-right: 45px;
-  margin-bottom: 30px;
+  margin-right: 30px;
   padding: 1rem;
 }
 .right-wrapper {
   float: left;
-  width: 30%;
+  width: 32%;
   text-align: initial;
 }
 .description-wrapper {
@@ -480,10 +547,13 @@ export default {
   text-align: initial;
 }
 .button-wrapper {
+  display: flex;
   border: none;
   width: 100%;
   padding: 0px 10px 10px 10px;
   text-align: center;
+  justify-content: center;
+  align-items: center;
 }
 .img-wrapper {
   margin: 5px;
@@ -492,8 +562,16 @@ export default {
 .date-wrapper,
 .img-wrapper,
 .input-wrapper {
-  display: flex;
+  display: block;
   margin-bottom: 15px;
+  outline: none;
+  text-align: left;
+}
+.input-wrapper:hover {
+  outline: none;
+}
+.input-wrapper:active {
+  outline: none;
 }
 .date-select-wrapper select {
   height: 1.5rem;
@@ -532,20 +610,17 @@ input[type="email"] {
   word-break: keep-all;
 }
 .submit-btn {
-  text-align: center;
+  /*text-align: center;*/
 }
 .user-btn {
-  width: 300px;
   margin-top: 15px;
-}
-.btn-option {
-  margin: 3px;
 }
 .error {
   font-size: 0.8rem;
   color: #fb121d;
   padding-top: 2px;
   margin: 0 15px 0px 10px;
+  /*word-break: keep-all;*/
 }
 .email-radio {
   display: flex;
@@ -574,10 +649,11 @@ input[type="email"] {
   color: #fff;
 }
 .file-input-btn {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
+  display: inline-block;
+  /*display: flex;*/
+  /*justify-content: center;*/
+  /*align-items: center;*/
+  /*flex-direction: column;*/
 }
 input[type="date"] {
   border-radius: 10px;

@@ -5,10 +5,10 @@ from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from django.views.decorators.cache import cache_page
 from datetime import timedelta, datetime
 import json
-from django.core.mail import send_mail
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
 from back.settings import EMAIL_HOST_USER
 from lost.serializers import LostThumbnailSerializer, LostImageSerializer
 from lost.models import LostPosting, LostThumbnail, LostImage
@@ -54,7 +54,7 @@ def search_found(request):
 
     datasets = {
         'meta': {
-            'total_cnt': posting_set.count()
+            'total': posting_set.count()
         },
         'documents': serializer.data
     }
@@ -146,7 +146,6 @@ def create_found(request):
             thumbnail.posting_id = posting.id
             thumbnail.save()
 
-
             lost_postings = LostPosting.objects.filter(category=posting.category_id,
                                                        color=posting.color,
                                                        lost_time__gt=datetime.now() - timedelta(weeks=2),
@@ -160,22 +159,26 @@ def create_found(request):
             posting_set = LostPosting.objects.filter(id__in=thumb_set, status=0)
             email_list = [e.email for e in posting_set]
 
-            subject = f'[분실둥실] {request.user.center_name}{request.user.role}에서 유사한 분실물을 보관중입니다.'
-            message = f'잃어버린 생각이 뭉게뭉게☁ 날 때, 분실물 클라우드 ☁분실둥실☁ 입니다.' \
-                      f'{request.user.center_name}{request.user.role}에서 등록하신 분실품과 ' \
-                      f'유사한 물품을 보관중입니다. (http://13.125.33.242:8080/)' \
-                      f'해당 물품을 관할기관에서 수령할 시 본인임을 증명할 수 있는 서류(신분증 등)가 필요할 수 있습니다.' \
-                      f'감사합니다.'
+            if email_list:
+                subject = f'[분실둥실] {request.user.center_name}{request.user.role}에서 유사한 분실물을 보관중입니다.'
+                message = ''
 
-            recipient_list = email_list
-            send_mail(subject, message, EMAIL_HOST_USER, recipient_list, html_message=message)
+                merge_data = {
+                    'center_name': f'{request.user.center_name}{request.user.role}',
+                    'image': f'http://13.125.33.242:8000/media/{thumbnail.image}'
+                }
+
+                html_content = render_to_string('found/email.html', merge_data)
+
+                msg = EmailMultiAlternatives(subject, message, EMAIL_HOST_USER, email_list)
+                msg.attach_alternative(html_content, "text/html")
+                msg.send()
 
         posting_serializer = FoundPostingDetailSerializer(posting)
         return Response(status=200, data=posting_serializer.data)
     return Response(status=400, data={'message': 'Invalid input'})
 
 
-@cache_page(60 * 2)
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_user_found_list(request):
@@ -192,7 +195,6 @@ def get_user_found_list(request):
     return Response(status=200, data=datasets)
 
 
-@cache_page(60 * 2)
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_found_detail(request, found_id):
