@@ -1,13 +1,13 @@
 <template>
-  <div class="user-index-wrapper">
+  <div class="user-index-wrapper ">
     <navbar />
-    <div class="user-index-container">
+    <div class="user-index-container animated fadeIn faster">
       <div class="title-container">
         <span class="selected">
           이미지 검색
         </span>
         <span class="unselected" @click="go('/keywordsearch')">
-          상세검색
+          상세 검색
         </span>
       </div>
       <div class="file-bar">
@@ -41,7 +41,7 @@
             :key="index.id"
             @click="showModal(item)"
           >
-            <cardSmall :item="item" />
+            <cardSmall :item="item" class="animated delay-0.1s zoomIn faster"/>
           </div>
         </div>
         <div class="keyword-button">
@@ -117,7 +117,7 @@ export default {
             this.items = res.data.documents;
             this.searched = true;
           })
-          .catch(err => {
+          .catch((err) => {
             this.$store.state.loading = false;
             console.log(err);
           });
@@ -136,8 +136,18 @@ export default {
 </script>
 
 <style scoped>
+.navbar-container {
+  /* position */
+  position: absolute;
+  top: 160px;
+  left: 40vw;
+
+  /* shape and style */
+  height: 20%;
+  width: 20%;
+}
 .user-index-wrapper {
-  margin-top: 250px;
+  margin-top: 300px;
   justify-content: center;
   align-items: center;
   display: flex;
@@ -229,6 +239,8 @@ export default {
   display: flex;
   cursor: pointer;
   font-size: 1.3em;
+  margin-bottom: 12px;
+  margin-right:12px;
   padding-left: 10px;
   align-items: center;
   justify-content: flex-start;
@@ -256,6 +268,7 @@ export default {
   border-bottom-color: #e2e2e2;
   border-radius: 20px;
   overflow: hidden;
+  margin-bottom: 12px;
   width: 10%;
   display: flex;
   justify-content: center;

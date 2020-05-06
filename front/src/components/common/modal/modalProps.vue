@@ -1,17 +1,16 @@
 <template>
-  <div>
+  <div >
     <div class="collider" v-on:click="exitModal"></div>
-    <div class="modal-huge-wrapper">
-      <div class="modal-huge-container">
-        <button class="modal-huge-collide" v-on:click="exitModal">
-          <span>✖</span>
-        </button>
+    <div class="modal-huge-wrapper animated zoomIn faster">
+      <div class="modal-huge-left">
         <div class="modal-huge-image">
-          <img :src="
-          data.thumbnail.length
-            ? `${baseurl}${data.thumbnail}`
-            : `${baseurl}${imagesrc}`
-        " />
+          <img
+            :src="
+              data.thumbnail.length
+                ? `${baseurl}${data.thumbnail}`
+                : `${baseurl}${imagesrc}`
+            "
+          />
         </div>
         <div class="modal-huge-info">
           <div class="info">
@@ -34,12 +33,6 @@
             <span class="grid-title">보관 장소</span>
             <span>{{ data.user.center_name + data.user.role }}</span>
           </div>
-          <!--          <div class="info" v-else>-->
-          <!--            <span class="grid-title">분실 추정 위치</span>-->
-          <!--            <span>{{ data.x }}</span>-->
-          <!--          </div>-->
-        </div>
-        <div class="modal-huge-content">
           <span class="grid-title">내용</span>
           <span v-if="data.content" class="grid-content">
             {{ data.content }}
@@ -48,33 +41,36 @@
             내용없음
           </span>
         </div>
+        <div class="modal-huge-content">
+
+        </div>
+      </div>
+      <div class="modal-huge-right">
         <div class="modal-huge-status">
           <span class="grid-title">물품 상태</span>
-          <span>물품이 주인을 찾았다면 체크해주세요.</span>
-          <div class="modal-huge-radio" data-toggle="buttons">
-            <label class="box-radio-input">
-              <input
-                type="radio"
-                name="cp_item"
-                value="true"
-                v-model="data.status"
-              />
-              <span class="check">V</span>
-              <span class="description">수령</span>
+          <span class="description" v-if="isLoggedIn"
+            >물품이 주인을 찾았다면 체크해주세요.</span
+          >
+          <span class="description" v-else style="color:red"
+            >수령 확인은 작성자 본인과 관리자만 가능합니다.</span
+          >
+
+          <div class="switch-check">
+            <span class="switch-text">보관</span>
+            <label class="switch">
+              <input type="checkbox" v-model="nxtStatus" />
+              <span class="slider round"></span>
             </label>
-            <label class="box-radio-input">
-              <input
-                type="radio"
-                name="cp_item"
-                value="false"
-                v-model="data.status"
-              />
-              <span class="check">V</span>
-              <span class="description">보관</span>
-            </label>
+            <span class="switch-text">수령</span>
           </div>
-          <span @click="onChangeStatus">
-            <button-default :text="'저장'" />
+
+          <span
+            class="modal-button-container"
+            @click="currentUrl ? onChangeStatusFound() : onChangeStatusLost()"
+          >
+            <span v-on:click="exitModal">
+              <button-default :text="'저장 후 닫기'" />
+            </span>
           </span>
         </div>
       </div>
@@ -93,6 +89,7 @@ export default {
     return {
       status: null,
       imagesrc: `media/no_image.png`,
+      nxtStatus: this.data.status,
     };
   },
   props: {
@@ -105,20 +102,32 @@ export default {
     exitModal() {
       this.$store.state.showModal = false;
     },
-    onChangeStatus() {
-      this.status ? (this.status = false) : (this.status = true);
-      axios
-        .patch(
-          `${this.baseurl}found/posting/${this.data.id}/status/`,
-          {},
-          {
-            headers: {
-              Authorization: `JWT ${sessionStorage.getItem("jwt")}`,
-            },
-          }
-        )
-        .then((res) => console.log(res))
-        .catch((err) => console.log(err));
+    onChangeStatusFound() {
+      if (this.data.status != this.nxtStatus) {
+        axios
+          .patch(
+            `${this.baseurl}found/posting/${this.data.id}/status/`,
+            {},
+            {
+              headers: {
+                Authorization: `JWT ${sessionStorage.getItem("jwt")}`,
+              },
+            }
+          )
+          .then()
+          .catch((err) => console.log(err));
+      }
+    },
+    onChangeStatusLost() {
+      if (this.data.status != this.nxtStatus) {
+        axios
+          .patch(
+            `${this.baseurl}lost/posting/${this.data.lostname}/status/`,
+            {}
+          )
+          .then((res) => console.log(res))
+          .catch((err) => console.log(err));
+      }
     },
   },
   computed: {
@@ -131,12 +140,95 @@ export default {
     colors() {
       return this.$store.state.colors;
     },
-    ...mapGetters(["getStatus"]),
+    currentUrl() {
+      console.log(window.location)
+      if (window.location.href.includes("found")) {
+        return true
+      } else if (window.location.href.includes("created")){
+        return true
+      } else {
+        return false
+      }
+    },
+    ...mapGetters(["getStatus", "isLoggedIn"]),
   },
 };
 </script>
 
 <style scoped>
+.switch-text {
+  padding: 0.5em;
+}
+.switch-check {
+  display: flex;
+  justify-content: center;
+  margin: 15px;
+  align-items: center;
+  padding: 0.5em;
+}
+/* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+input:checked + .slider {
+  background-color: #2196f3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196f3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
 .collider {
   position: absolute;
   width: 100vw;
@@ -144,7 +236,14 @@ export default {
   z-index: 0;
   top: 0;
   left: 0;
-  background: transparent;
+  background: #2c3e50;
+  opacity: 20%;
+}
+.modal-button-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
 }
 .modal-huge-wrapper {
   /* position */
@@ -153,56 +252,42 @@ export default {
   left: 25%;
 
   /* modal shape */
-  height: 60%;
   width: 50%;
-  border: 1px solid black;
-  border-radius: 15px;
 
   /* content */
-  background-color: white;
   color: black;
   font-size: 1rem;
-
-  /* justify-content: center;
-    align-items: center; */
 }
 
 .modal-huge-container {
   width: 100%;
   height: 100%;
-  /* contents align */
-  display: grid;
-  grid-template-rows: repeat(7, 14.5%);
-  grid-template-columns: repeat(4, 25%);
-  grid-template-areas:
-    "image image status status"
-    "image image status status"
-    "image image status status"
-    "image image status status"
-    "info info content content"
-    "info info content content"
-    "info info content content";
+  display: flex;
 }
 
-.modal-huge-collide {
-  position: absolute;
-  right: 0;
-  border: none;
-  z-index: 10;
-  font-size: 25px;
-  background-color: transparent;
-}
-.modal-huge-image {
-  width: 100%;
-  height: 100%;
+.modal-huge-left {
+  float: left;
+  width: 61%;
+  height: 80%;
   border-radius: 15px;
-  grid-area: image;
+  border: 1px solid rgb(170, 170, 170);
+  background-color: #ffffff;
+}
+
+.modal-huge-right {
+  width: 30%;
+  float: left;
+  margin-left: 20px;
+}
+
+.modal-huge-image {
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 25px;
 }
 .modal-huge-info {
-  grid-area: info;
+  /*grid-area: info;*/
   border-radius: 15px;
   display: flex;
   flex-direction: column;
@@ -210,7 +295,7 @@ export default {
   padding: 25px 15px 10px 15px;
 }
 .modal-huge-content {
-  grid-area: content;
+  /*grid-area: content;*/
   border-radius: 15px;
   display: flex;
   flex-direction: column;
@@ -228,16 +313,19 @@ export default {
   overflow: hidden;
 }
 .modal-huge-status {
-  grid-area: status;
+  /*grid-area: status;*/
   display: flex;
-  padding: 25px 15px 10px 15px;
+  padding: 10px 15px 10px 15px;
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
   word-break: keep-all;
+  border-radius: 15px;
+  border: 1px solid rgb(170, 170, 170);
+  background-color: #ffffff;
 }
 .modal-huge-radio {
-  grid-area: radio;
+  /*grid-area: radio;*/
   display: flex;
   padding: 10px;
   align-items: center;
@@ -267,5 +355,8 @@ export default {
 .info {
   display: flex;
   justify-content: center;
+}
+.description {
+  font-size: 1rem;
 }
 </style>

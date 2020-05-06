@@ -1,7 +1,7 @@
 <template>
-  <div class="search-lost-wrapper">
+  <div class="search-lost-wrapper ">
     <navbar />
-    <div class="search-lost-container">
+    <div class="search-lost-container animated fadeIn faster">
       <div class="search-lost-title">신고 번호를 입력해주세요</div>
       <div class="search-container">
         <span class="search-header">아이디</span>
@@ -58,6 +58,7 @@ export default {
         .then(res => {
           this.$store.state.loading = false;
           this.item = res.data;
+          this.$store.state.lostname = this.lostname;
           this.$store.state.showModal = true;
         })
         .catch(err => {
@@ -110,7 +111,7 @@ export default {
   font-weight: bold;
   font-size: 1.3em;
   padding-left: 10px;
-  background-color: #fdfdfd;
+  background-color: #ffffff;
   border: 1px solid #ebebeb;
   border-bottom-color: #e2e2e2;
   border-radius: 20px;
@@ -119,12 +120,15 @@ export default {
 
 input.search-input {
   border: none;
-  width: 60%;
+  width: 80%;
   height: 70%;
+  padding-left:20px;
   align-items: center;
   font-size: 0.8em;
   margin-right: 10%;
   outline: none;
+  background-color:rgb(238, 238, 238);
+  border-radius: 15px;
 }
 .search-button {
   margin: 15px;

@@ -1,8 +1,8 @@
 <template>
   <div>
     <admin-navbar />
-    <div v-if="getItemSize">
-    <paginated-card :pageHead="'작성한 글 목록'" :items="getItems" :page-size="9"/>
+    <div v-if="getItemSize" class="animated fadeIn faster">
+    <paginated-list :pageHead="'작성한 글 목록'" :items="getItems" :page-size="9"/>
     </div>
     <div v-else></div>
   </div>
@@ -11,11 +11,11 @@
 <script>
 import  { mapState, mapGetters } from 'vuex'
 import adminNavbar from "./adminNavbar";
-import paginatedCard from "./paginatedCard";
+import paginatedList from "./paginatedList";
 export default {
   name: "createdList",
   components: {
-    paginatedCard,
+    paginatedList,
     adminNavbar
   },
   data() {

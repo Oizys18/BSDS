@@ -1,5 +1,5 @@
 <template>
-  <div id="found-wrapper">
+  <div id="found-wrapper" :key="foundKey">
     <navbar />
     <div id="found-card-container">
       <div
@@ -8,7 +8,7 @@
         :key="index.id"
         class="found-card"
       >
-        <cardSmall :item="item" />
+        <cardSmall :item="item" class="animated delay-0.1s zoomIn faster" />
       </div>
     </div>
     <div v-if="this.$store.state.showModal" class="user-index-modal">
@@ -27,28 +27,31 @@ export default {
   components: {
     navbar,
     modalProps,
-    cardSmall
+    cardSmall,
   },
   data() {
     return {
       item: Object,
       items: Object,
-      isClicked: false,
+      foundKey: 0,
       pageSize: 8,
       imagesrc: `media/no_image.png`,
-      baseurl: process.env.VUE_APP_BASE_URL
+      baseurl: process.env.VUE_APP_BASE_URL,
     };
   },
   methods: {
     showModal(item) {
       this.$store.state.showModal = true;
       this.item = item;
-    }
+    },
   },
   watch: {
     $route() {
       this.$store.state.showModal = false;
-    }
+    },
+    items() {
+      this.foundKey += 1;
+    },
   },
   mounted() {
     this.$store.state.loading = true;
@@ -60,21 +63,30 @@ export default {
       this.$store.state.loading = false;
       axios
         .get(this.baseurl + "found/search/")
-        .then(res => {
+        .then((res) => {
           this.items = res.data.documents.slice(0, 9);
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
         });
     }
-  }
+  },
 };
 </script>
 
 <style scoped>
+.navbar-container{
+  position: absolute;
+  top: 1vh;
+  left: 40vw;
+
+  /* shape and style */
+  height: 10%;
+  width: 20%;
+}
 #found-wrapper {
   height: 100%;
-  margin-top: 18vh;
+  margin-top: 9vh;
   justify-content: center;
   align-items: center;
   flex-direction: column;
@@ -83,16 +95,14 @@ export default {
 }
 #found-card-container {
   display: grid;
-
   grid-template-rows: repeat(3, 230px);
   grid-template-columns: repeat(3, 230px);
-  justify-content: space-around;
+  justify-content: center;
   align-items: center;
-  margin: 10px;
 }
 .found-card {
-  /* margin: auto; */
   display: flex;
+  justify-content: center;
   box-sizing: border-box;
 }
 </style>
