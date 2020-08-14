@@ -10,14 +10,17 @@
 
 ## 🛒 Table of Contents
 
-- [Start](#🚀 Start)
-- [Features](#⚡ Features)
-- [AI Model](#🕵 AI Model)
-- [Team](#💖 Team)
+  1. [Start](#start)
+  
+  2. [Features](#features)
+
+  3. [AI Model](#ai-model)
+
+  4. [Team](#team)
 
 
 
-## 🚀 Start
+## Start
 
 ### - 일반 사용자
 
@@ -38,7 +41,7 @@ http://i02a405.p.ssafy.io/admin
 
   
 
-## ⚡ Features
+## Features
 
 ### - 일반 사용자
 
@@ -114,7 +117,7 @@ http://i02a405.p.ssafy.io/admin
 
 
 
-## 🕵 AI Model
+## AI Model
 
 - 아래 링크에서 자세한 내용을 확인하세요.
 
@@ -123,7 +126,7 @@ http://i02a405.p.ssafy.io/admin
 
 
 
-## 💖 Team
+## Team
 
 > SSAFY 2기 4반 5팀 : 김수민, 양찬우, 이수진, 조현동, 최솔지 
 
