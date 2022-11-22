@@ -23,7 +23,7 @@ mysqlclient==1.4.6
 packaging==20.3
 pep8==1.7.1
 pilkit==2.0
-Pillow==7.1.1
+Pillow==9.3.0
 PyJWT==1.7.1
 pyparsing==2.4.7
 python-decouple==3.3
